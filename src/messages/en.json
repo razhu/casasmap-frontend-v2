@@ -1,0 +1,38 @@
+{
+  "common": {
+    "search": "Search",
+    "filter": "Filter",
+    "price": "Price",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "nav": {
+    "home": "Home",
+    "properties": "Properties",
+    "favorites": "Favorites",
+    "messages": "Messages",
+    "profile": "Profile",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "home": {
+    "title": "Find Your Perfect Home in Bolivia",
+    "subtitle": "Thousands of properties for sale and rent",
+    "searchPlaceholder": "Search by location, property type..."
+  },
+  "properties": {
+    "title": "Properties",
+    "forSale": "For Sale",
+    "forRent": "For Rent",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "area": "Area",
+    "viewDetails": "View Details"
+  }
+}

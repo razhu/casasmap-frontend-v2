@@ -1,0 +1,38 @@
+{
+  "common": {
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "price": "Precio",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito"
+  },
+  "nav": {
+    "home": "Inicio",
+    "properties": "Propiedades",
+    "favorites": "Favoritos",
+    "messages": "Mensajes",
+    "profile": "Perfil",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar Sesión"
+  },
+  "home": {
+    "title": "Encuentra tu hogar ideal en Bolivia",
+    "subtitle": "Miles de propiedades en venta y alquiler",
+    "searchPlaceholder": "Buscar por ubicación, tipo de propiedad..."
+  },
+  "properties": {
+    "title": "Propiedades",
+    "forSale": "En Venta",
+    "forRent": "En Alquiler",
+    "bedrooms": "Habitaciones",
+    "bathrooms": "Baños",
+    "area": "Área",
+    "viewDetails": "Ver Detalles"
+  }
+}
