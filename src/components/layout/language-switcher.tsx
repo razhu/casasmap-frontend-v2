@@ -2,7 +2,6 @@
 
 import { useParams, usePathname } from "next/navigation";
 import Link from "next/link";
-import { Globe } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,18 +26,15 @@ export function LanguageSwitcher() {
   const basePath = getPathWithoutLocale();
 
   const languages = [
-    { code: "es", name: "Español", flag: "🇪🇸" },
-    { code: "en", name: "English", flag: "🇬🇧" },
+    { code: "es", name: "Español" },
+    { code: "en", name: "English" },
   ];
-
-  const currentLanguage = languages.find((lang) => lang.code === locale);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" className="relative">
-          <Globe className="h-[1.2rem] w-[1.2rem]" />
-          <span className="sr-only">Switch language</span>
+        <Button variant="outline" size="sm" className="font-semibold">
+          {locale.toUpperCase()}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -50,7 +46,7 @@ export function LanguageSwitcher() {
                 locale === lang.code ? "bg-accent" : ""
               }`}
             >
-              <span className="text-lg">{lang.flag}</span>
+              <span className="font-semibold">{lang.code.toUpperCase()}</span>
               <span>{lang.name}</span>
               {locale === lang.code && (
                 <span className="ml-auto text-xs text-muted-foreground">✓</span>

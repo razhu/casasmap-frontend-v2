@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { Inter } from "next/font/google";
 import { ApolloWrapper } from "@/lib/apollo/provider";
 import { Toaster } from "@/components/ui/sonner";
+import { TopNav } from "@/components/layout/top-nav";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import type { Metadata } from "next";
 import "../globals.css";
 
@@ -38,14 +40,22 @@ export default async function LocaleLayout({
   const messages = await getMessages({ locale });
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <body className={inter.className}>
-        <NextIntlClientProvider messages={messages}>
-          <ApolloWrapper>
-            {children}
-            <Toaster />
-          </ApolloWrapper>
-        </NextIntlClientProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextIntlClientProvider messages={messages}>
+            <ApolloWrapper>
+              <TopNav />
+              <main className="pt-16">{children}</main>
+              <Toaster />
+            </ApolloWrapper>
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -16,7 +16,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 // Simple test query to check backend connection
 const TEST_QUERY = gql`
@@ -92,11 +91,6 @@ export default function TestPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white p-8">
-      {/* Language Switcher - Top Right */}
-      <div className="fixed top-4 right-4 z-50">
-        <LanguageSwitcher />
-      </div>
-
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">

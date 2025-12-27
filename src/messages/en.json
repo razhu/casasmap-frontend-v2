@@ -22,9 +22,31 @@
     "logout": "Logout"
   },
   "home": {
-    "title": "Find Your Perfect Home in Bolivia",
-    "subtitle": "Thousands of properties for sale and rent",
-    "searchPlaceholder": "Search by location, property type..."
+    "hero": {
+      "title": "Find Your Perfect Home in Bolivia",
+      "subtitle": "Thousands of properties for sale and rent. Connect with trusted agents.",
+      "searchButton": "Search Properties",
+      "publishButton": "Publish Property"
+    },
+    "features": {
+      "properties": {
+        "title": "Thousands of Properties",
+        "description": "Find houses, apartments, land and more"
+      },
+      "maps": {
+        "title": "Map Search",
+        "description": "Explore properties on the interactive map"
+      },
+      "agents": {
+        "title": "Verified Agents",
+        "description": "Connect with trusted professionals"
+      }
+    },
+    "cta": {
+      "title": "Ready to find your home?",
+      "subtitle": "Register for free and start your search today",
+      "button": "Get Started"
+    }
   },
   "properties": {
     "title": "Properties",

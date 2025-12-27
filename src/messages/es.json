@@ -22,9 +22,31 @@
     "logout": "Cerrar Sesión"
   },
   "home": {
-    "title": "Encuentra tu hogar ideal en Bolivia",
-    "subtitle": "Miles de propiedades en venta y alquiler",
-    "searchPlaceholder": "Buscar por ubicación, tipo de propiedad..."
+    "hero": {
+      "title": "Encuentra tu hogar ideal en Bolivia",
+      "subtitle": "Miles de propiedades en venta y alquiler. Conecta con agentes de confianza.",
+      "searchButton": "Buscar Propiedades",
+      "publishButton": "Publicar Propiedad"
+    },
+    "features": {
+      "properties": {
+        "title": "Miles de Propiedades",
+        "description": "Encuentra casas, departamentos, terrenos y más"
+      },
+      "maps": {
+        "title": "Búsqueda con Mapas",
+        "description": "Explora propiedades en el mapa interactivo"
+      },
+      "agents": {
+        "title": "Agentes Verificados",
+        "description": "Conecta con profesionales de confianza"
+      }
+    },
+    "cta": {
+      "title": "¿Listo para encontrar tu hogar?",
+      "subtitle": "Regístrate gratis y comienza tu búsqueda hoy",
+      "button": "Comenzar Ahora"
+    }
   },
   "properties": {
     "title": "Propiedades",
