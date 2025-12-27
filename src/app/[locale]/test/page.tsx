@@ -16,6 +16,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 // Simple test query to check backend connection
 const TEST_QUERY = gql`
@@ -91,19 +92,28 @@ export default function TestPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white p-8">
+      {/* Language Switcher - Top Right */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-gray-900">
-            Frontend Setup Verification
+            {locale === "es"
+              ? "Verificación de Configuración del Frontend"
+              : "Frontend Setup Verification"}
           </h1>
           <p className="text-lg text-gray-600">
-            Testing all components and configurations
+            {locale === "es"
+              ? "Probando todos los componentes y configuraciones"
+              : "Testing all components and configurations"}
           </p>
 
           {/* Language Switcher */}
           <div className="flex gap-2 justify-center">
-            <Link href="/es/test">
+            <Link href="/test">
               <Button variant={locale === "es" ? "default" : "outline"}>
                 Español
               </Button>
@@ -119,9 +129,13 @@ export default function TestPage() {
         {/* Test Results */}
         <Card>
           <CardHeader>
-            <CardTitle>System Tests</CardTitle>
+            <CardTitle>
+              {locale === "es" ? "Pruebas del Sistema" : "System Tests"}
+            </CardTitle>
             <CardDescription>
-              Verifying all setup components are working correctly
+              {locale === "es"
+                ? "Verificando que todos los componentes funcionen correctamente"
+                : "Verifying all setup components are working correctly"}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
