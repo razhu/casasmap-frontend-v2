@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { Inter } from "next/font/google";
 import { ApolloWrapper } from "@/lib/apollo/provider";
 import { Toaster } from "@/components/ui/sonner";
-import { TopNav } from "@/components/layout/top-nav";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import type { Metadata } from "next";
 import "../globals.css";
@@ -50,8 +51,9 @@ export default async function LocaleLayout({
         >
           <NextIntlClientProvider messages={messages}>
             <ApolloWrapper>
-              <TopNav />
-              <main className="pt-16">{children}</main>
+              <Navbar />
+              <main className="min-h-screen pt-16">{children}</main>
+              <Footer />
               <Toaster />
             </ApolloWrapper>
           </NextIntlClientProvider>
