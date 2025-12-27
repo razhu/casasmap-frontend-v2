@@ -1,0 +1,76 @@
+query Me {
+  me {
+    id
+    email
+    username
+    roleId
+    status
+    isVerified
+    createdAt
+    role {
+      id
+      name
+    }
+    profile {
+      id
+      firstName
+      lastName
+      phoneNumber
+      pictureUrl
+      bio
+    }
+  }
+}
+
+mutation Login($email: String!, $password: String!) {
+  login(loginInput: { email: $email, password: $password }) {
+    access_token
+    user {
+      id
+      email
+      username
+      role {
+        id
+        name
+      }
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+    }
+  }
+}
+
+mutation Register($registerInput: RegisterInput!) {
+  register(registerInput: $registerInput) {
+    access_token
+    user {
+      id
+      email
+      username
+      role {
+        id
+        name
+      }
+      profile {
+        firstName
+        lastName
+      }
+    }
+  }
+}
+
+mutation ForgotPassword($email: String!) {
+  forgotPassword(input: { email: $email })
+}
+
+mutation ResetPassword($token: String!, $newPassword: String!) {
+  resetPassword(input: { token: $token, newPassword: $newPassword })
+}
+
+mutation ChangePassword($currentPassword: String!, $newPassword: String!) {
+  changePassword(
+    input: { currentPassword: $currentPassword, newPassword: $newPassword }
+  )
+}

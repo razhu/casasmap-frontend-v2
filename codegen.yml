@@ -1,5 +1,5 @@
-schema: http://localhost:3000/graphql
-documents: "src/**/*.graphql"
+schema: http://localhost:3001/graphql
+documents: "src/**/*.{graphql,ts,tsx}"
 generates:
   src/lib/graphql/generated.ts:
     plugins:
@@ -10,3 +10,5 @@ generates:
       withHooks: true
       withComponent: false
       withHOC: false
+      skipTypename: false
+      avoidOptionals: false
