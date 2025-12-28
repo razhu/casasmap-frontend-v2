@@ -106,5 +106,22 @@
       "success": "Password reset successfully",
       "error": "Error resetting password"
     }
+  },
+  "profile": {
+    "title": "My Profile",
+    "edit": "Edit Profile",
+    "personalInfo": "Personal Information",
+    "email": "Email",
+    "username": "Username",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone",
+    "bio": "Bio",
+    "birthdate": "Birthdate",
+    "memberSince": "Member since",
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "success": "Profile updated successfully",
+    "error": "Error updating profile"
   }
 }

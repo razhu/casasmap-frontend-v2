@@ -1,18 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-interface User {
-  id: string;
-  email: string;
-  username?: string;
-  roleId: number;
-}
+import { User } from "@/lib/graphql/generated";
 
 interface AuthState {
-  user: User | null;
+  user: Partial<User> | null;
   token: string | null;
   isAuthenticated: boolean;
-  setAuth: (user: User, token: string) => void;
+  setAuth: (user: Partial<User>, token: string) => void;
   logout: () => void;
 }
 

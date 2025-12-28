@@ -106,5 +106,22 @@
       "success": "Contraseña restablecida exitosamente",
       "error": "Error al restablecer contraseña"
     }
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "edit": "Editar Perfil",
+    "personalInfo": "Información Personal",
+    "email": "Correo Electrónico",
+    "username": "Nombre de Usuario",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "phone": "Teléfono",
+    "bio": "Biografía",
+    "birthdate": "Fecha de Nacimiento",
+    "memberSince": "Miembro desde",
+    "save": "Guardar Cambios",
+    "cancel": "Cancelar",
+    "success": "Perfil actualizado exitosamente",
+    "error": "Error al actualizar perfil"
   }
 }

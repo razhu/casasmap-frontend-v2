@@ -12,3 +12,10 @@ generates:
       withHOC: false
       skipTypename: false
       avoidOptionals: false
+      addDocBlocks: false
+      # Don't generate Suspense hooks - they cause import issues
+      withSuspenseQuery: false
+      withRefetchFn: false
+      # Use correct import path for Apollo Client 4
+      apolloReactCommonImportFrom: "@apollo/client/react"
+      apolloReactHooksImportFrom: "@apollo/client/react"
