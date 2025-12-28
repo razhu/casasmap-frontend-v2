@@ -1797,6 +1797,13 @@ export type TestConnectionQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TestConnectionQuery = { __typename: 'Query' };
 
+export type CreatePropertyMutationVariables = Exact<{
+  input: CreatePropertyInput;
+}>;
+
+
+export type CreatePropertyMutation = { __typename?: 'Mutation', createProperty: { __typename?: 'Property', id: string, title: string, titleEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, yearBuilt?: number | null, furnished?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, security?: boolean | null, storage?: boolean | null, petsAllowed?: boolean | null, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, createdAt: any } };
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1908,6 +1915,51 @@ export function useTestConnectionSuspenseQuery(baseOptions?: ApolloReactHooks.Sk
 export type TestConnectionQueryHookResult = ReturnType<typeof useTestConnectionQuery>;
 export type TestConnectionLazyQueryHookResult = ReturnType<typeof useTestConnectionLazyQuery>;
 export type TestConnectionQueryResult = ApolloReactCommon.QueryResult<TestConnectionQuery, TestConnectionQueryVariables>;
+export const CreatePropertyDocument = gql`
+    mutation CreateProperty($input: CreatePropertyInput!) {
+  createProperty(createPropertyInput: $input) {
+    id
+    title
+    titleEn
+    description
+    descriptionEn
+    priceUS
+    priceBS
+    address
+    bedrooms
+    bathrooms
+    totalArea
+    coveredArea
+    parkingSpaces
+    latitude
+    longitude
+    status
+    yearBuilt
+    furnished
+    pool
+    balcony
+    terrace
+    security
+    storage
+    petsAllowed
+    propertyTypeId
+    dealTypeId
+    cityId
+    zoneId
+    stateId
+    countryId
+    createdAt
+  }
+}
+    `;
+export type CreatePropertyMutationFn = ApolloReactCommon.MutationFunction<CreatePropertyMutation, CreatePropertyMutationVariables>;
+export function useCreatePropertyMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreatePropertyMutation, CreatePropertyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<CreatePropertyMutation, CreatePropertyMutationVariables>(CreatePropertyDocument, options);
+      }
+export type CreatePropertyMutationHookResult = ReturnType<typeof useCreatePropertyMutation>;
+export type CreatePropertyMutationResult = ApolloReactCommon.MutationResult<CreatePropertyMutation>;
+export type CreatePropertyMutationOptions = ApolloReactCommon.BaseMutationOptions<CreatePropertyMutation, CreatePropertyMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {

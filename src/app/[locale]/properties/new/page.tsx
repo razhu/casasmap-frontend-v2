@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { PropertyFormStep1 } from "@/components/properties/create/step1-basics";
 import { PropertyFormStep2 } from "@/components/properties/create/step2-details";
@@ -11,6 +12,7 @@ import { PropertyFormStep4 } from "@/components/properties/create/step4-media";
 import { PropertyFormStep5 } from "@/components/properties/create/step5-features";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useCreatePropertyMutation } from "@/lib/graphql/generated";
 
 export interface PropertyFormData {
   // Step 1: Basics
@@ -61,6 +63,9 @@ export default function CreatePropertyPage() {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<PropertyFormData>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [createProperty] = useCreatePropertyMutation();
 
   const totalSteps = 5;
   const progress = (currentStep / totalSteps) * 100;
@@ -84,10 +89,61 @@ export default function CreatePropertyPage() {
 
   const handleSubmit = async (finalData: Partial<PropertyFormData>) => {
     const completeData = { ...formData, ...finalData };
-    console.log("Submitting property:", completeData);
-    // TODO: Call GraphQL mutation
-    // For now, redirect to properties page
-    router.push(getLocalePath("/properties"));
+    setIsSubmitting(true);
+
+    try {
+      // Prepare input for GraphQL mutation
+      const input = {
+        title: completeData.title!,
+        titleEn: completeData.titleEn || completeData.title, // Fallback to Spanish if English not provided
+        description: completeData.description!,
+        descriptionEn: completeData.descriptionEn || completeData.description, // Fallback to Spanish
+        propertyTypeId: completeData.propertyTypeId!,
+        dealTypeId: completeData.dealTypeId!,
+        address: completeData.address!,
+        countryId: completeData.countryId!,
+        stateId: completeData.stateId!,
+        cityId: completeData.cityId!,
+        zoneId: completeData.zoneId!,
+        priceUS: completeData.priceUS,
+        priceBS: completeData.priceBS,
+        bedrooms: completeData.bedrooms,
+        bathrooms: completeData.bathrooms,
+        totalArea: completeData.totalArea,
+        coveredArea: completeData.coveredArea,
+        parkingSpaces: completeData.parkingSpaces,
+        yearBuilt: completeData.yearBuilt,
+        furnished: completeData.furnished || false,
+        pool: completeData.pool || false,
+        balcony: completeData.balcony || false,
+        terrace: completeData.terrace || false,
+        security: completeData.security || false,
+        storage: completeData.storage || false,
+        petsAllowed: completeData.petsAllowed || false,
+      };
+
+      const { data } = await createProperty({
+        variables: { input },
+      });
+
+      if (data?.createProperty) {
+        toast.success(
+          locale === "es"
+            ? "¡Propiedad creada exitosamente! Será revisada por nuestro equipo."
+            : "Property created successfully! It will be reviewed by our team."
+        );
+        router.push(getLocalePath("/properties"));
+      }
+    } catch (error: any) {
+      console.error("Error creating property:", error);
+      toast.error(
+        locale === "es"
+          ? "Error al crear la propiedad. Por favor intenta de nuevo."
+          : "Error creating property. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const stepTitles = [
@@ -160,6 +216,7 @@ export default function CreatePropertyPage() {
                 onSubmit={handleSubmit}
                 onBack={handleBack}
                 locale={locale}
+                isSubmitting={isSubmitting}
               />
             )}
           </Card>

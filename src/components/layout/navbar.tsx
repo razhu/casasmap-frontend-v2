@@ -98,15 +98,13 @@ export function Navbar() {
             <ThemeToggle />
             <LanguageSwitcher />
 
-            {/* Publish Property Button - Prominent */}
-            {isAuthenticated && (
-              <Link href={getLocalePath("/properties/new")}>
-                <Button size="sm" className="font-semibold">
-                  <Plus className="h-4 w-4 mr-2" />
-                  {locale === "es" ? "Publicar" : "Publish"}
-                </Button>
-              </Link>
-            )}
+            {/* Publish Property Button - Always Visible */}
+            <Link href={getLocalePath("/properties/new")}>
+              <Button size="sm" className="font-semibold">
+                <Plus className="h-4 w-4 mr-2" />
+                {locale === "es" ? "Publicar" : "Publish"}
+              </Button>
+            </Link>
 
             {isAuthenticated ? (
               <DropdownMenu>
@@ -221,6 +219,19 @@ export function Navbar() {
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-4 mt-8">
+                  {/* Publish Property Button - Mobile (Always Visible) */}
+                  <Link
+                    href={getLocalePath("/properties/new")}
+                    onClick={() => setOpen(false)}
+                  >
+                    <Button className="w-full" size="lg">
+                      <Plus className="h-5 w-5 mr-2" />
+                      {locale === "es"
+                        ? "Publicar Propiedad"
+                        : "Publish Property"}
+                    </Button>
+                  </Link>
+
                   {navLinks.map((link) => {
                     const Icon = link.icon;
                     return (
