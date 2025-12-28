@@ -49,10 +49,25 @@ export function Navbar() {
   };
 
   const navLinks = [
-    { href: "/", icon: Home, label: t("home") },
-    { href: "/properties", icon: Search, label: t("properties") },
-    { href: "/favorites", icon: Heart, label: t("favorites") },
-    { href: "/messages", icon: MessageSquare, label: t("messages") },
+    { href: "/", icon: Home, label: t("home"), requiresAuth: false },
+    {
+      href: "/properties",
+      icon: Search,
+      label: t("properties"),
+      requiresAuth: false,
+    },
+    {
+      href: "/favorites",
+      icon: Heart,
+      label: t("favorites"),
+      requiresAuth: true,
+    },
+    {
+      href: "/messages",
+      icon: MessageSquare,
+      label: t("messages"),
+      requiresAuth: true,
+    },
   ];
 
   const handleLogout = () => {
@@ -80,17 +95,19 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-4">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              return (
-                <Link key={link.href} href={getLocalePath(link.href)}>
-                  <Button variant="ghost" size="sm">
-                    <Icon className="h-4 w-4 mr-2" />
-                    {link.label}
-                  </Button>
-                </Link>
-              );
-            })}
+            {navLinks
+              .filter((link) => !link.requiresAuth || isAuthenticated)
+              .map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Link key={link.href} href={getLocalePath(link.href)}>
+                    <Button variant="ghost" size="sm">
+                      <Icon className="h-4 w-4 mr-2" />
+                      {link.label}
+                    </Button>
+                  </Link>
+                );
+              })}
           </div>
 
           {/* Right Side Actions - Desktop */}
@@ -232,25 +249,27 @@ export function Navbar() {
                     </Button>
                   </Link>
 
-                  {navLinks.map((link) => {
-                    const Icon = link.icon;
-                    return (
-                      <Link
-                        key={link.href}
-                        href={getLocalePath(link.href)}
-                        onClick={() => setOpen(false)}
-                      >
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start"
-                          size="lg"
+                  {navLinks
+                    .filter((link) => !link.requiresAuth || isAuthenticated)
+                    .map((link) => {
+                      const Icon = link.icon;
+                      return (
+                        <Link
+                          key={link.href}
+                          href={getLocalePath(link.href)}
+                          onClick={() => setOpen(false)}
                         >
-                          <Icon className="h-5 w-5 mr-3" />
-                          {link.label}
-                        </Button>
-                      </Link>
-                    );
-                  })}
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            size="lg"
+                          >
+                            <Icon className="h-5 w-5 mr-3" />
+                            {link.label}
+                          </Button>
+                        </Link>
+                      );
+                    })}
                   <div className="border-t pt-4 mt-4">
                     {isAuthenticated ? (
                       <>
