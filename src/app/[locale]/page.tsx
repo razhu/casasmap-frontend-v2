@@ -48,14 +48,6 @@ export default function HomePage() {
 
         {/* Homepage Search */}
         <HomepageSearch />
-
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 mt-6">
-          <Link href={getLocalePath("/properties/new")}>
-            <Button size="lg" variant="outline" className="w-full sm:w-auto">
-              {t("hero.publishButton")}
-            </Button>
-          </Link>
-        </div>
       </section>
 
       {/* Featured Properties Section */}

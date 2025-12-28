@@ -177,6 +177,7 @@ export type CreatePaymentInput = {
 export type CreatePropertyInput = {
   address: Scalars['String']['input'];
   agencyId?: InputMaybe<Scalars['String']['input']>;
+  balcony?: InputMaybe<Scalars['Boolean']['input']>;
   bathrooms?: InputMaybe<Scalars['Int']['input']>;
   bedrooms?: InputMaybe<Scalars['Int']['input']>;
   cityId: Scalars['Int']['input'];
@@ -184,19 +185,24 @@ export type CreatePropertyInput = {
   coveredArea?: InputMaybe<Scalars['Float']['input']>;
   dealTypeId: Scalars['Int']['input'];
   description: Scalars['String']['input'];
-  descriptionEn: Scalars['String']['input'];
+  descriptionEn?: InputMaybe<Scalars['String']['input']>;
   furnished?: InputMaybe<Scalars['Boolean']['input']>;
   latitude?: InputMaybe<Scalars['Float']['input']>;
   longitude?: InputMaybe<Scalars['Float']['input']>;
   parkingSpaces?: InputMaybe<Scalars['Int']['input']>;
+  petsAllowed?: InputMaybe<Scalars['Boolean']['input']>;
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
+  pool?: InputMaybe<Scalars['Boolean']['input']>;
   priceBS?: InputMaybe<Scalars['Float']['input']>;
   priceUS?: InputMaybe<Scalars['Float']['input']>;
   propertyTypeId: Scalars['Int']['input'];
+  security?: InputMaybe<Scalars['Boolean']['input']>;
   sponsorshipTier?: InputMaybe<SponsorshipTier>;
   stateId: Scalars['Int']['input'];
+  storage?: InputMaybe<Scalars['Boolean']['input']>;
+  terrace?: InputMaybe<Scalars['Boolean']['input']>;
   title: Scalars['String']['input'];
-  titleEn: Scalars['String']['input'];
+  titleEn?: InputMaybe<Scalars['String']['input']>;
   totalArea?: InputMaybe<Scalars['Float']['input']>;
   yearBuilt?: InputMaybe<Scalars['Int']['input']>;
   zoneId: Scalars['Int']['input'];
@@ -1682,6 +1688,7 @@ export type UpdateProfileInput = {
 export type UpdatePropertyInput = {
   address?: InputMaybe<Scalars['String']['input']>;
   agencyId?: InputMaybe<Scalars['String']['input']>;
+  balcony?: InputMaybe<Scalars['Boolean']['input']>;
   bathrooms?: InputMaybe<Scalars['Int']['input']>;
   bedrooms?: InputMaybe<Scalars['Int']['input']>;
   cityId?: InputMaybe<Scalars['Int']['input']>;
@@ -1694,12 +1701,17 @@ export type UpdatePropertyInput = {
   latitude?: InputMaybe<Scalars['Float']['input']>;
   longitude?: InputMaybe<Scalars['Float']['input']>;
   parkingSpaces?: InputMaybe<Scalars['Int']['input']>;
+  petsAllowed?: InputMaybe<Scalars['Boolean']['input']>;
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
+  pool?: InputMaybe<Scalars['Boolean']['input']>;
   priceBS?: InputMaybe<Scalars['Float']['input']>;
   priceUS?: InputMaybe<Scalars['Float']['input']>;
   propertyTypeId?: InputMaybe<Scalars['Int']['input']>;
+  security?: InputMaybe<Scalars['Boolean']['input']>;
   sponsorshipTier?: InputMaybe<SponsorshipTier>;
   stateId?: InputMaybe<Scalars['Int']['input']>;
+  storage?: InputMaybe<Scalars['Boolean']['input']>;
+  terrace?: InputMaybe<Scalars['Boolean']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   titleEn?: InputMaybe<Scalars['String']['input']>;
   totalArea?: InputMaybe<Scalars['Float']['input']>;
@@ -1865,6 +1877,32 @@ export type RefreshTokenMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } } };
+
+export type CountriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CountriesQuery = { __typename?: 'Query', countries: Array<{ __typename?: 'Country', id: number, name: string }> };
+
+export type StatesQueryVariables = Exact<{
+  countryId: Scalars['Int']['input'];
+}>;
+
+
+export type StatesQuery = { __typename?: 'Query', states: Array<{ __typename?: 'State', id: number, name: string, countryId: number }> };
+
+export type CitiesQueryVariables = Exact<{
+  stateId: Scalars['Int']['input'];
+}>;
+
+
+export type CitiesQuery = { __typename?: 'Query', cities: Array<{ __typename?: 'City', id: number, name: string, stateId: number }> };
+
+export type ZonesQueryVariables = Exact<{
+  cityId: Scalars['Int']['input'];
+}>;
+
+
+export type ZonesQuery = { __typename?: 'Query', zones: Array<{ __typename?: 'Zone', id: number, name: string, cityId: number }> };
 
 export type PropertiesQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -2176,6 +2214,113 @@ export function useRefreshTokenMutation(baseOptions?: ApolloReactHooks.MutationH
 export type RefreshTokenMutationHookResult = ReturnType<typeof useRefreshTokenMutation>;
 export type RefreshTokenMutationResult = ApolloReactCommon.MutationResult<RefreshTokenMutation>;
 export type RefreshTokenMutationOptions = ApolloReactCommon.BaseMutationOptions<RefreshTokenMutation, RefreshTokenMutationVariables>;
+export const CountriesDocument = gql`
+    query Countries {
+  countries {
+    id
+    name
+  }
+}
+    `;
+export function useCountriesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CountriesQuery, CountriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<CountriesQuery, CountriesQueryVariables>(CountriesDocument, options);
+      }
+export function useCountriesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CountriesQuery, CountriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<CountriesQuery, CountriesQueryVariables>(CountriesDocument, options);
+        }
+// @ts-ignore
+export function useCountriesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<CountriesQuery, CountriesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<CountriesQuery, CountriesQueryVariables>;
+export function useCountriesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<CountriesQuery, CountriesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<CountriesQuery | undefined, CountriesQueryVariables>;
+export function useCountriesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<CountriesQuery, CountriesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<CountriesQuery, CountriesQueryVariables>(CountriesDocument, options);
+        }
+export type CountriesQueryHookResult = ReturnType<typeof useCountriesQuery>;
+export type CountriesLazyQueryHookResult = ReturnType<typeof useCountriesLazyQuery>;
+export type CountriesQueryResult = ApolloReactCommon.QueryResult<CountriesQuery, CountriesQueryVariables>;
+export const StatesDocument = gql`
+    query States($countryId: Int!) {
+  states(countryId: $countryId) {
+    id
+    name
+    countryId
+  }
+}
+    `;
+export function useStatesQuery(baseOptions: ApolloReactHooks.QueryHookOptions<StatesQuery, StatesQueryVariables> & ({ variables: StatesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<StatesQuery, StatesQueryVariables>(StatesDocument, options);
+      }
+export function useStatesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<StatesQuery, StatesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<StatesQuery, StatesQueryVariables>(StatesDocument, options);
+        }
+// @ts-ignore
+export function useStatesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<StatesQuery, StatesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<StatesQuery, StatesQueryVariables>;
+export function useStatesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<StatesQuery, StatesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<StatesQuery | undefined, StatesQueryVariables>;
+export function useStatesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<StatesQuery, StatesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<StatesQuery, StatesQueryVariables>(StatesDocument, options);
+        }
+export type StatesQueryHookResult = ReturnType<typeof useStatesQuery>;
+export type StatesLazyQueryHookResult = ReturnType<typeof useStatesLazyQuery>;
+export type StatesQueryResult = ApolloReactCommon.QueryResult<StatesQuery, StatesQueryVariables>;
+export const CitiesDocument = gql`
+    query Cities($stateId: Int!) {
+  cities(stateId: $stateId) {
+    id
+    name
+    stateId
+  }
+}
+    `;
+export function useCitiesQuery(baseOptions: ApolloReactHooks.QueryHookOptions<CitiesQuery, CitiesQueryVariables> & ({ variables: CitiesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<CitiesQuery, CitiesQueryVariables>(CitiesDocument, options);
+      }
+export function useCitiesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CitiesQuery, CitiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<CitiesQuery, CitiesQueryVariables>(CitiesDocument, options);
+        }
+// @ts-ignore
+export function useCitiesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<CitiesQuery, CitiesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<CitiesQuery, CitiesQueryVariables>;
+export function useCitiesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<CitiesQuery, CitiesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<CitiesQuery | undefined, CitiesQueryVariables>;
+export function useCitiesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<CitiesQuery, CitiesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<CitiesQuery, CitiesQueryVariables>(CitiesDocument, options);
+        }
+export type CitiesQueryHookResult = ReturnType<typeof useCitiesQuery>;
+export type CitiesLazyQueryHookResult = ReturnType<typeof useCitiesLazyQuery>;
+export type CitiesQueryResult = ApolloReactCommon.QueryResult<CitiesQuery, CitiesQueryVariables>;
+export const ZonesDocument = gql`
+    query Zones($cityId: Int!) {
+  zones(cityId: $cityId) {
+    id
+    name
+    cityId
+  }
+}
+    `;
+export function useZonesQuery(baseOptions: ApolloReactHooks.QueryHookOptions<ZonesQuery, ZonesQueryVariables> & ({ variables: ZonesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<ZonesQuery, ZonesQueryVariables>(ZonesDocument, options);
+      }
+export function useZonesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ZonesQuery, ZonesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<ZonesQuery, ZonesQueryVariables>(ZonesDocument, options);
+        }
+// @ts-ignore
+export function useZonesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<ZonesQuery, ZonesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ZonesQuery, ZonesQueryVariables>;
+export function useZonesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ZonesQuery, ZonesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ZonesQuery | undefined, ZonesQueryVariables>;
+export function useZonesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ZonesQuery, ZonesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<ZonesQuery, ZonesQueryVariables>(ZonesDocument, options);
+        }
+export type ZonesQueryHookResult = ReturnType<typeof useZonesQuery>;
+export type ZonesLazyQueryHookResult = ReturnType<typeof useZonesLazyQuery>;
+export type ZonesQueryResult = ApolloReactCommon.QueryResult<ZonesQuery, ZonesQueryVariables>;
 export const PropertiesDocument = gql`
     query Properties($page: Int, $limit: Int) {
   properties(page: $page, limit: $limit) {

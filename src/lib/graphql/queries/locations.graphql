@@ -1,0 +1,30 @@
+query Countries {
+  countries {
+    id
+    name
+  }
+}
+
+query States($countryId: Int!) {
+  states(countryId: $countryId) {
+    id
+    name
+    countryId
+  }
+}
+
+query Cities($stateId: Int!) {
+  cities(stateId: $stateId) {
+    id
+    name
+    stateId
+  }
+}
+
+query Zones($cityId: Int!) {
+  zones(cityId: $cityId) {
+    id
+    name
+    cityId
+  }
+}

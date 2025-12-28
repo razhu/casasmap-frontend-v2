@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,6 +23,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PropertyFormData } from "@/app/[locale]/properties/new/page";
+import {
+  useCountriesQuery,
+  useStatesQuery,
+  useCitiesQuery,
+  useZonesQuery,
+} from "@/lib/graphql/generated";
+import { Loader2 } from "lucide-react";
 
 const step3Schema = z.object({
   address: z.string().min(10, "Address must be at least 10 characters"),
@@ -52,9 +60,57 @@ export function PropertyFormStep3({ data, onNext, onBack, locale }: Props) {
     },
   });
 
+  // Watch form values for dependent dropdowns
+  const selectedCountryId = form.watch("countryId");
+  const selectedStateId = form.watch("stateId");
+  const selectedCityId = form.watch("cityId");
+
+  // Fetch data
+  const { data: countriesData, loading: countriesLoading } =
+    useCountriesQuery();
+  const { data: statesData, loading: statesLoading } = useStatesQuery({
+    variables: { countryId: selectedCountryId || 0 },
+    skip: !selectedCountryId,
+  });
+  const { data: citiesData, loading: citiesLoading } = useCitiesQuery({
+    variables: { stateId: selectedStateId || 0 },
+    skip: !selectedStateId,
+  });
+  const { data: zonesData, loading: zonesLoading } = useZonesQuery({
+    variables: { cityId: selectedCityId || 0 },
+    skip: !selectedCityId,
+  });
+
+  // Reset dependent fields when parent changes
+  useEffect(() => {
+    if (selectedCountryId) {
+      form.setValue("stateId", undefined as any);
+      form.setValue("cityId", undefined as any);
+      form.setValue("zoneId", undefined as any);
+    }
+  }, [selectedCountryId, form]);
+
+  useEffect(() => {
+    if (selectedStateId) {
+      form.setValue("cityId", undefined as any);
+      form.setValue("zoneId", undefined as any);
+    }
+  }, [selectedStateId, form]);
+
+  useEffect(() => {
+    if (selectedCityId) {
+      form.setValue("zoneId", undefined as any);
+    }
+  }, [selectedCityId, form]);
+
   const onSubmit = (formData: Step3FormData) => {
     onNext(formData);
   };
+
+  const countries = countriesData?.countries || [];
+  const states = statesData?.states || [];
+  const cities = citiesData?.cities || [];
+  const zones = zonesData?.zones || [];
 
   return (
     <Form {...form}>
@@ -98,16 +154,29 @@ export function PropertyFormStep3({ data, onNext, onBack, locale }: Props) {
               <Select
                 onValueChange={(value) => field.onChange(parseInt(value))}
                 value={field.value?.toString()}
+                disabled={countriesLoading}
               >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue
-                      placeholder={locale === "es" ? "Seleccionar" : "Select"}
+                      placeholder={
+                        countriesLoading
+                          ? locale === "es"
+                            ? "Cargando..."
+                            : "Loading..."
+                          : locale === "es"
+                          ? "Seleccionar"
+                          : "Select"
+                      }
                     />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="1">Bolivia</SelectItem>
+                  {countries.map((country) => (
+                    <SelectItem key={country.id} value={country.id.toString()}>
+                      {country.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -127,18 +196,39 @@ export function PropertyFormStep3({ data, onNext, onBack, locale }: Props) {
               <Select
                 onValueChange={(value) => field.onChange(parseInt(value))}
                 value={field.value?.toString()}
+                disabled={!selectedCountryId || statesLoading}
               >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue
-                      placeholder={locale === "es" ? "Seleccionar" : "Select"}
+                      placeholder={
+                        !selectedCountryId
+                          ? locale === "es"
+                            ? "Selecciona un país primero"
+                            : "Select a country first"
+                          : statesLoading
+                          ? locale === "es"
+                            ? "Cargando..."
+                            : "Loading..."
+                          : locale === "es"
+                          ? "Seleccionar"
+                          : "Select"
+                      }
                     />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="1">La Paz</SelectItem>
-                  <SelectItem value="2">Cochabamba</SelectItem>
-                  <SelectItem value="3">Santa Cruz</SelectItem>
+                  {statesLoading ? (
+                    <div className="flex items-center justify-center p-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    </div>
+                  ) : (
+                    states.map((state) => (
+                      <SelectItem key={state.id} value={state.id.toString()}>
+                        {state.name}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -156,19 +246,39 @@ export function PropertyFormStep3({ data, onNext, onBack, locale }: Props) {
               <Select
                 onValueChange={(value) => field.onChange(parseInt(value))}
                 value={field.value?.toString()}
+                disabled={!selectedStateId || citiesLoading}
               >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue
-                      placeholder={locale === "es" ? "Seleccionar" : "Select"}
+                      placeholder={
+                        !selectedStateId
+                          ? locale === "es"
+                            ? "Selecciona un departamento primero"
+                            : "Select a state first"
+                          : citiesLoading
+                          ? locale === "es"
+                            ? "Cargando..."
+                            : "Loading..."
+                          : locale === "es"
+                          ? "Seleccionar"
+                          : "Select"
+                      }
                     />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="1">La Paz</SelectItem>
-                  <SelectItem value="2">El Alto</SelectItem>
-                  <SelectItem value="3">Cochabamba</SelectItem>
-                  <SelectItem value="4">Santa Cruz de la Sierra</SelectItem>
+                  {citiesLoading ? (
+                    <div className="flex items-center justify-center p-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    </div>
+                  ) : (
+                    cities.map((city) => (
+                      <SelectItem key={city.id} value={city.id.toString()}>
+                        {city.name}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -186,21 +296,39 @@ export function PropertyFormStep3({ data, onNext, onBack, locale }: Props) {
               <Select
                 onValueChange={(value) => field.onChange(parseInt(value))}
                 value={field.value?.toString()}
+                disabled={!selectedCityId || zonesLoading}
               >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue
-                      placeholder={locale === "es" ? "Seleccionar" : "Select"}
+                      placeholder={
+                        !selectedCityId
+                          ? locale === "es"
+                            ? "Selecciona una ciudad primero"
+                            : "Select a city first"
+                          : zonesLoading
+                          ? locale === "es"
+                            ? "Cargando..."
+                            : "Loading..."
+                          : locale === "es"
+                          ? "Seleccionar"
+                          : "Select"
+                      }
                     />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="1">Sopocachi</SelectItem>
-                  <SelectItem value="2">Calacoto</SelectItem>
-                  <SelectItem value="3">San Miguel</SelectItem>
-                  <SelectItem value="4">Achumani</SelectItem>
-                  <SelectItem value="5">Obrajes</SelectItem>
-                  <SelectItem value="6">Miraflores</SelectItem>
+                  {zonesLoading ? (
+                    <div className="flex items-center justify-center p-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    </div>
+                  ) : (
+                    zones.map((zone) => (
+                      <SelectItem key={zone.id} value={zone.id.toString()}>
+                        {zone.name}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />
