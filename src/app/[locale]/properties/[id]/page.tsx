@@ -2,6 +2,9 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
+import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 import {
   Bed,
   Bath,
@@ -16,7 +19,10 @@ import {
   Share2,
   Heart,
 } from "lucide-react";
-import { usePropertyQuery } from "@/lib/graphql/generated";
+import {
+  usePropertyQuery,
+  useSearchPropertiesQuery,
+} from "@/lib/graphql/generated";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,6 +34,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PropertyCard } from "@/components/properties/property-card";
+
+// Set Mapbox token
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
 
 export default function PropertyDetailPage() {
   const params = useParams();
@@ -35,14 +45,55 @@ export default function PropertyDetailPage() {
   const locale = params.locale as string;
   const propertyId = params.id as string;
   const t = useTranslations("properties");
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<mapboxgl.Map | null>(null);
 
   const { data, loading, error } = usePropertyQuery({
     variables: { id: propertyId },
   });
 
+  // Fetch similar properties (same city, excluding current property)
+  const { data: similarData } = useSearchPropertiesQuery({
+    variables: {
+      filters: {
+        cityId: data?.property?.cityId,
+      },
+      page: 1,
+      limit: 4,
+    },
+    skip: !data?.property?.cityId,
+  });
+
   const getLocalePath = (path: string) => {
     return locale === "es" ? path : `/${locale}${path}`;
   };
+
+  // Initialize map
+  useEffect(() => {
+    if (!data?.property || !mapContainer.current || map.current) return;
+
+    const property = data.property;
+    if (!property.latitude || !property.longitude) return;
+
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: "mapbox://styles/mapbox/streets-v12",
+      center: [property.longitude, property.latitude],
+      zoom: 14,
+    });
+
+    // Add marker
+    new mapboxgl.Marker({ color: "#3b82f6" })
+      .setLngLat([property.longitude, property.latitude])
+      .addTo(map.current);
+
+    // Add navigation controls
+    map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
+
+    return () => {
+      map.current?.remove();
+    };
+  }, [data]);
 
   if (loading) {
     return (
@@ -376,6 +427,47 @@ export default function PropertyDetailPage() {
             </Card>
           </div>
         </div>
+
+        {/* Map Section */}
+        {property.latitude && property.longitude && (
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>
+                {locale === "es" ? "Ubicación" : "Location"}
+              </CardTitle>
+              <CardDescription>{property.address}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div
+                ref={mapContainer}
+                className="h-96 rounded-lg overflow-hidden"
+              />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Similar Properties */}
+        {similarData?.searchProperties?.data &&
+          similarData.searchProperties.data.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-2xl font-bold mb-6">
+                {locale === "es"
+                  ? "Propiedades similares"
+                  : "Similar properties"}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {similarData.searchProperties.data
+                  .filter((p) => p.id !== propertyId)
+                  .slice(0, 4)
+                  .map((similarProperty) => (
+                    <PropertyCard
+                      key={similarProperty.id}
+                      property={similarProperty}
+                    />
+                  ))}
+              </div>
+            </div>
+          )}
       </div>
     </div>
   );

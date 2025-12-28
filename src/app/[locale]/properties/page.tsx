@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
-import { usePropertiesQuery } from "@/lib/graphql/generated";
+import { useSearchPropertiesQuery } from "@/lib/graphql/generated";
 import { PropertyCard } from "@/components/properties/property-card";
+import { PropertyFilters } from "@/components/properties/property-filters";
 import { Button } from "@/components/ui/button";
 
 export default function PropertiesPage() {
@@ -15,9 +16,34 @@ export default function PropertiesPage() {
   const [page, setPage] = useState(1);
   const limit = 12;
 
-  const { data, loading, error } = usePropertiesQuery({
-    variables: { page, limit },
+  const [filters, setFilters] = useState<{
+    query?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    bedrooms?: number;
+    bathrooms?: number;
+    dealTypeId?: number;
+  }>({});
+
+  const { data, loading, error } = useSearchPropertiesQuery({
+    variables: {
+      query: filters.query,
+      filters: {
+        minPrice: filters.minPrice,
+        maxPrice: filters.maxPrice,
+        bedrooms: filters.bedrooms,
+        bathrooms: filters.bathrooms,
+        dealTypeId: filters.dealTypeId,
+      },
+      page,
+      limit,
+    },
   });
+
+  const handleSearch = (newFilters: typeof filters) => {
+    setFilters(newFilters);
+    setPage(1); // Reset to first page on new search
+  };
 
   if (error) {
     return (
@@ -27,16 +53,20 @@ export default function PropertiesPage() {
     );
   }
 
-  const properties = data?.properties?.data || [];
-  const meta = data?.properties?.meta;
+  const properties = data?.searchProperties?.data || [];
+  const meta = data?.searchProperties?.meta;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 py-12 px-4">
       <div className="container mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">{t("title")}</h1>
+          <h1 className="text-3xl font-bold mb-4">{t("title")}</h1>
+
+          {/* Search and Filters */}
+          <PropertyFilters onSearch={handleSearch} />
+
           {meta && (
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground mt-4">
               {meta.total}{" "}
               {locale === "es" ? "propiedades encontradas" : "properties found"}
             </p>
