@@ -12,6 +12,7 @@ import {
   LogOut,
   Settings,
   Menu,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -96,6 +97,16 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-2">
             <ThemeToggle />
             <LanguageSwitcher />
+
+            {/* Publish Property Button - Prominent */}
+            {isAuthenticated && (
+              <Link href={getLocalePath("/properties/new")}>
+                <Button size="sm" className="font-semibold">
+                  <Plus className="h-4 w-4 mr-2" />
+                  {locale === "es" ? "Publicar" : "Publish"}
+                </Button>
+              </Link>
+            )}
 
             {isAuthenticated ? (
               <DropdownMenu>
@@ -232,6 +243,19 @@ export function Navbar() {
                   <div className="border-t pt-4 mt-4">
                     {isAuthenticated ? (
                       <>
+                        {/* Publish Property Button - Mobile */}
+                        <Link
+                          href={getLocalePath("/properties/new")}
+                          onClick={() => setOpen(false)}
+                        >
+                          <Button className="w-full mb-3" size="lg">
+                            <Plus className="h-5 w-5 mr-2" />
+                            {locale === "es"
+                              ? "Publicar Propiedad"
+                              : "Publish Property"}
+                          </Button>
+                        </Link>
+
                         <Link
                           href={getLocalePath("/profile")}
                           onClick={() => setOpen(false)}

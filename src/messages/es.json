@@ -19,7 +19,9 @@
     "profile": "Perfil",
     "login": "Iniciar Sesión",
     "register": "Registrarse",
-    "logout": "Cerrar Sesión"
+    "logout": "Cerrar Sesión",
+    "publish": "Publicar",
+    "publishProperty": "Publicar Propiedad"
   },
   "home": {
     "hero": {
