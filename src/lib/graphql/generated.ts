@@ -1785,6 +1785,11 @@ export type Zone = {
   name: Scalars['String']['output'];
 };
 
+export type TestConnectionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TestConnectionQuery = { __typename: 'Query' };
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1829,6 +1834,46 @@ export type ChangePasswordMutationVariables = Exact<{
 export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: boolean };
 
 
+export const TestConnectionDocument = gql`
+    query TestConnection {
+  __typename
+}
+    `;
+
+/**
+ * __useTestConnectionQuery__
+ *
+ * To run a query within a React component, call `useTestConnectionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTestConnectionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTestConnectionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTestConnectionQuery(baseOptions?: Apollo.QueryHookOptions<TestConnectionQuery, TestConnectionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TestConnectionQuery, TestConnectionQueryVariables>(TestConnectionDocument, options);
+      }
+export function useTestConnectionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TestConnectionQuery, TestConnectionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TestConnectionQuery, TestConnectionQueryVariables>(TestConnectionDocument, options);
+        }
+// @ts-ignore
+export function useTestConnectionSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<TestConnectionQuery, TestConnectionQueryVariables>): Apollo.UseSuspenseQueryResult<TestConnectionQuery, TestConnectionQueryVariables>;
+export function useTestConnectionSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<TestConnectionQuery, TestConnectionQueryVariables>): Apollo.UseSuspenseQueryResult<TestConnectionQuery | undefined, TestConnectionQueryVariables>;
+export function useTestConnectionSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<TestConnectionQuery, TestConnectionQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<TestConnectionQuery, TestConnectionQueryVariables>(TestConnectionDocument, options);
+        }
+export type TestConnectionQueryHookResult = ReturnType<typeof useTestConnectionQuery>;
+export type TestConnectionLazyQueryHookResult = ReturnType<typeof useTestConnectionLazyQuery>;
+export type TestConnectionSuspenseQueryHookResult = ReturnType<typeof useTestConnectionSuspenseQuery>;
+export type TestConnectionQueryResult = Apollo.QueryResult<TestConnectionQuery, TestConnectionQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {

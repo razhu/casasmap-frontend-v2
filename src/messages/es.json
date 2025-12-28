@@ -56,5 +56,55 @@
     "bathrooms": "Baños",
     "area": "Área",
     "viewDetails": "Ver Detalles"
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar Sesión",
+      "subtitle": "Ingresa a tu cuenta",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "rememberMe": "Recordarme",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "submit": "Iniciar Sesión",
+      "noAccount": "¿No tienes cuenta?",
+      "signUp": "Regístrate",
+      "orContinueWith": "O continúa con",
+      "success": "Inicio de sesión exitoso",
+      "error": "Credenciales inválidas"
+    },
+    "register": {
+      "title": "Crear Cuenta",
+      "subtitle": "Regístrate para comenzar",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "phone": "Teléfono (opcional)",
+      "agreeToTerms": "Acepto los términos y condiciones",
+      "submit": "Crear Cuenta",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "signIn": "Inicia Sesión",
+      "success": "Cuenta creada exitosamente",
+      "error": "Error al crear cuenta"
+    },
+    "forgotPassword": {
+      "title": "Recuperar Contraseña",
+      "subtitle": "Te enviaremos un enlace para restablecer tu contraseña",
+      "email": "Correo Electrónico",
+      "submit": "Enviar Enlace",
+      "backToLogin": "Volver a Iniciar Sesión",
+      "success": "Enlace enviado a tu correo",
+      "error": "Error al enviar enlace"
+    },
+    "resetPassword": {
+      "title": "Restablecer Contraseña",
+      "subtitle": "Ingresa tu nueva contraseña",
+      "password": "Nueva Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "submit": "Restablecer Contraseña",
+      "success": "Contraseña restablecida exitosamente",
+      "error": "Error al restablecer contraseña"
+    }
   }
 }
