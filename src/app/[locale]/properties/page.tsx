@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useParams, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { useSearchPropertiesQuery } from "@/lib/graphql/generated";
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 
 export default function PropertiesPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const locale = params.locale as string;
   const t = useTranslations("properties");
   const [page, setPage] = useState(1);
@@ -24,6 +25,19 @@ export default function PropertiesPage() {
     bathrooms?: number;
     dealTypeId?: number;
   }>({});
+
+  // Initialize filters from URL params
+  useEffect(() => {
+    const urlQuery = searchParams.get("q");
+    const urlDealType = searchParams.get("dealType");
+
+    if (urlQuery || urlDealType) {
+      setFilters({
+        query: urlQuery || undefined,
+        dealTypeId: urlDealType ? parseInt(urlDealType) : undefined,
+      });
+    }
+  }, [searchParams]);
 
   const { data, loading, error } = useSearchPropertiesQuery({
     variables: {

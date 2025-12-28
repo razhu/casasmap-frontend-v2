@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { usePropertiesQuery } from "@/lib/graphql/generated";
 import { PropertyCard } from "@/components/properties/property-card";
+import { HomepageSearch } from "@/components/properties/homepage-search";
 import { Loader2 } from "lucide-react";
 
 export default function HomePage() {
@@ -36,25 +37,24 @@ export default function HomePage() {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-12 sm:py-16 md:py-20">
-        <div className="text-center space-y-4 sm:space-y-6">
+        <div className="text-center space-y-4 sm:space-y-6 mb-8">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-white">
             {t("hero.title")}
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto px-4">
             {t("hero.subtitle")}
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-            <Link href={getLocalePath("/properties")}>
-              <Button size="lg" className="w-full sm:w-auto">
-                {t("hero.searchButton")}
-              </Button>
-            </Link>
-            <Link href={getLocalePath("/properties/new")}>
-              <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                {t("hero.publishButton")}
-              </Button>
-            </Link>
-          </div>
+        </div>
+
+        {/* Homepage Search */}
+        <HomepageSearch />
+
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 mt-6">
+          <Link href={getLocalePath("/properties/new")}>
+            <Button size="lg" variant="outline" className="w-full sm:w-auto">
+              {t("hero.publishButton")}
+            </Button>
+          </Link>
         </div>
       </section>
 
