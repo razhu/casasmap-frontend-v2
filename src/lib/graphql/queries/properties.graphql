@@ -1,0 +1,123 @@
+query Properties($page: Int, $limit: Int) {
+  properties(page: $page, limit: $limit) {
+    data {
+      id
+      title
+      description
+      priceUS
+      priceBS
+      address
+      bedrooms
+      bathrooms
+      totalArea
+      coveredArea
+      latitude
+      longitude
+      status
+      priority
+      createdAt
+      propertyTypeId
+      dealTypeId
+      cityId
+      zoneId
+      userId
+    }
+    meta {
+      total
+      page
+      limit
+      totalPages
+    }
+  }
+}
+
+query Property($id: String!) {
+  property(id: $id) {
+    id
+    title
+    titleEn
+    description
+    descriptionEn
+    priceUS
+    priceBS
+    phoneNumber
+    address
+    bedrooms
+    bathrooms
+    totalArea
+    coveredArea
+    parkingSpaces
+    latitude
+    longitude
+    status
+    priority
+    yearBuilt
+    furnished
+    petsAllowed
+    maintenanceFee
+    propertyTax
+    availableFrom
+    virtualTourUrl
+    floorPlanUrl
+    condition
+    stories
+    elevators
+    heating
+    cooling
+    security
+    pool
+    balcony
+    terrace
+    storage
+    createdAt
+    updatedAt
+    propertyTypeId
+    dealTypeId
+    cityId
+    zoneId
+    stateId
+    countryId
+    userId
+    agencyId
+  }
+}
+
+query SearchProperties(
+  $query: String
+  $filters: PropertyFiltersInput
+  $page: Int
+  $limit: Int
+) {
+  searchProperties(
+    input: { query: $query, filters: $filters, page: $page, limit: $limit }
+  ) {
+    data {
+      id
+      title
+      description
+      priceUS
+      priceBS
+      address
+      bedrooms
+      bathrooms
+      totalArea
+      coveredArea
+      latitude
+      longitude
+      status
+      priority
+      createdAt
+      propertyTypeId
+      dealTypeId
+      cityId
+      zoneId
+      userId
+    }
+    meta {
+      total
+      page
+      limit
+      totalPages
+    }
+  }
+}

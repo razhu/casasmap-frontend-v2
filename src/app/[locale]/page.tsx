@@ -1,3 +1,7 @@
+"use client";
+
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,9 +11,26 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { usePropertiesQuery } from "@/lib/graphql/generated";
+import { PropertyCard } from "@/components/properties/property-card";
+import { Loader2 } from "lucide-react";
 
 export default function HomePage() {
+  const params = useParams();
+  const locale = params.locale as string;
   const t = useTranslations("home");
+  const tProps = useTranslations("properties");
+
+  // Fetch featured properties (first 8)
+  const { data, loading } = usePropertiesQuery({
+    variables: { page: 1, limit: 8 },
+  });
+
+  const getLocalePath = (path: string) => {
+    return locale === "es" ? path : `/${locale}${path}`;
+  };
+
+  const properties = data?.properties?.data || [];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
@@ -23,14 +44,48 @@ export default function HomePage() {
             {t("hero.subtitle")}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-            <Button size="lg" className="w-full sm:w-auto">
-              {t("hero.searchButton")}
-            </Button>
-            <Button size="lg" variant="outline" className="w-full sm:w-auto">
-              {t("hero.publishButton")}
-            </Button>
+            <Link href={getLocalePath("/properties")}>
+              <Button size="lg" className="w-full sm:w-auto">
+                {t("hero.searchButton")}
+              </Button>
+            </Link>
+            <Link href={getLocalePath("/properties/new")}>
+              <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                {t("hero.publishButton")}
+              </Button>
+            </Link>
           </div>
         </div>
+      </section>
+
+      {/* Featured Properties Section */}
+      <section className="container mx-auto px-4 py-12 sm:py-16">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold">
+            {tProps("featured")}
+          </h2>
+          <Link href={getLocalePath("/properties")}>
+            <Button variant="outline">{tProps("viewAll")}</Button>
+          </Link>
+        </div>
+
+        {loading ? (
+          <div className="flex justify-center items-center min-h-[300px]">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        ) : properties.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {properties.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 text-muted-foreground">
+            {locale === "es"
+              ? "No hay propiedades disponibles"
+              : "No properties available"}
+          </div>
+        )}
       </section>
 
       {/* Features Section */}
@@ -75,9 +130,11 @@ export default function HomePage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button size="lg" className="w-full sm:w-auto">
-              {t("cta.button")}
-            </Button>
+            <Link href={getLocalePath("/register")}>
+              <Button size="lg" className="w-full sm:w-auto">
+                {t("cta.button")}
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </section>

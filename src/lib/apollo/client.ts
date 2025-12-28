@@ -6,9 +6,19 @@ const httpLink = createHttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-  // Get token from localStorage
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  // Get token from zustand persist storage
+  let token = null;
+  if (typeof window !== "undefined") {
+    try {
+      const authStorage = localStorage.getItem("auth-storage");
+      if (authStorage) {
+        const authData = JSON.parse(authStorage);
+        token = authData?.state?.token;
+      }
+    } catch (e) {
+      console.error("Error reading auth token:", e);
+    }
+  }
 
   return {
     headers: {

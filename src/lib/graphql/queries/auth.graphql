@@ -104,6 +104,25 @@ mutation UpdateUsername($username: String!) {
   }
 }
 
+mutation RefreshToken {
+  refreshToken {
+    access_token
+    user {
+      id
+      email
+      username
+      role {
+        id
+        name
+      }
+      profile {
+        firstName
+        lastName
+      }
+    }
+  }
+}
+
 mutation ForgotPassword($email: String!) {
   forgotPassword(input: { email: $email })
 }

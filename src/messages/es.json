@@ -55,7 +55,9 @@
     "bedrooms": "Habitaciones",
     "bathrooms": "Baños",
     "area": "Área",
-    "viewDetails": "Ver Detalles"
+    "viewDetails": "Ver Detalles",
+    "featured": "Destacadas",
+    "viewAll": "Ver Todas"
   },
   "auth": {
     "login": {

@@ -55,7 +55,9 @@
     "bedrooms": "Bedrooms",
     "bathrooms": "Bathrooms",
     "area": "Area",
-    "viewDetails": "View Details"
+    "viewDetails": "View Details",
+    "featured": "Featured",
+    "viewAll": "View All"
   },
   "auth": {
     "login": {

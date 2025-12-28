@@ -33,6 +33,7 @@ import {
   useUpdateUsernameMutation,
 } from "@/lib/graphql/generated";
 import { useAuthStore } from "@/store/auth";
+import { ProtectedRoute } from "@/components/auth/protected-route";
 
 const profileSchema = z.object({
   username: z
@@ -104,20 +105,11 @@ export default function EditProfilePage() {
     try {
       // Update username if provided and not already set
       if (formData.username && !hasUsername) {
-        const result = await updateUsername({
+        await updateUsername({
           variables: {
             username: formData.username,
           },
         });
-
-        // Update auth store with new username
-        if (result.data?.updateUsername && data?.me) {
-          const { setAuth } = useAuthStore.getState();
-          setAuth(
-            { ...data.me, username: result.data.updateUsername.username },
-            localStorage.getItem("token") || ""
-          );
-        }
       }
 
       // Update profile
@@ -159,157 +151,163 @@ export default function EditProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 py-12 px-4">
-      <div className="container mx-auto max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">{t("edit")}</CardTitle>
-            <CardDescription>{t("personalInfo")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("username")}</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          disabled={isLoading || hasUsername}
-                          placeholder="johndoe"
-                        />
-                      </FormControl>
-                      {hasUsername ? (
-                        <p className="text-xs text-muted-foreground">
-                          {locale === "es"
-                            ? "El nombre de usuario no se puede cambiar una vez establecido"
-                            : "Username cannot be changed once set"}
-                        </p>
-                      ) : (
-                        <p className="text-xs text-muted-foreground">
-                          {locale === "es"
-                            ? "Elige sabiamente, no podrás cambiarlo después"
-                            : "Choose wisely, you won't be able to change it later"}
-                        </p>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 py-12 px-4">
+        <div className="container mx-auto max-w-2xl">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl">{t("edit")}</CardTitle>
+              <CardDescription>{t("personalInfo")}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
+                  <FormField
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("username")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            disabled={isLoading || hasUsername}
+                            placeholder="johndoe"
+                          />
+                        </FormControl>
+                        {hasUsername ? (
+                          <p className="text-xs text-muted-foreground">
+                            {locale === "es"
+                              ? "El nombre de usuario no se puede cambiar una vez establecido"
+                              : "Username cannot be changed once set"}
+                          </p>
+                        ) : (
+                          <p className="text-xs text-muted-foreground">
+                            {locale === "es"
+                              ? "Elige sabiamente, no podrás cambiarlo después"
+                              : "Choose wisely, you won't be able to change it later"}
+                          </p>
+                        )}
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="firstName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("firstName")}</FormLabel>
+                          <FormControl>
+                            <Input {...field} disabled={isLoading} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
                       )}
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    />
+                    <FormField
+                      control={form.control}
+                      name="lastName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("lastName")}</FormLabel>
+                          <FormControl>
+                            <Input {...field} disabled={isLoading} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                <div className="grid gap-4 md:grid-cols-2">
                   <FormField
                     control={form.control}
-                    name="firstName"
+                    name="phoneNumber"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t("firstName")}</FormLabel>
+                        <FormLabel>{t("phone")}</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled={isLoading} />
+                          <Input
+                            type="tel"
+                            placeholder="+591 12345678"
+                            {...field}
+                            disabled={isLoading}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
-                    name="lastName"
+                    name="birthdate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t("lastName")}</FormLabel>
+                        <FormLabel>{t("birthdate")}</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled={isLoading} />
+                          <Input type="date" {...field} disabled={isLoading} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                </div>
 
-                <FormField
-                  control={form.control}
-                  name="phoneNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("phone")}</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="tel"
-                          placeholder="+591 12345678"
-                          {...field}
-                          disabled={isLoading}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="birthdate"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("birthdate")}</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} disabled={isLoading} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="bio"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("bio")}</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder={
-                            locale === "es"
-                              ? "Cuéntanos sobre ti..."
-                              : "Tell us about yourself..."
-                          }
-                          className="resize-none"
-                          rows={4}
-                          {...field}
-                          disabled={isLoading}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="flex gap-4">
-                  <Button type="submit" className="flex-1" disabled={isLoading}>
-                    {isLoading && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <FormField
+                    control={form.control}
+                    name="bio"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("bio")}</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder={
+                              locale === "es"
+                                ? "Cuéntanos sobre ti..."
+                                : "Tell us about yourself..."
+                            }
+                            className="resize-none"
+                            rows={4}
+                            {...field}
+                            disabled={isLoading}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                     )}
-                    {t("save")}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => router.push(getLocalePath("/profile"))}
-                    disabled={isLoading}
-                  >
-                    {t("cancel")}
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+                  />
+
+                  <div className="flex gap-4">
+                    <Button
+                      type="submit"
+                      className="flex-1"
+                      disabled={isLoading}
+                    >
+                      {isLoading && (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      )}
+                      {t("save")}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => router.push(getLocalePath("/profile"))}
+                      disabled={isLoading}
+                    >
+                      {t("cancel")}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }

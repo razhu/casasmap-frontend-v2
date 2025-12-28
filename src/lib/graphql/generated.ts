@@ -1854,6 +1854,36 @@ export type UpdateUsernameMutationVariables = Exact<{
 
 export type UpdateUsernameMutation = { __typename?: 'Mutation', updateUsername: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } };
 
+export type RefreshTokenMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } } };
+
+export type PropertiesQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type PropertiesQuery = { __typename?: 'Query', properties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, userId: string }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
+
+export type PropertyQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type PropertyQuery = { __typename?: 'Query', property: { __typename?: 'Property', id: string, title: string, titleEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, phoneNumber?: string | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, yearBuilt?: number | null, furnished?: boolean | null, petsAllowed?: boolean | null, maintenanceFee?: number | null, propertyTax?: number | null, availableFrom?: any | null, virtualTourUrl?: string | null, floorPlanUrl?: string | null, condition?: string | null, stories?: number | null, elevators?: number | null, heating?: string | null, cooling?: string | null, security?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, storage?: boolean | null, createdAt: any, updatedAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, userId: string, agencyId?: string | null } };
+
+export type SearchPropertiesQueryVariables = Exact<{
+  query?: InputMaybe<Scalars['String']['input']>;
+  filters?: InputMaybe<PropertyFiltersInput>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type SearchPropertiesQuery = { __typename?: 'Query', searchProperties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, userId: string }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
+
 
 export const TestConnectionDocument = gql`
     query TestConnection {
@@ -2066,3 +2096,207 @@ export function useUpdateUsernameMutation(baseOptions?: ApolloReactHooks.Mutatio
 export type UpdateUsernameMutationHookResult = ReturnType<typeof useUpdateUsernameMutation>;
 export type UpdateUsernameMutationResult = ApolloReactCommon.MutationResult<UpdateUsernameMutation>;
 export type UpdateUsernameMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateUsernameMutation, UpdateUsernameMutationVariables>;
+export const RefreshTokenDocument = gql`
+    mutation RefreshToken {
+  refreshToken {
+    access_token
+    user {
+      id
+      email
+      username
+      role {
+        id
+        name
+      }
+      profile {
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+export type RefreshTokenMutationFn = ApolloReactCommon.MutationFunction<RefreshTokenMutation, RefreshTokenMutationVariables>;
+export function useRefreshTokenMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<RefreshTokenMutation, RefreshTokenMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<RefreshTokenMutation, RefreshTokenMutationVariables>(RefreshTokenDocument, options);
+      }
+export type RefreshTokenMutationHookResult = ReturnType<typeof useRefreshTokenMutation>;
+export type RefreshTokenMutationResult = ApolloReactCommon.MutationResult<RefreshTokenMutation>;
+export type RefreshTokenMutationOptions = ApolloReactCommon.BaseMutationOptions<RefreshTokenMutation, RefreshTokenMutationVariables>;
+export const PropertiesDocument = gql`
+    query Properties($page: Int, $limit: Int) {
+  properties(page: $page, limit: $limit) {
+    data {
+      id
+      title
+      description
+      priceUS
+      priceBS
+      address
+      bedrooms
+      bathrooms
+      totalArea
+      coveredArea
+      latitude
+      longitude
+      status
+      priority
+      createdAt
+      propertyTypeId
+      dealTypeId
+      cityId
+      zoneId
+      userId
+    }
+    meta {
+      total
+      page
+      limit
+      totalPages
+    }
+  }
+}
+    `;
+export function usePropertiesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<PropertiesQuery, PropertiesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<PropertiesQuery, PropertiesQueryVariables>(PropertiesDocument, options);
+      }
+export function usePropertiesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<PropertiesQuery, PropertiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<PropertiesQuery, PropertiesQueryVariables>(PropertiesDocument, options);
+        }
+// @ts-ignore
+export function usePropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<PropertiesQuery, PropertiesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PropertiesQuery, PropertiesQueryVariables>;
+export function usePropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PropertiesQuery, PropertiesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PropertiesQuery | undefined, PropertiesQueryVariables>;
+export function usePropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PropertiesQuery, PropertiesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<PropertiesQuery, PropertiesQueryVariables>(PropertiesDocument, options);
+        }
+export type PropertiesQueryHookResult = ReturnType<typeof usePropertiesQuery>;
+export type PropertiesLazyQueryHookResult = ReturnType<typeof usePropertiesLazyQuery>;
+export type PropertiesQueryResult = ApolloReactCommon.QueryResult<PropertiesQuery, PropertiesQueryVariables>;
+export const PropertyDocument = gql`
+    query Property($id: String!) {
+  property(id: $id) {
+    id
+    title
+    titleEn
+    description
+    descriptionEn
+    priceUS
+    priceBS
+    phoneNumber
+    address
+    bedrooms
+    bathrooms
+    totalArea
+    coveredArea
+    parkingSpaces
+    latitude
+    longitude
+    status
+    priority
+    yearBuilt
+    furnished
+    petsAllowed
+    maintenanceFee
+    propertyTax
+    availableFrom
+    virtualTourUrl
+    floorPlanUrl
+    condition
+    stories
+    elevators
+    heating
+    cooling
+    security
+    pool
+    balcony
+    terrace
+    storage
+    createdAt
+    updatedAt
+    propertyTypeId
+    dealTypeId
+    cityId
+    zoneId
+    stateId
+    countryId
+    userId
+    agencyId
+  }
+}
+    `;
+export function usePropertyQuery(baseOptions: ApolloReactHooks.QueryHookOptions<PropertyQuery, PropertyQueryVariables> & ({ variables: PropertyQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<PropertyQuery, PropertyQueryVariables>(PropertyDocument, options);
+      }
+export function usePropertyLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<PropertyQuery, PropertyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<PropertyQuery, PropertyQueryVariables>(PropertyDocument, options);
+        }
+// @ts-ignore
+export function usePropertySuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<PropertyQuery, PropertyQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PropertyQuery, PropertyQueryVariables>;
+export function usePropertySuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PropertyQuery, PropertyQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PropertyQuery | undefined, PropertyQueryVariables>;
+export function usePropertySuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PropertyQuery, PropertyQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<PropertyQuery, PropertyQueryVariables>(PropertyDocument, options);
+        }
+export type PropertyQueryHookResult = ReturnType<typeof usePropertyQuery>;
+export type PropertyLazyQueryHookResult = ReturnType<typeof usePropertyLazyQuery>;
+export type PropertyQueryResult = ApolloReactCommon.QueryResult<PropertyQuery, PropertyQueryVariables>;
+export const SearchPropertiesDocument = gql`
+    query SearchProperties($query: String, $filters: PropertyFiltersInput, $page: Int, $limit: Int) {
+  searchProperties(
+    input: {query: $query, filters: $filters, page: $page, limit: $limit}
+  ) {
+    data {
+      id
+      title
+      description
+      priceUS
+      priceBS
+      address
+      bedrooms
+      bathrooms
+      totalArea
+      coveredArea
+      latitude
+      longitude
+      status
+      priority
+      createdAt
+      propertyTypeId
+      dealTypeId
+      cityId
+      zoneId
+      userId
+    }
+    meta {
+      total
+      page
+      limit
+      totalPages
+    }
+  }
+}
+    `;
+export function useSearchPropertiesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<SearchPropertiesQuery, SearchPropertiesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<SearchPropertiesQuery, SearchPropertiesQueryVariables>(SearchPropertiesDocument, options);
+      }
+export function useSearchPropertiesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<SearchPropertiesQuery, SearchPropertiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<SearchPropertiesQuery, SearchPropertiesQueryVariables>(SearchPropertiesDocument, options);
+        }
+// @ts-ignore
+export function useSearchPropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<SearchPropertiesQuery, SearchPropertiesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<SearchPropertiesQuery, SearchPropertiesQueryVariables>;
+export function useSearchPropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<SearchPropertiesQuery, SearchPropertiesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<SearchPropertiesQuery | undefined, SearchPropertiesQueryVariables>;
+export function useSearchPropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<SearchPropertiesQuery, SearchPropertiesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<SearchPropertiesQuery, SearchPropertiesQueryVariables>(SearchPropertiesDocument, options);
+        }
+export type SearchPropertiesQueryHookResult = ReturnType<typeof useSearchPropertiesQuery>;
+export type SearchPropertiesLazyQueryHookResult = ReturnType<typeof useSearchPropertiesLazyQuery>;
+export type SearchPropertiesQueryResult = ApolloReactCommon.QueryResult<SearchPropertiesQuery, SearchPropertiesQueryVariables>;
