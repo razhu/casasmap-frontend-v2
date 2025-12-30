@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -30,6 +30,7 @@ import {
   useZonesQuery,
 } from "@/lib/graphql/generated";
 import { Loader2 } from "lucide-react";
+import { MapPicker } from "./map-picker";
 
 const step3Schema = z.object({
   address: z.string().min(10, "Address must be at least 10 characters"),
@@ -37,6 +38,8 @@ const step3Schema = z.object({
   stateId: z.number().min(1, "Please select a state"),
   cityId: z.number().min(1, "Please select a city"),
   zoneId: z.number().min(1, "Please select a zone"),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
 });
 
 type Step3FormData = z.infer<typeof step3Schema>;
@@ -49,6 +52,8 @@ interface Props {
 }
 
 export function PropertyFormStep3({ data, onNext, onBack, locale }: Props) {
+  const [mapKey, setMapKey] = useState(0); // Force map re-render
+
   const form = useForm<Step3FormData>({
     resolver: zodResolver(step3Schema),
     defaultValues: {
@@ -57,6 +62,8 @@ export function PropertyFormStep3({ data, onNext, onBack, locale }: Props) {
       stateId: data.stateId || undefined,
       cityId: data.cityId || undefined,
       zoneId: data.zoneId || undefined,
+      latitude: data.latitude || undefined,
+      longitude: data.longitude || undefined,
     },
   });
 
@@ -111,6 +118,30 @@ export function PropertyFormStep3({ data, onNext, onBack, locale }: Props) {
   const states = statesData?.states || [];
   const cities = citiesData?.cities || [];
   const zones = zonesData?.zones || [];
+
+  // Get selected city/zone for map centering
+  const selectedCity = cities.find((c) => c.id === selectedCityId);
+  const selectedZone = zones.find((z) => z.id === form.watch("zoneId"));
+
+  // Determine map center (priority: zone > city > default)
+  const mapCenter = selectedZone
+    ? {
+        lat: selectedZone.latitude,
+        lng: selectedZone.longitude,
+        zoom: 15,
+      }
+    : selectedCity
+    ? {
+        lat: selectedCity.latitude || undefined,
+        lng: selectedCity.longitude || undefined,
+        zoom: 13,
+      }
+    : undefined;
+
+  const handleLocationChange = (lat: number, lng: number) => {
+    form.setValue("latitude", lat);
+    form.setValue("longitude", lng);
+  };
 
   return (
     <Form {...form}>
@@ -335,6 +366,30 @@ export function PropertyFormStep3({ data, onNext, onBack, locale }: Props) {
             </FormItem>
           )}
         />
+
+        {/* Map Picker */}
+        <div className="space-y-2">
+          <FormLabel>
+            {locale === "es"
+              ? "Ubicación en el mapa (opcional)"
+              : "Map location (optional)"}
+          </FormLabel>
+          <MapPicker
+            key={mapKey}
+            latitude={form.watch("latitude")}
+            longitude={form.watch("longitude")}
+            onLocationChange={handleLocationChange}
+            locale={locale}
+            centerLat={mapCenter?.lat}
+            centerLng={mapCenter?.lng}
+            centerZoom={mapCenter?.zoom}
+          />
+          <FormDescription>
+            {locale === "es"
+              ? "Marca la ubicación exacta de tu propiedad en el mapa. Esto ayudará a los compradores a encontrarla más fácilmente."
+              : "Mark the exact location of your property on the map. This will help buyers find it more easily."}
+          </FormDescription>
+        </div>
 
         {/* Navigation Buttons */}
         <div className="flex justify-between pt-4">

@@ -143,6 +143,8 @@ export default function CreatePropertyPage() {
         coveredArea: completeData.coveredArea,
         parkingSpaces: completeData.parkingSpaces,
         yearBuilt: completeData.yearBuilt,
+        latitude: completeData.latitude,
+        longitude: completeData.longitude,
         furnished: completeData.furnished || false,
         pool: completeData.pool || false,
         balcony: completeData.balcony || false,

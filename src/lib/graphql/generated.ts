@@ -1895,14 +1895,14 @@ export type CitiesQueryVariables = Exact<{
 }>;
 
 
-export type CitiesQuery = { __typename?: 'Query', cities: Array<{ __typename?: 'City', id: number, name: string, stateId: number }> };
+export type CitiesQuery = { __typename?: 'Query', cities: Array<{ __typename?: 'City', id: number, name: string, stateId: number, latitude?: number | null, longitude?: number | null }> };
 
 export type ZonesQueryVariables = Exact<{
   cityId: Scalars['Int']['input'];
 }>;
 
 
-export type ZonesQuery = { __typename?: 'Query', zones: Array<{ __typename?: 'Zone', id: number, name: string, cityId: number }> };
+export type ZonesQuery = { __typename?: 'Query', zones: Array<{ __typename?: 'Zone', id: number, name: string, cityId: number, latitude: number, longitude: number }> };
 
 export type PropertiesQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -2273,6 +2273,8 @@ export const CitiesDocument = gql`
     id
     name
     stateId
+    latitude
+    longitude
   }
 }
     `;
@@ -2300,6 +2302,8 @@ export const ZonesDocument = gql`
     id
     name
     cityId
+    latitude
+    longitude
   }
 }
     `;

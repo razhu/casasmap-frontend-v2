@@ -25,9 +25,10 @@ interface PropertyCardProps {
     propertyTypeId: number;
     dealTypeId: number;
   };
+  compact?: boolean;
 }
 
-export function PropertyCard({ property }: PropertyCardProps) {
+export function PropertyCard({ property, compact = false }: PropertyCardProps) {
   const params = useParams();
   const locale = params.locale as string;
 
@@ -49,64 +50,83 @@ export function PropertyCard({ property }: PropertyCardProps) {
     <Link href={getLocalePath(`/properties/${property.id}`)}>
       <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full">
         <CardHeader className="p-0">
-          <div className="relative h-48 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-gray-700 dark:to-gray-800">
+          <div
+            className={`relative bg-gradient-to-br from-blue-100 to-blue-200 dark:from-gray-700 dark:to-gray-800 ${
+              compact ? "h-32" : "h-48"
+            }`}
+          >
             {/* Placeholder for image - will add later */}
             <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-              <Maximize className="h-12 w-12" />
+              <Maximize className={compact ? "h-8 w-8" : "h-12 w-12"} />
             </div>
-            {(property.priority === "HIGHEST" ||
-              property.priority === "HIGH") && (
-              <Badge className="absolute top-2 right-2 bg-yellow-500">
-                {locale === "es" ? "Destacado" : "Featured"}
-              </Badge>
-            )}
+            {!compact &&
+              (property.priority === "HIGHEST" ||
+                property.priority === "HIGH") && (
+                <Badge className="absolute top-2 right-2 bg-yellow-500">
+                  {locale === "es" ? "Destacado" : "Featured"}
+                </Badge>
+              )}
           </div>
         </CardHeader>
-        <CardContent className="p-4">
+        <CardContent className={compact ? "p-2" : "p-4"}>
           <div className="flex justify-between items-start mb-2">
-            <h3 className="font-semibold text-lg line-clamp-1">
+            <h3
+              className={`font-semibold line-clamp-1 ${
+                compact ? "text-sm" : "text-lg"
+              }`}
+            >
               {property.title}
             </h3>
-            <p className="font-bold text-primary whitespace-nowrap ml-2">
+            <p
+              className={`font-bold text-primary whitespace-nowrap ml-2 ${
+                compact ? "text-sm" : ""
+              }`}
+            >
               {formatPrice(property.priceUS, property.priceBS)}
             </p>
           </div>
-          <div className="flex items-center text-sm text-muted-foreground mb-3">
-            <MapPin className="h-4 w-4 mr-1" />
+          <div
+            className={`flex items-center text-muted-foreground mb-3 ${
+              compact ? "text-xs" : "text-sm"
+            }`}
+          >
+            <MapPin className={compact ? "h-3 w-3 mr-1" : "h-4 w-4 mr-1"} />
             <span className="line-clamp-1">{property.address}</span>
           </div>
-          <div className="flex gap-4 text-sm">
+          <div className={`flex gap-4 ${compact ? "text-xs" : "text-sm"}`}>
             {property.bedrooms && (
               <div className="flex items-center gap-1">
-                <Bed className="h-4 w-4" />
+                <Bed className={compact ? "h-3 w-3" : "h-4 w-4"} />
                 <span>{property.bedrooms}</span>
               </div>
             )}
             {property.bathrooms && (
               <div className="flex items-center gap-1">
-                <Bath className="h-4 w-4" />
+                <Bath className={compact ? "h-3 w-3" : "h-4 w-4"} />
                 <span>{property.bathrooms}</span>
               </div>
             )}
             {property.totalArea && (
               <div className="flex items-center gap-1">
-                <Maximize className="h-4 w-4" />
+                <Maximize className={compact ? "h-3 w-3" : "h-4 w-4"} />
                 <span>{property.totalArea}m²</span>
               </div>
             )}
           </div>
         </CardContent>
-        <CardFooter className="p-4 pt-0">
-          <Badge variant="outline">
-            {property.dealTypeId === 1
-              ? locale === "es"
-                ? "Venta"
-                : "Sale"
-              : locale === "es"
-              ? "Alquiler"
-              : "Rent"}
-          </Badge>
-        </CardFooter>
+        {!compact && (
+          <CardFooter className="p-4 pt-0">
+            <Badge variant="outline">
+              {property.dealTypeId === 1
+                ? locale === "es"
+                  ? "Venta"
+                  : "Sale"
+                : locale === "es"
+                ? "Alquiler"
+                : "Rent"}
+            </Badge>
+          </CardFooter>
+        )}
       </Card>
     </Link>
   );

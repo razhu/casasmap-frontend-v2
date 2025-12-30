@@ -18,6 +18,8 @@ query Cities($stateId: Int!) {
     id
     name
     stateId
+    latitude
+    longitude
   }
 }
 
@@ -26,5 +28,7 @@ query Zones($cityId: Int!) {
     id
     name
     cityId
+    latitude
+    longitude
   }
 }
