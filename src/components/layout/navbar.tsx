@@ -27,6 +27,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LanguageSwitcher } from "./language-switcher";
 import { ThemeToggle } from "./theme-toggle";
+import { NotificationBell } from "./notification-bell";
 import { useState } from "react";
 import {
   Sheet,
@@ -121,6 +122,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-2">
             <ThemeToggle />
             <LanguageSwitcher />
+            <NotificationBell locale={locale} />
 
             {/* Publish Property Button - Always Visible */}
             <Link href={getLocalePath("/properties/new")}>
@@ -206,6 +208,7 @@ export function Navbar() {
           <div className="flex md:hidden items-center gap-2">
             <ThemeToggle />
             <LanguageSwitcher />
+            <NotificationBell locale={locale} />
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">

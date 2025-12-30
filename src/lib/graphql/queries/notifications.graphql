@@ -1,0 +1,25 @@
+query Notifications($page: Int, $limit: Int) {
+  notifications(page: $page, limit: $limit) {
+    data {
+      id
+      userId
+      type
+      title
+      message
+      data
+      read
+      readAt
+      createdAt
+    }
+    meta {
+      total
+      page
+      limit
+      totalPages
+    }
+  }
+}
+
+query UnreadNotificationsCount {
+  unreadNotificationsCount
+}

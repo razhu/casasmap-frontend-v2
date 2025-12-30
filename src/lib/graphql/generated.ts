@@ -1847,6 +1847,25 @@ export type UpdateInquiryStatusMutationVariables = Exact<{
 
 export type UpdateInquiryStatusMutation = { __typename?: 'Mutation', updateInquiryStatus: { __typename?: 'PropertyInquiry', id: string, status: InquiryStatus, updatedAt: any } };
 
+export type MarkNotificationAsReadMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type MarkNotificationAsReadMutation = { __typename?: 'Mutation', markNotificationAsRead: { __typename?: 'Notification', id: string, read: boolean, readAt?: any | null } };
+
+export type MarkAllNotificationsAsReadMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MarkAllNotificationsAsReadMutation = { __typename?: 'Mutation', markAllNotificationsAsRead: boolean };
+
+export type DeleteNotificationMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type DeleteNotificationMutation = { __typename?: 'Mutation', deleteNotification: { __typename?: 'Notification', id: string } };
+
 export type CreatePropertyMutationVariables = Exact<{
   input: CreatePropertyInput;
 }>;
@@ -2003,6 +2022,19 @@ export type ZonesQueryVariables = Exact<{
 
 export type ZonesQuery = { __typename?: 'Query', zones: Array<{ __typename?: 'Zone', id: number, name: string, cityId: number, latitude: number, longitude: number }> };
 
+export type NotificationsQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type NotificationsQuery = { __typename?: 'Query', notifications: { __typename?: 'NotificationResult', data: Array<{ __typename?: 'Notification', id: string, userId: string, type: string, title: string, message: string, data?: any | null, read: boolean, readAt?: any | null, createdAt: any }>, meta: { __typename?: 'NotificationMeta', total: number, page: number, limit: number, totalPages: number } } };
+
+export type UnreadNotificationsCountQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UnreadNotificationsCountQuery = { __typename?: 'Query', unreadNotificationsCount: number };
+
 export type PropertiesQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -2158,6 +2190,51 @@ export function useUpdateInquiryStatusMutation(baseOptions?: ApolloReactHooks.Mu
 export type UpdateInquiryStatusMutationHookResult = ReturnType<typeof useUpdateInquiryStatusMutation>;
 export type UpdateInquiryStatusMutationResult = ApolloReactCommon.MutationResult<UpdateInquiryStatusMutation>;
 export type UpdateInquiryStatusMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateInquiryStatusMutation, UpdateInquiryStatusMutationVariables>;
+export const MarkNotificationAsReadDocument = gql`
+    mutation MarkNotificationAsRead($id: String!) {
+  markNotificationAsRead(id: $id) {
+    id
+    read
+    readAt
+  }
+}
+    `;
+export type MarkNotificationAsReadMutationFn = ApolloReactCommon.MutationFunction<MarkNotificationAsReadMutation, MarkNotificationAsReadMutationVariables>;
+export function useMarkNotificationAsReadMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<MarkNotificationAsReadMutation, MarkNotificationAsReadMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<MarkNotificationAsReadMutation, MarkNotificationAsReadMutationVariables>(MarkNotificationAsReadDocument, options);
+      }
+export type MarkNotificationAsReadMutationHookResult = ReturnType<typeof useMarkNotificationAsReadMutation>;
+export type MarkNotificationAsReadMutationResult = ApolloReactCommon.MutationResult<MarkNotificationAsReadMutation>;
+export type MarkNotificationAsReadMutationOptions = ApolloReactCommon.BaseMutationOptions<MarkNotificationAsReadMutation, MarkNotificationAsReadMutationVariables>;
+export const MarkAllNotificationsAsReadDocument = gql`
+    mutation MarkAllNotificationsAsRead {
+  markAllNotificationsAsRead
+}
+    `;
+export type MarkAllNotificationsAsReadMutationFn = ApolloReactCommon.MutationFunction<MarkAllNotificationsAsReadMutation, MarkAllNotificationsAsReadMutationVariables>;
+export function useMarkAllNotificationsAsReadMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<MarkAllNotificationsAsReadMutation, MarkAllNotificationsAsReadMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<MarkAllNotificationsAsReadMutation, MarkAllNotificationsAsReadMutationVariables>(MarkAllNotificationsAsReadDocument, options);
+      }
+export type MarkAllNotificationsAsReadMutationHookResult = ReturnType<typeof useMarkAllNotificationsAsReadMutation>;
+export type MarkAllNotificationsAsReadMutationResult = ApolloReactCommon.MutationResult<MarkAllNotificationsAsReadMutation>;
+export type MarkAllNotificationsAsReadMutationOptions = ApolloReactCommon.BaseMutationOptions<MarkAllNotificationsAsReadMutation, MarkAllNotificationsAsReadMutationVariables>;
+export const DeleteNotificationDocument = gql`
+    mutation DeleteNotification($id: String!) {
+  deleteNotification(id: $id) {
+    id
+  }
+}
+    `;
+export type DeleteNotificationMutationFn = ApolloReactCommon.MutationFunction<DeleteNotificationMutation, DeleteNotificationMutationVariables>;
+export function useDeleteNotificationMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteNotificationMutation, DeleteNotificationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<DeleteNotificationMutation, DeleteNotificationMutationVariables>(DeleteNotificationDocument, options);
+      }
+export type DeleteNotificationMutationHookResult = ReturnType<typeof useDeleteNotificationMutation>;
+export type DeleteNotificationMutationResult = ApolloReactCommon.MutationResult<DeleteNotificationMutation>;
+export type DeleteNotificationMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteNotificationMutation, DeleteNotificationMutationVariables>;
 export const CreatePropertyDocument = gql`
     mutation CreateProperty($input: CreatePropertyInput!) {
   createProperty(createPropertyInput: $input) {
@@ -2798,6 +2875,70 @@ export function useZonesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken |
 export type ZonesQueryHookResult = ReturnType<typeof useZonesQuery>;
 export type ZonesLazyQueryHookResult = ReturnType<typeof useZonesLazyQuery>;
 export type ZonesQueryResult = ApolloReactCommon.QueryResult<ZonesQuery, ZonesQueryVariables>;
+export const NotificationsDocument = gql`
+    query Notifications($page: Int, $limit: Int) {
+  notifications(page: $page, limit: $limit) {
+    data {
+      id
+      userId
+      type
+      title
+      message
+      data
+      read
+      readAt
+      createdAt
+    }
+    meta {
+      total
+      page
+      limit
+      totalPages
+    }
+  }
+}
+    `;
+export function useNotificationsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, options);
+      }
+export function useNotificationsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, options);
+        }
+// @ts-ignore
+export function useNotificationsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<NotificationsQuery, NotificationsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<NotificationsQuery, NotificationsQueryVariables>;
+export function useNotificationsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<NotificationsQuery, NotificationsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<NotificationsQuery | undefined, NotificationsQueryVariables>;
+export function useNotificationsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, options);
+        }
+export type NotificationsQueryHookResult = ReturnType<typeof useNotificationsQuery>;
+export type NotificationsLazyQueryHookResult = ReturnType<typeof useNotificationsLazyQuery>;
+export type NotificationsQueryResult = ApolloReactCommon.QueryResult<NotificationsQuery, NotificationsQueryVariables>;
+export const UnreadNotificationsCountDocument = gql`
+    query UnreadNotificationsCount {
+  unreadNotificationsCount
+}
+    `;
+export function useUnreadNotificationsCountQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<UnreadNotificationsCountQuery, UnreadNotificationsCountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<UnreadNotificationsCountQuery, UnreadNotificationsCountQueryVariables>(UnreadNotificationsCountDocument, options);
+      }
+export function useUnreadNotificationsCountLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<UnreadNotificationsCountQuery, UnreadNotificationsCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<UnreadNotificationsCountQuery, UnreadNotificationsCountQueryVariables>(UnreadNotificationsCountDocument, options);
+        }
+// @ts-ignore
+export function useUnreadNotificationsCountSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<UnreadNotificationsCountQuery, UnreadNotificationsCountQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<UnreadNotificationsCountQuery, UnreadNotificationsCountQueryVariables>;
+export function useUnreadNotificationsCountSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<UnreadNotificationsCountQuery, UnreadNotificationsCountQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<UnreadNotificationsCountQuery | undefined, UnreadNotificationsCountQueryVariables>;
+export function useUnreadNotificationsCountSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<UnreadNotificationsCountQuery, UnreadNotificationsCountQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<UnreadNotificationsCountQuery, UnreadNotificationsCountQueryVariables>(UnreadNotificationsCountDocument, options);
+        }
+export type UnreadNotificationsCountQueryHookResult = ReturnType<typeof useUnreadNotificationsCountQuery>;
+export type UnreadNotificationsCountLazyQueryHookResult = ReturnType<typeof useUnreadNotificationsCountLazyQuery>;
+export type UnreadNotificationsCountQueryResult = ApolloReactCommon.QueryResult<UnreadNotificationsCountQuery, UnreadNotificationsCountQueryVariables>;
 export const PropertiesDocument = gql`
     query Properties($page: Int, $limit: Int) {
   properties(page: $page, limit: $limit) {
