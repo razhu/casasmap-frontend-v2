@@ -1,78 +1,30 @@
-query MyConversations($page: Int, $limit: Int) {
-  myConversations(page: $page, limit: $limit) {
+query MyConversations {
+  myConversations {
     id
     participant1Id
     participant2Id
+    propertyId
     lastMessageAt
     createdAt
-    participant1 {
-      id
-      email
-      username
-      profile {
-        firstName
-        lastName
-        avatar
-      }
-    }
-    participant2 {
-      id
-      email
-      username
-      profile {
-        firstName
-        lastName
-        avatar
-      }
-    }
     messages {
       id
       content
+      senderId
       createdAt
-      read
+      readAt
     }
   }
 }
 
-query Conversation($id: ID!) {
-  conversation(id: $id) {
-    id
-    participant1Id
-    participant2Id
-    lastMessageAt
-    createdAt
-    participant1 {
-      id
-      email
-      username
-      profile {
-        firstName
-        lastName
-        avatar
-      }
-    }
-    participant2 {
-      id
-      email
-      username
-      profile {
-        firstName
-        lastName
-        avatar
-      }
-    }
-  }
-}
-
-query Messages($conversationId: ID!, $page: Int) {
-  messages(conversationId: $conversationId, page: $page) {
+query ConversationMessages($conversationId: String!) {
+  conversationMessages(conversationId: $conversationId) {
     id
     conversationId
     senderId
     receiverId
+    propertyId
     content
     status
-    read
     readAt
     createdAt
   }

@@ -1861,6 +1861,20 @@ export type UpdateInquiryStatusMutationVariables = Exact<{
 
 export type UpdateInquiryStatusMutation = { __typename?: 'Mutation', updateInquiryStatus: { __typename?: 'PropertyInquiry', id: string, status: InquiryStatus, updatedAt: any } };
 
+export type SendMessageMutationVariables = Exact<{
+  input: SendMessageInput;
+}>;
+
+
+export type SendMessageMutation = { __typename?: 'Mutation', sendMessage: { __typename?: 'Message', id: string, conversationId: string, senderId: string, receiverId: string, content: string, status: MessageStatus, readAt?: any | null, createdAt: any } };
+
+export type MarkConversationAsReadMutationVariables = Exact<{
+  conversationId: Scalars['String']['input'];
+}>;
+
+
+export type MarkConversationAsReadMutation = { __typename?: 'Mutation', markConversationAsRead: boolean };
+
 export type MarkNotificationAsReadMutationVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
@@ -2047,6 +2061,18 @@ export type ZonesQueryVariables = Exact<{
 
 
 export type ZonesQuery = { __typename?: 'Query', zones: Array<{ __typename?: 'Zone', id: number, name: string, cityId: number, latitude: number, longitude: number }> };
+
+export type MyConversationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyConversationsQuery = { __typename?: 'Query', myConversations: Array<{ __typename?: 'Conversation', id: string, participant1Id: string, participant2Id: string, propertyId?: string | null, lastMessageAt?: any | null, createdAt: any, messages?: Array<{ __typename?: 'Message', id: string, content: string, senderId: string, createdAt: any, readAt?: any | null }> | null }> };
+
+export type ConversationMessagesQueryVariables = Exact<{
+  conversationId: Scalars['String']['input'];
+}>;
+
+
+export type ConversationMessagesQuery = { __typename?: 'Query', conversationMessages: Array<{ __typename?: 'Message', id: string, conversationId: string, senderId: string, receiverId: string, propertyId?: string | null, content: string, status: MessageStatus, readAt?: any | null, createdAt: any }> };
 
 export type NotificationsQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -2246,6 +2272,41 @@ export function useUpdateInquiryStatusMutation(baseOptions?: ApolloReactHooks.Mu
 export type UpdateInquiryStatusMutationHookResult = ReturnType<typeof useUpdateInquiryStatusMutation>;
 export type UpdateInquiryStatusMutationResult = ApolloReactCommon.MutationResult<UpdateInquiryStatusMutation>;
 export type UpdateInquiryStatusMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateInquiryStatusMutation, UpdateInquiryStatusMutationVariables>;
+export const SendMessageDocument = gql`
+    mutation SendMessage($input: SendMessageInput!) {
+  sendMessage(input: $input) {
+    id
+    conversationId
+    senderId
+    receiverId
+    content
+    status
+    readAt
+    createdAt
+  }
+}
+    `;
+export type SendMessageMutationFn = ApolloReactCommon.MutationFunction<SendMessageMutation, SendMessageMutationVariables>;
+export function useSendMessageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SendMessageMutation, SendMessageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<SendMessageMutation, SendMessageMutationVariables>(SendMessageDocument, options);
+      }
+export type SendMessageMutationHookResult = ReturnType<typeof useSendMessageMutation>;
+export type SendMessageMutationResult = ApolloReactCommon.MutationResult<SendMessageMutation>;
+export type SendMessageMutationOptions = ApolloReactCommon.BaseMutationOptions<SendMessageMutation, SendMessageMutationVariables>;
+export const MarkConversationAsReadDocument = gql`
+    mutation MarkConversationAsRead($conversationId: String!) {
+  markConversationAsRead(conversationId: $conversationId)
+}
+    `;
+export type MarkConversationAsReadMutationFn = ApolloReactCommon.MutationFunction<MarkConversationAsReadMutation, MarkConversationAsReadMutationVariables>;
+export function useMarkConversationAsReadMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<MarkConversationAsReadMutation, MarkConversationAsReadMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<MarkConversationAsReadMutation, MarkConversationAsReadMutationVariables>(MarkConversationAsReadDocument, options);
+      }
+export type MarkConversationAsReadMutationHookResult = ReturnType<typeof useMarkConversationAsReadMutation>;
+export type MarkConversationAsReadMutationResult = ApolloReactCommon.MutationResult<MarkConversationAsReadMutation>;
+export type MarkConversationAsReadMutationOptions = ApolloReactCommon.BaseMutationOptions<MarkConversationAsReadMutation, MarkConversationAsReadMutationVariables>;
 export const MarkNotificationAsReadDocument = gql`
     mutation MarkNotificationAsRead($id: String!) {
   markNotificationAsRead(id: $id) {
@@ -3012,6 +3073,76 @@ export function useZonesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken |
 export type ZonesQueryHookResult = ReturnType<typeof useZonesQuery>;
 export type ZonesLazyQueryHookResult = ReturnType<typeof useZonesLazyQuery>;
 export type ZonesQueryResult = ApolloReactCommon.QueryResult<ZonesQuery, ZonesQueryVariables>;
+export const MyConversationsDocument = gql`
+    query MyConversations {
+  myConversations {
+    id
+    participant1Id
+    participant2Id
+    propertyId
+    lastMessageAt
+    createdAt
+    messages {
+      id
+      content
+      senderId
+      createdAt
+      readAt
+    }
+  }
+}
+    `;
+export function useMyConversationsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MyConversationsQuery, MyConversationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<MyConversationsQuery, MyConversationsQueryVariables>(MyConversationsDocument, options);
+      }
+export function useMyConversationsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MyConversationsQuery, MyConversationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<MyConversationsQuery, MyConversationsQueryVariables>(MyConversationsDocument, options);
+        }
+// @ts-ignore
+export function useMyConversationsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<MyConversationsQuery, MyConversationsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MyConversationsQuery, MyConversationsQueryVariables>;
+export function useMyConversationsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MyConversationsQuery, MyConversationsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MyConversationsQuery | undefined, MyConversationsQueryVariables>;
+export function useMyConversationsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MyConversationsQuery, MyConversationsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<MyConversationsQuery, MyConversationsQueryVariables>(MyConversationsDocument, options);
+        }
+export type MyConversationsQueryHookResult = ReturnType<typeof useMyConversationsQuery>;
+export type MyConversationsLazyQueryHookResult = ReturnType<typeof useMyConversationsLazyQuery>;
+export type MyConversationsQueryResult = ApolloReactCommon.QueryResult<MyConversationsQuery, MyConversationsQueryVariables>;
+export const ConversationMessagesDocument = gql`
+    query ConversationMessages($conversationId: String!) {
+  conversationMessages(conversationId: $conversationId) {
+    id
+    conversationId
+    senderId
+    receiverId
+    propertyId
+    content
+    status
+    readAt
+    createdAt
+  }
+}
+    `;
+export function useConversationMessagesQuery(baseOptions: ApolloReactHooks.QueryHookOptions<ConversationMessagesQuery, ConversationMessagesQueryVariables> & ({ variables: ConversationMessagesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<ConversationMessagesQuery, ConversationMessagesQueryVariables>(ConversationMessagesDocument, options);
+      }
+export function useConversationMessagesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ConversationMessagesQuery, ConversationMessagesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<ConversationMessagesQuery, ConversationMessagesQueryVariables>(ConversationMessagesDocument, options);
+        }
+// @ts-ignore
+export function useConversationMessagesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<ConversationMessagesQuery, ConversationMessagesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ConversationMessagesQuery, ConversationMessagesQueryVariables>;
+export function useConversationMessagesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ConversationMessagesQuery, ConversationMessagesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ConversationMessagesQuery | undefined, ConversationMessagesQueryVariables>;
+export function useConversationMessagesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ConversationMessagesQuery, ConversationMessagesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<ConversationMessagesQuery, ConversationMessagesQueryVariables>(ConversationMessagesDocument, options);
+        }
+export type ConversationMessagesQueryHookResult = ReturnType<typeof useConversationMessagesQuery>;
+export type ConversationMessagesLazyQueryHookResult = ReturnType<typeof useConversationMessagesLazyQuery>;
+export type ConversationMessagesQueryResult = ApolloReactCommon.QueryResult<ConversationMessagesQuery, ConversationMessagesQueryVariables>;
 export const NotificationsDocument = gql`
     query Notifications($page: Int, $limit: Int) {
   notifications(page: $page, limit: $limit) {
