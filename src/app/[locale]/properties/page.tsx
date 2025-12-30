@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Loader2 } from "lucide-react";
+import { Search } from "lucide-react";
 import { useSearchPropertiesQuery } from "@/lib/graphql/generated";
 import { PropertyCard } from "@/components/properties/property-card";
+import { PropertyCardSkeleton } from "@/components/ui/property-card-skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 import { PropertyFilters } from "@/components/properties/property-filters";
 import { SaveSearchButton } from "@/components/properties/save-search-button";
 import { Button } from "@/components/ui/button";
@@ -101,17 +103,25 @@ export default function PropertiesPage() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center items-center min-h-[400px]">
-            <Loader2 className="h-8 w-8 animate-spin" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <PropertyCardSkeleton key={i} />
+            ))}
           </div>
         ) : properties.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">
-              {locale === "es"
+          <EmptyState
+            icon={Search}
+            title={
+              locale === "es"
                 ? "No se encontraron propiedades"
-                : "No properties found"}
-            </p>
-          </div>
+                : "No properties found"
+            }
+            description={
+              locale === "es"
+                ? "Intenta ajustar tus filtros de búsqueda para encontrar más resultados"
+                : "Try adjusting your search filters to find more results"
+            }
+          />
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

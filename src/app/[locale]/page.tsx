@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/card";
 import { usePropertiesQuery } from "@/lib/graphql/generated";
 import { PropertyCard } from "@/components/properties/property-card";
+import { PropertyCardSkeleton } from "@/components/ui/property-card-skeleton";
 import { HomepageSearch } from "@/components/properties/homepage-search";
-import { Loader2 } from "lucide-react";
 
 export default function HomePage() {
   const params = useParams();
@@ -62,8 +62,10 @@ export default function HomePage() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center items-center min-h-[300px]">
-            <Loader2 className="h-8 w-8 animate-spin" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <PropertyCardSkeleton key={i} />
+            ))}
           </div>
         ) : properties.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

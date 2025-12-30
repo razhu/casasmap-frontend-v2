@@ -1,23 +1,37 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useMyFavoritesQuery } from "@/lib/graphql/generated";
 import { PropertyCard } from "@/components/properties/property-card";
+import { PropertyCardSkeleton } from "@/components/ui/property-card-skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 import { ProtectedRoute } from "@/components/auth/protected-route";
-import { Loader2, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 
 function FavoritesPageContent() {
   const params = useParams();
+  const router = useRouter();
   const locale = params.locale as string;
 
   const { data, loading, refetch } = useMyFavoritesQuery();
 
   const favorites = data?.myFavorites || [];
 
+  const getLocalePath = (path: string) => {
+    return locale === "es" ? path : `/${locale}${path}`;
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-8">
+          {locale === "es" ? "Mis Favoritos" : "My Favorites"}
+        </h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <PropertyCardSkeleton key={i} />
+          ))}
+        </div>
       </div>
     );
   }
@@ -44,19 +58,22 @@ function FavoritesPageContent() {
 
       {/* Empty State */}
       {favorites.length === 0 && (
-        <div className="text-center py-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-            <Heart className="h-8 w-8 text-gray-400" />
-          </div>
-          <h2 className="text-xl font-semibold mb-2">
-            {locale === "es" ? "No tienes favoritos aún" : "No favorites yet"}
-          </h2>
-          <p className="text-muted-foreground mb-6">
-            {locale === "es"
+        <EmptyState
+          icon={Heart}
+          title={
+            locale === "es" ? "No tienes favoritos aún" : "No favorites yet"
+          }
+          description={
+            locale === "es"
               ? "Guarda propiedades que te interesen para verlas más tarde"
-              : "Save properties you're interested in to view them later"}
-          </p>
-        </div>
+              : "Save properties you're interested in to view them later"
+          }
+          action={{
+            label:
+              locale === "es" ? "Explorar propiedades" : "Explore properties",
+            onClick: () => router.push(getLocalePath("/properties")),
+          }}
+        />
       )}
 
       {/* Favorites Grid */}

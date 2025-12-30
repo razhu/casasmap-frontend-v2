@@ -1,9 +1,11 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useMyInquiriesQuery } from "@/lib/graphql/generated";
 import { ProtectedRoute } from "@/components/auth/protected-route";
-import { Loader2, Mail, Phone, Calendar } from "lucide-react";
+import { Mail, Phone, Calendar } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Card,
   CardContent,
@@ -16,11 +18,16 @@ import { Separator } from "@/components/ui/separator";
 
 function InquiriesPageContent() {
   const params = useParams();
+  const router = useRouter();
   const locale = params.locale as string;
 
   const { data, loading } = useMyInquiriesQuery();
 
   const inquiries = data?.myInquiries || [];
+
+  const getLocalePath = (path: string) => {
+    return locale === "es" ? path : `/${locale}${path}`;
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -71,8 +78,25 @@ function InquiriesPageContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-8">
+          {locale === "es" ? "Mis Consultas" : "My Inquiries"}
+        </h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader>
+                <Skeleton className="h-6 w-3/4 mb-2" />
+                <Skeleton className="h-4 w-1/2" />
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-2/3" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }
@@ -99,21 +123,24 @@ function InquiriesPageContent() {
 
       {/* Empty State */}
       {inquiries.length === 0 && (
-        <div className="text-center py-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-            <Mail className="h-8 w-8 text-gray-400" />
-          </div>
-          <h2 className="text-xl font-semibold mb-2">
-            {locale === "es"
+        <EmptyState
+          icon={Mail}
+          title={
+            locale === "es"
               ? "No has enviado consultas aún"
-              : "No inquiries sent yet"}
-          </h2>
-          <p className="text-muted-foreground">
-            {locale === "es"
+              : "No inquiries sent yet"
+          }
+          description={
+            locale === "es"
               ? "Cuando envíes consultas sobre propiedades, aparecerán aquí"
-              : "When you send inquiries about properties, they will appear here"}
-          </p>
-        </div>
+              : "When you send inquiries about properties, they will appear here"
+          }
+          action={{
+            label:
+              locale === "es" ? "Explorar propiedades" : "Explore properties",
+            onClick: () => router.push(getLocalePath("/properties")),
+          }}
+        />
       )}
 
       {/* Inquiries List */}
