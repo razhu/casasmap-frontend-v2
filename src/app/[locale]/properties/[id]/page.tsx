@@ -36,7 +36,7 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PropertyCard } from "@/components/properties/property-card";
 import { FavoriteButton } from "@/components/properties/favorite-button";
-import { InquiryButton } from "@/components/properties/inquiry-button";
+import { MessageButton } from "@/components/messaging/message-button";
 
 // Set Mapbox token
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
@@ -383,13 +383,16 @@ export default function PropertyDetailPage() {
                     {locale === "es" ? "Llamar" : "Call"}
                   </Button>
                 )}
-                <InquiryButton
+                <MessageButton
+                  receiverId={property.user.id}
+                  receiverName={
+                    property.user.profile?.firstName ||
+                    property.user.email.split("@")[0]
+                  }
                   propertyId={property.id}
-                  propertyTitle={title}
                   locale={locale}
                   variant="outline"
                   size="lg"
-                  className="w-full"
                 />
                 <Separator />
                 <div className="flex gap-2">

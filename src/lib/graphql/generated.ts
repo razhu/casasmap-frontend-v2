@@ -161,14 +161,6 @@ export type CreateForumTopicInput = {
   title: Scalars['String']['input'];
 };
 
-export type CreateInquiryInput = {
-  email: Scalars['String']['input'];
-  message: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-  phone?: InputMaybe<Scalars['String']['input']>;
-  propertyId: Scalars['String']['input'];
-};
-
 export type CreatePaymentInput = {
   method: PaymentMethod;
   plan: Scalars['String']['input'];
@@ -390,13 +382,6 @@ export type GoogleLoginInput = {
   token: Scalars['String']['input'];
 };
 
-export enum InquiryStatus {
-  Closed = 'CLOSED',
-  New = 'NEW',
-  Read = 'READ',
-  Replied = 'REPLIED'
-}
-
 export type LocationSearchResult = {
   __typename?: 'LocationSearchResult';
   cities: Array<City>;
@@ -536,7 +521,6 @@ export type Mutation = {
   sendEmailCampaign: EmailCampaign;
   sendMessage: Message;
   sendPropertyAlerts: PropertyAlertResult;
-  sendPropertyInquiry: PropertyInquiry;
   startFreeTrial: Subscription;
   subscribe: Subscription;
   toggleSavedSearchAlerts: SavedSearch;
@@ -550,7 +534,6 @@ export type Mutation = {
   unsubscribeEmail: EmailSubscriber;
   updateAgency: Agency;
   updateFavorite: Favorite;
-  updateInquiryStatus: PropertyInquiry;
   updateMedia: Media;
   updateProfile: Profile;
   updateProperty: Property;
@@ -811,11 +794,6 @@ export type MutationSendPropertyAlertsArgs = {
 };
 
 
-export type MutationSendPropertyInquiryArgs = {
-  input: CreateInquiryInput;
-};
-
-
 export type MutationStartFreeTrialArgs = {
   durationDays?: Scalars['Float']['input'];
 };
@@ -889,12 +867,6 @@ export type MutationUpdateFavoriteArgs = {
   notes?: InputMaybe<Scalars['String']['input']>;
   priceAlertEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   propertyId: Scalars['String']['input'];
-};
-
-
-export type MutationUpdateInquiryStatusArgs = {
-  inquiryId: Scalars['String']['input'];
-  status: InquiryStatus;
 };
 
 
@@ -1133,6 +1105,7 @@ export type Property = {
   titleEn: Scalars['String']['output'];
   totalArea?: Maybe<Scalars['Float']['output']>;
   updatedAt: Scalars['DateTime']['output'];
+  user?: Maybe<User>;
   userId: Scalars['String']['output'];
   virtualTourUrl?: Maybe<Scalars['String']['output']>;
   yearBuilt?: Maybe<Scalars['Int']['output']>;
@@ -1190,22 +1163,6 @@ export type PropertyFiltersInput = {
   minPrice?: InputMaybe<Scalars['Float']['input']>;
   propertyTypeId?: InputMaybe<Scalars['Int']['input']>;
   zoneId?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type PropertyInquiry = {
-  __typename?: 'PropertyInquiry';
-  createdAt: Scalars['DateTime']['output'];
-  email: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
-  message: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  phone?: Maybe<Scalars['String']['output']>;
-  property?: Maybe<Property>;
-  propertyId: Scalars['ID']['output'];
-  source: Scalars['String']['output'];
-  status: InquiryStatus;
-  updatedAt: Scalars['DateTime']['output'];
-  userId?: Maybe<Scalars['ID']['output']>;
 };
 
 export type PropertyLimits = {
@@ -1275,14 +1232,12 @@ export type Query = {
   generateShareUrls: Array<ShareUrl>;
   /** Convert address to coordinates */
   geocodeAddress: GeocodeResultType;
-  inquiry: PropertyInquiry;
   isFavorited: Scalars['Boolean']['output'];
   marketAnalysis: MarketAnalysisReport;
   me: User;
   myComparisons: Array<PropertyComparison>;
   myConversations: Array<Conversation>;
   myFavorites: Array<Favorite>;
-  myInquiries: Array<PropertyInquiry>;
   /** Get current user payments */
   myPayments: Array<Payment>;
   myProperties: PropertyResult;
@@ -1295,7 +1250,6 @@ export type Query = {
   properties: PropertyResult;
   property: Property;
   propertyAnalytics: PropertyAnalytics;
-  propertyInquiries: Array<PropertyInquiry>;
   propertyLimits: PropertyLimits;
   propertyMedia: Array<Media>;
   propertyViewHistory: Array<PropertyViewHistory>;
@@ -1385,11 +1339,6 @@ export type QueryGeocodeAddressArgs = {
 };
 
 
-export type QueryInquiryArgs = {
-  inquiryId: Scalars['String']['input'];
-};
-
-
 export type QueryIsFavoritedArgs = {
   propertyId: Scalars['String']['input'];
 };
@@ -1440,11 +1389,6 @@ export type QueryPropertyArgs = {
 
 
 export type QueryPropertyAnalyticsArgs = {
-  propertyId: Scalars['String']['input'];
-};
-
-
-export type QueryPropertyInquiriesArgs = {
   propertyId: Scalars['String']['input'];
 };
 
@@ -1846,21 +1790,6 @@ export type UpdateFavoriteMutationVariables = Exact<{
 
 export type UpdateFavoriteMutation = { __typename?: 'Mutation', updateFavorite: { __typename?: 'Favorite', id: string, propertyId: string, priceAlertEnabled: boolean, notes?: string | null, updatedAt: any } };
 
-export type SendPropertyInquiryMutationVariables = Exact<{
-  input: CreateInquiryInput;
-}>;
-
-
-export type SendPropertyInquiryMutation = { __typename?: 'Mutation', sendPropertyInquiry: { __typename?: 'PropertyInquiry', id: string, propertyId: string, name: string, email: string, phone?: string | null, message: string, status: InquiryStatus, createdAt: any } };
-
-export type UpdateInquiryStatusMutationVariables = Exact<{
-  inquiryId: Scalars['String']['input'];
-  status: InquiryStatus;
-}>;
-
-
-export type UpdateInquiryStatusMutation = { __typename?: 'Mutation', updateInquiryStatus: { __typename?: 'PropertyInquiry', id: string, status: InquiryStatus, updatedAt: any } };
-
 export type SendMessageMutationVariables = Exact<{
   input: SendMessageInput;
 }>;
@@ -2017,25 +1946,6 @@ export type IsFavoritedQueryVariables = Exact<{
 
 export type IsFavoritedQuery = { __typename?: 'Query', isFavorited: boolean };
 
-export type MyInquiriesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MyInquiriesQuery = { __typename?: 'Query', myInquiries: Array<{ __typename?: 'PropertyInquiry', id: string, propertyId: string, name: string, email: string, phone?: string | null, message: string, status: InquiryStatus, source: string, createdAt: any, property?: { __typename?: 'Property', id: string, title: string, titleEn: string, address: string, priceUS?: number | null, priceBS?: number | null, status: string } | null }> };
-
-export type PropertyInquiriesQueryVariables = Exact<{
-  propertyId: Scalars['String']['input'];
-}>;
-
-
-export type PropertyInquiriesQuery = { __typename?: 'Query', propertyInquiries: Array<{ __typename?: 'PropertyInquiry', id: string, propertyId: string, userId?: string | null, name: string, email: string, phone?: string | null, message: string, status: InquiryStatus, source: string, createdAt: any, updatedAt: any }> };
-
-export type InquiryQueryVariables = Exact<{
-  inquiryId: Scalars['String']['input'];
-}>;
-
-
-export type InquiryQuery = { __typename?: 'Query', inquiry: { __typename?: 'PropertyInquiry', id: string, propertyId: string, userId?: string | null, name: string, email: string, phone?: string | null, message: string, status: InquiryStatus, source: string, createdAt: any, updatedAt: any, property?: { __typename?: 'Property', id: string, title: string, titleEn: string, address: string } | null } };
-
 export type CountriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2100,7 +2010,7 @@ export type PropertyQueryVariables = Exact<{
 }>;
 
 
-export type PropertyQuery = { __typename?: 'Query', property: { __typename?: 'Property', id: string, title: string, titleEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, phoneNumber?: string | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, yearBuilt?: number | null, furnished?: boolean | null, petsAllowed?: boolean | null, maintenanceFee?: number | null, propertyTax?: number | null, availableFrom?: any | null, virtualTourUrl?: string | null, floorPlanUrl?: string | null, condition?: string | null, stories?: number | null, elevators?: number | null, heating?: string | null, cooling?: string | null, security?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, storage?: boolean | null, createdAt: any, updatedAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, userId: string, agencyId?: string | null } };
+export type PropertyQuery = { __typename?: 'Query', property: { __typename?: 'Property', id: string, title: string, titleEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, phoneNumber?: string | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, yearBuilt?: number | null, furnished?: boolean | null, petsAllowed?: boolean | null, maintenanceFee?: number | null, propertyTax?: number | null, availableFrom?: any | null, virtualTourUrl?: string | null, floorPlanUrl?: string | null, condition?: string | null, stories?: number | null, elevators?: number | null, heating?: string | null, cooling?: string | null, security?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, storage?: boolean | null, createdAt: any, updatedAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, userId: string, agencyId?: string | null, user?: { __typename?: 'User', id: string, email: string, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } | null } };
 
 export type SearchPropertiesQueryVariables = Exact<{
   query?: InputMaybe<Scalars['String']['input']>;
@@ -2233,45 +2143,6 @@ export function useUpdateFavoriteMutation(baseOptions?: ApolloReactHooks.Mutatio
 export type UpdateFavoriteMutationHookResult = ReturnType<typeof useUpdateFavoriteMutation>;
 export type UpdateFavoriteMutationResult = ApolloReactCommon.MutationResult<UpdateFavoriteMutation>;
 export type UpdateFavoriteMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateFavoriteMutation, UpdateFavoriteMutationVariables>;
-export const SendPropertyInquiryDocument = gql`
-    mutation SendPropertyInquiry($input: CreateInquiryInput!) {
-  sendPropertyInquiry(input: $input) {
-    id
-    propertyId
-    name
-    email
-    phone
-    message
-    status
-    createdAt
-  }
-}
-    `;
-export type SendPropertyInquiryMutationFn = ApolloReactCommon.MutationFunction<SendPropertyInquiryMutation, SendPropertyInquiryMutationVariables>;
-export function useSendPropertyInquiryMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SendPropertyInquiryMutation, SendPropertyInquiryMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useMutation<SendPropertyInquiryMutation, SendPropertyInquiryMutationVariables>(SendPropertyInquiryDocument, options);
-      }
-export type SendPropertyInquiryMutationHookResult = ReturnType<typeof useSendPropertyInquiryMutation>;
-export type SendPropertyInquiryMutationResult = ApolloReactCommon.MutationResult<SendPropertyInquiryMutation>;
-export type SendPropertyInquiryMutationOptions = ApolloReactCommon.BaseMutationOptions<SendPropertyInquiryMutation, SendPropertyInquiryMutationVariables>;
-export const UpdateInquiryStatusDocument = gql`
-    mutation UpdateInquiryStatus($inquiryId: String!, $status: InquiryStatus!) {
-  updateInquiryStatus(inquiryId: $inquiryId, status: $status) {
-    id
-    status
-    updatedAt
-  }
-}
-    `;
-export type UpdateInquiryStatusMutationFn = ApolloReactCommon.MutationFunction<UpdateInquiryStatusMutation, UpdateInquiryStatusMutationVariables>;
-export function useUpdateInquiryStatusMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateInquiryStatusMutation, UpdateInquiryStatusMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useMutation<UpdateInquiryStatusMutation, UpdateInquiryStatusMutationVariables>(UpdateInquiryStatusDocument, options);
-      }
-export type UpdateInquiryStatusMutationHookResult = ReturnType<typeof useUpdateInquiryStatusMutation>;
-export type UpdateInquiryStatusMutationResult = ApolloReactCommon.MutationResult<UpdateInquiryStatusMutation>;
-export type UpdateInquiryStatusMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateInquiryStatusMutation, UpdateInquiryStatusMutationVariables>;
 export const SendMessageDocument = gql`
     mutation SendMessage($input: SendMessageInput!) {
   sendMessage(input: $input) {
@@ -2844,124 +2715,6 @@ export function useIsFavoritedSuspenseQuery(baseOptions?: ApolloReactHooks.SkipT
 export type IsFavoritedQueryHookResult = ReturnType<typeof useIsFavoritedQuery>;
 export type IsFavoritedLazyQueryHookResult = ReturnType<typeof useIsFavoritedLazyQuery>;
 export type IsFavoritedQueryResult = ApolloReactCommon.QueryResult<IsFavoritedQuery, IsFavoritedQueryVariables>;
-export const MyInquiriesDocument = gql`
-    query MyInquiries {
-  myInquiries {
-    id
-    propertyId
-    name
-    email
-    phone
-    message
-    status
-    source
-    createdAt
-    property {
-      id
-      title
-      titleEn
-      address
-      priceUS
-      priceBS
-      status
-    }
-  }
-}
-    `;
-export function useMyInquiriesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MyInquiriesQuery, MyInquiriesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useQuery<MyInquiriesQuery, MyInquiriesQueryVariables>(MyInquiriesDocument, options);
-      }
-export function useMyInquiriesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MyInquiriesQuery, MyInquiriesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useLazyQuery<MyInquiriesQuery, MyInquiriesQueryVariables>(MyInquiriesDocument, options);
-        }
-// @ts-ignore
-export function useMyInquiriesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<MyInquiriesQuery, MyInquiriesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MyInquiriesQuery, MyInquiriesQueryVariables>;
-export function useMyInquiriesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MyInquiriesQuery, MyInquiriesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MyInquiriesQuery | undefined, MyInquiriesQueryVariables>;
-export function useMyInquiriesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MyInquiriesQuery, MyInquiriesQueryVariables>) {
-          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useSuspenseQuery<MyInquiriesQuery, MyInquiriesQueryVariables>(MyInquiriesDocument, options);
-        }
-export type MyInquiriesQueryHookResult = ReturnType<typeof useMyInquiriesQuery>;
-export type MyInquiriesLazyQueryHookResult = ReturnType<typeof useMyInquiriesLazyQuery>;
-export type MyInquiriesQueryResult = ApolloReactCommon.QueryResult<MyInquiriesQuery, MyInquiriesQueryVariables>;
-export const PropertyInquiriesDocument = gql`
-    query PropertyInquiries($propertyId: String!) {
-  propertyInquiries(propertyId: $propertyId) {
-    id
-    propertyId
-    userId
-    name
-    email
-    phone
-    message
-    status
-    source
-    createdAt
-    updatedAt
-  }
-}
-    `;
-export function usePropertyInquiriesQuery(baseOptions: ApolloReactHooks.QueryHookOptions<PropertyInquiriesQuery, PropertyInquiriesQueryVariables> & ({ variables: PropertyInquiriesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useQuery<PropertyInquiriesQuery, PropertyInquiriesQueryVariables>(PropertyInquiriesDocument, options);
-      }
-export function usePropertyInquiriesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<PropertyInquiriesQuery, PropertyInquiriesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useLazyQuery<PropertyInquiriesQuery, PropertyInquiriesQueryVariables>(PropertyInquiriesDocument, options);
-        }
-// @ts-ignore
-export function usePropertyInquiriesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<PropertyInquiriesQuery, PropertyInquiriesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PropertyInquiriesQuery, PropertyInquiriesQueryVariables>;
-export function usePropertyInquiriesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PropertyInquiriesQuery, PropertyInquiriesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PropertyInquiriesQuery | undefined, PropertyInquiriesQueryVariables>;
-export function usePropertyInquiriesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PropertyInquiriesQuery, PropertyInquiriesQueryVariables>) {
-          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useSuspenseQuery<PropertyInquiriesQuery, PropertyInquiriesQueryVariables>(PropertyInquiriesDocument, options);
-        }
-export type PropertyInquiriesQueryHookResult = ReturnType<typeof usePropertyInquiriesQuery>;
-export type PropertyInquiriesLazyQueryHookResult = ReturnType<typeof usePropertyInquiriesLazyQuery>;
-export type PropertyInquiriesQueryResult = ApolloReactCommon.QueryResult<PropertyInquiriesQuery, PropertyInquiriesQueryVariables>;
-export const InquiryDocument = gql`
-    query Inquiry($inquiryId: String!) {
-  inquiry(inquiryId: $inquiryId) {
-    id
-    propertyId
-    userId
-    name
-    email
-    phone
-    message
-    status
-    source
-    createdAt
-    updatedAt
-    property {
-      id
-      title
-      titleEn
-      address
-    }
-  }
-}
-    `;
-export function useInquiryQuery(baseOptions: ApolloReactHooks.QueryHookOptions<InquiryQuery, InquiryQueryVariables> & ({ variables: InquiryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useQuery<InquiryQuery, InquiryQueryVariables>(InquiryDocument, options);
-      }
-export function useInquiryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<InquiryQuery, InquiryQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useLazyQuery<InquiryQuery, InquiryQueryVariables>(InquiryDocument, options);
-        }
-// @ts-ignore
-export function useInquirySuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<InquiryQuery, InquiryQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<InquiryQuery, InquiryQueryVariables>;
-export function useInquirySuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<InquiryQuery, InquiryQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<InquiryQuery | undefined, InquiryQueryVariables>;
-export function useInquirySuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<InquiryQuery, InquiryQueryVariables>) {
-          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useSuspenseQuery<InquiryQuery, InquiryQueryVariables>(InquiryDocument, options);
-        }
-export type InquiryQueryHookResult = ReturnType<typeof useInquiryQuery>;
-export type InquiryLazyQueryHookResult = ReturnType<typeof useInquiryLazyQuery>;
-export type InquiryQueryResult = ApolloReactCommon.QueryResult<InquiryQuery, InquiryQueryVariables>;
 export const CountriesDocument = gql`
     query Countries {
   countries {
@@ -3308,6 +3061,14 @@ export const PropertyDocument = gql`
     countryId
     userId
     agencyId
+    user {
+      id
+      email
+      profile {
+        firstName
+        lastName
+      }
+    }
   }
 }
     `;

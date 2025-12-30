@@ -71,7 +71,7 @@ export function Navbar() {
       requiresAuth: true,
     },
     {
-      href: "/inquiries",
+      href: "/messages",
       icon: MessageSquare,
       label: locale === "es" ? "Consultas" : "Inquiries",
       requiresAuth: true,

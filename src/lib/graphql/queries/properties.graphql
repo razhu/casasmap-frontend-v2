@@ -79,6 +79,14 @@ query Property($id: String!) {
     countryId
     userId
     agencyId
+    user {
+      id
+      email
+      profile {
+        firstName
+        lastName
+      }
+    }
   }
 }
 
