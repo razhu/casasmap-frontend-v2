@@ -3,6 +3,12 @@
 import { useRouter } from "next/navigation";
 import { X, Scale } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useComparisonStore } from "@/store/comparison";
 
 interface ComparisonBarProps {
@@ -56,12 +62,21 @@ export function ComparisonBar({ locale }: ComparisonBarProps) {
                     {formatPrice(property.priceUS, property.priceBS)}
                   </p>
                 </div>
-                <button
-                  onClick={() => removeProperty(property.id)}
-                  className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
-                >
-                  <X className="h-4 w-4" />
-                </button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => removeProperty(property.id)}
+                        className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{locale === "es" ? "Quitar" : "Remove"}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             ))}
           </div>

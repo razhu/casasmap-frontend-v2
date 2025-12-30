@@ -1,0 +1,79 @@
+query MyConversations($page: Int, $limit: Int) {
+  myConversations(page: $page, limit: $limit) {
+    id
+    participant1Id
+    participant2Id
+    lastMessageAt
+    createdAt
+    participant1 {
+      id
+      email
+      username
+      profile {
+        firstName
+        lastName
+        avatar
+      }
+    }
+    participant2 {
+      id
+      email
+      username
+      profile {
+        firstName
+        lastName
+        avatar
+      }
+    }
+    messages {
+      id
+      content
+      createdAt
+      read
+    }
+  }
+}
+
+query Conversation($id: ID!) {
+  conversation(id: $id) {
+    id
+    participant1Id
+    participant2Id
+    lastMessageAt
+    createdAt
+    participant1 {
+      id
+      email
+      username
+      profile {
+        firstName
+        lastName
+        avatar
+      }
+    }
+    participant2 {
+      id
+      email
+      username
+      profile {
+        firstName
+        lastName
+        avatar
+      }
+    }
+  }
+}
+
+query Messages($conversationId: ID!, $page: Int) {
+  messages(conversationId: $conversationId, page: $page) {
+    id
+    conversationId
+    senderId
+    receiverId
+    content
+    status
+    read
+    readAt
+    createdAt
+  }
+}
