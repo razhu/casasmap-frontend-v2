@@ -35,6 +35,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PropertyCard } from "@/components/properties/property-card";
+import { FavoriteButton } from "@/components/properties/favorite-button";
 
 // Set Mapbox token
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
@@ -387,9 +388,12 @@ export default function PropertyDetailPage() {
                 </Button>
                 <Separator />
                 <div className="flex gap-2">
-                  <Button variant="outline" className="flex-1">
-                    <Heart className="h-4 w-4" />
-                  </Button>
+                  <FavoriteButton
+                    propertyId={property.id}
+                    locale={locale}
+                    variant="default"
+                    className="flex-1"
+                  />
                   <Button variant="outline" className="flex-1">
                     <Share2 className="h-4 w-4" />
                   </Button>

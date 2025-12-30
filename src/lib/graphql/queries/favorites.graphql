@@ -1,0 +1,36 @@
+query MyFavorites {
+  myFavorites {
+    id
+    propertyId
+    priceAlertEnabled
+    lastPrice
+    notes
+    createdAt
+    property {
+      id
+      title
+      titleEn
+      description
+      priceUS
+      priceBS
+      bedrooms
+      bathrooms
+      totalArea
+      coveredArea
+      status
+      priority
+      address
+      latitude
+      longitude
+      propertyTypeId
+      dealTypeId
+      cityId
+      zoneId
+      createdAt
+    }
+  }
+}
+
+query IsFavorited($propertyId: String!) {
+  isFavorited(propertyId: $propertyId)
+}

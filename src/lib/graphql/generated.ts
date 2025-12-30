@@ -1809,6 +1809,29 @@ export type TestConnectionQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TestConnectionQuery = { __typename: 'Query' };
 
+export type AddFavoriteMutationVariables = Exact<{
+  input: AddFavoriteInput;
+}>;
+
+
+export type AddFavoriteMutation = { __typename?: 'Mutation', addFavorite: { __typename?: 'Favorite', id: string, propertyId: string, priceAlertEnabled: boolean, notes?: string | null, createdAt: any } };
+
+export type RemoveFavoriteMutationVariables = Exact<{
+  propertyId: Scalars['String']['input'];
+}>;
+
+
+export type RemoveFavoriteMutation = { __typename?: 'Mutation', removeFavorite: boolean };
+
+export type UpdateFavoriteMutationVariables = Exact<{
+  propertyId: Scalars['String']['input'];
+  priceAlertEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  notes?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type UpdateFavoriteMutation = { __typename?: 'Mutation', updateFavorite: { __typename?: 'Favorite', id: string, propertyId: string, priceAlertEnabled: boolean, notes?: string | null, updatedAt: any } };
+
 export type CreatePropertyMutationVariables = Exact<{
   input: CreatePropertyInput;
 }>;
@@ -1877,6 +1900,18 @@ export type RefreshTokenMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } } };
+
+export type MyFavoritesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyFavoritesQuery = { __typename?: 'Query', myFavorites: Array<{ __typename?: 'Favorite', id: string, propertyId: string, priceAlertEnabled: boolean, lastPrice?: number | null, notes?: string | null, createdAt: any, property?: { __typename?: 'Property', id: string, title: string, titleEn: string, description: string, priceUS?: number | null, priceBS?: number | null, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, status: string, priority: string, address: string, latitude?: number | null, longitude?: number | null, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, createdAt: any } | null }> };
+
+export type IsFavoritedQueryVariables = Exact<{
+  propertyId: Scalars['String']['input'];
+}>;
+
+
+export type IsFavoritedQuery = { __typename?: 'Query', isFavorited: boolean };
 
 export type CountriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1953,6 +1988,61 @@ export function useTestConnectionSuspenseQuery(baseOptions?: ApolloReactHooks.Sk
 export type TestConnectionQueryHookResult = ReturnType<typeof useTestConnectionQuery>;
 export type TestConnectionLazyQueryHookResult = ReturnType<typeof useTestConnectionLazyQuery>;
 export type TestConnectionQueryResult = ApolloReactCommon.QueryResult<TestConnectionQuery, TestConnectionQueryVariables>;
+export const AddFavoriteDocument = gql`
+    mutation AddFavorite($input: AddFavoriteInput!) {
+  addFavorite(input: $input) {
+    id
+    propertyId
+    priceAlertEnabled
+    notes
+    createdAt
+  }
+}
+    `;
+export type AddFavoriteMutationFn = ApolloReactCommon.MutationFunction<AddFavoriteMutation, AddFavoriteMutationVariables>;
+export function useAddFavoriteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddFavoriteMutation, AddFavoriteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<AddFavoriteMutation, AddFavoriteMutationVariables>(AddFavoriteDocument, options);
+      }
+export type AddFavoriteMutationHookResult = ReturnType<typeof useAddFavoriteMutation>;
+export type AddFavoriteMutationResult = ApolloReactCommon.MutationResult<AddFavoriteMutation>;
+export type AddFavoriteMutationOptions = ApolloReactCommon.BaseMutationOptions<AddFavoriteMutation, AddFavoriteMutationVariables>;
+export const RemoveFavoriteDocument = gql`
+    mutation RemoveFavorite($propertyId: String!) {
+  removeFavorite(propertyId: $propertyId)
+}
+    `;
+export type RemoveFavoriteMutationFn = ApolloReactCommon.MutationFunction<RemoveFavoriteMutation, RemoveFavoriteMutationVariables>;
+export function useRemoveFavoriteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<RemoveFavoriteMutation, RemoveFavoriteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<RemoveFavoriteMutation, RemoveFavoriteMutationVariables>(RemoveFavoriteDocument, options);
+      }
+export type RemoveFavoriteMutationHookResult = ReturnType<typeof useRemoveFavoriteMutation>;
+export type RemoveFavoriteMutationResult = ApolloReactCommon.MutationResult<RemoveFavoriteMutation>;
+export type RemoveFavoriteMutationOptions = ApolloReactCommon.BaseMutationOptions<RemoveFavoriteMutation, RemoveFavoriteMutationVariables>;
+export const UpdateFavoriteDocument = gql`
+    mutation UpdateFavorite($propertyId: String!, $priceAlertEnabled: Boolean, $notes: String) {
+  updateFavorite(
+    propertyId: $propertyId
+    priceAlertEnabled: $priceAlertEnabled
+    notes: $notes
+  ) {
+    id
+    propertyId
+    priceAlertEnabled
+    notes
+    updatedAt
+  }
+}
+    `;
+export type UpdateFavoriteMutationFn = ApolloReactCommon.MutationFunction<UpdateFavoriteMutation, UpdateFavoriteMutationVariables>;
+export function useUpdateFavoriteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateFavoriteMutation, UpdateFavoriteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<UpdateFavoriteMutation, UpdateFavoriteMutationVariables>(UpdateFavoriteDocument, options);
+      }
+export type UpdateFavoriteMutationHookResult = ReturnType<typeof useUpdateFavoriteMutation>;
+export type UpdateFavoriteMutationResult = ApolloReactCommon.MutationResult<UpdateFavoriteMutation>;
+export type UpdateFavoriteMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateFavoriteMutation, UpdateFavoriteMutationVariables>;
 export const CreatePropertyDocument = gql`
     mutation CreateProperty($input: CreatePropertyInput!) {
   createProperty(createPropertyInput: $input) {
@@ -2214,6 +2304,81 @@ export function useRefreshTokenMutation(baseOptions?: ApolloReactHooks.MutationH
 export type RefreshTokenMutationHookResult = ReturnType<typeof useRefreshTokenMutation>;
 export type RefreshTokenMutationResult = ApolloReactCommon.MutationResult<RefreshTokenMutation>;
 export type RefreshTokenMutationOptions = ApolloReactCommon.BaseMutationOptions<RefreshTokenMutation, RefreshTokenMutationVariables>;
+export const MyFavoritesDocument = gql`
+    query MyFavorites {
+  myFavorites {
+    id
+    propertyId
+    priceAlertEnabled
+    lastPrice
+    notes
+    createdAt
+    property {
+      id
+      title
+      titleEn
+      description
+      priceUS
+      priceBS
+      bedrooms
+      bathrooms
+      totalArea
+      coveredArea
+      status
+      priority
+      address
+      latitude
+      longitude
+      propertyTypeId
+      dealTypeId
+      cityId
+      zoneId
+      createdAt
+    }
+  }
+}
+    `;
+export function useMyFavoritesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MyFavoritesQuery, MyFavoritesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<MyFavoritesQuery, MyFavoritesQueryVariables>(MyFavoritesDocument, options);
+      }
+export function useMyFavoritesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MyFavoritesQuery, MyFavoritesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<MyFavoritesQuery, MyFavoritesQueryVariables>(MyFavoritesDocument, options);
+        }
+// @ts-ignore
+export function useMyFavoritesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<MyFavoritesQuery, MyFavoritesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MyFavoritesQuery, MyFavoritesQueryVariables>;
+export function useMyFavoritesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MyFavoritesQuery, MyFavoritesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MyFavoritesQuery | undefined, MyFavoritesQueryVariables>;
+export function useMyFavoritesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MyFavoritesQuery, MyFavoritesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<MyFavoritesQuery, MyFavoritesQueryVariables>(MyFavoritesDocument, options);
+        }
+export type MyFavoritesQueryHookResult = ReturnType<typeof useMyFavoritesQuery>;
+export type MyFavoritesLazyQueryHookResult = ReturnType<typeof useMyFavoritesLazyQuery>;
+export type MyFavoritesQueryResult = ApolloReactCommon.QueryResult<MyFavoritesQuery, MyFavoritesQueryVariables>;
+export const IsFavoritedDocument = gql`
+    query IsFavorited($propertyId: String!) {
+  isFavorited(propertyId: $propertyId)
+}
+    `;
+export function useIsFavoritedQuery(baseOptions: ApolloReactHooks.QueryHookOptions<IsFavoritedQuery, IsFavoritedQueryVariables> & ({ variables: IsFavoritedQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<IsFavoritedQuery, IsFavoritedQueryVariables>(IsFavoritedDocument, options);
+      }
+export function useIsFavoritedLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<IsFavoritedQuery, IsFavoritedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<IsFavoritedQuery, IsFavoritedQueryVariables>(IsFavoritedDocument, options);
+        }
+// @ts-ignore
+export function useIsFavoritedSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<IsFavoritedQuery, IsFavoritedQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<IsFavoritedQuery, IsFavoritedQueryVariables>;
+export function useIsFavoritedSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<IsFavoritedQuery, IsFavoritedQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<IsFavoritedQuery | undefined, IsFavoritedQueryVariables>;
+export function useIsFavoritedSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<IsFavoritedQuery, IsFavoritedQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<IsFavoritedQuery, IsFavoritedQueryVariables>(IsFavoritedDocument, options);
+        }
+export type IsFavoritedQueryHookResult = ReturnType<typeof useIsFavoritedQuery>;
+export type IsFavoritedLazyQueryHookResult = ReturnType<typeof useIsFavoritedLazyQuery>;
+export type IsFavoritedQueryResult = ApolloReactCommon.QueryResult<IsFavoritedQuery, IsFavoritedQueryVariables>;
 export const CountriesDocument = gql`
     query Countries {
   countries {

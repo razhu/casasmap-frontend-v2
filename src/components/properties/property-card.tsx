@@ -8,6 +8,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { FavoriteButton } from "./favorite-button";
 
 interface PropertyCardProps {
   property: {
@@ -26,9 +27,14 @@ interface PropertyCardProps {
     dealTypeId: number;
   };
   compact?: boolean;
+  onFavoriteChange?: () => void;
 }
 
-export function PropertyCard({ property, compact = false }: PropertyCardProps) {
+export function PropertyCard({
+  property,
+  compact = false,
+  onFavoriteChange,
+}: PropertyCardProps) {
   const params = useParams();
   const locale = params.locale as string;
 
@@ -59,10 +65,19 @@ export function PropertyCard({ property, compact = false }: PropertyCardProps) {
             <div className="absolute inset-0 flex items-center justify-center text-gray-400">
               <Maximize className={compact ? "h-8 w-8" : "h-12 w-12"} />
             </div>
+            {!compact && (
+              <div className="absolute top-2 right-2 z-10">
+                <FavoriteButton
+                  propertyId={property.id}
+                  locale={locale}
+                  variant="icon"
+                />
+              </div>
+            )}
             {!compact &&
               (property.priority === "HIGHEST" ||
                 property.priority === "HIGH") && (
-                <Badge className="absolute top-2 right-2 bg-yellow-500">
+                <Badge className="absolute top-2 left-2 bg-yellow-500">
                   {locale === "es" ? "Destacado" : "Featured"}
                 </Badge>
               )}
