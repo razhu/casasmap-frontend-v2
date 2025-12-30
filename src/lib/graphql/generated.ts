@@ -104,7 +104,9 @@ export type Conversation = {
   id: Scalars['ID']['output'];
   lastMessageAt?: Maybe<Scalars['DateTime']['output']>;
   messages?: Maybe<Array<Message>>;
+  participant1?: Maybe<User>;
   participant1Id: Scalars['ID']['output'];
+  participant2?: Maybe<User>;
   participant2Id: Scalars['ID']['output'];
   propertyId?: Maybe<Scalars['ID']['output']>;
   updatedAt: Scalars['DateTime']['output'];
@@ -448,7 +450,9 @@ export type Message = {
   id: Scalars['ID']['output'];
   propertyId?: Maybe<Scalars['ID']['output']>;
   readAt?: Maybe<Scalars['DateTime']['output']>;
+  receiver?: Maybe<User>;
   receiverId: Scalars['ID']['output'];
+  sender?: Maybe<User>;
   senderId: Scalars['ID']['output'];
   status: MessageStatus;
   updatedAt: Scalars['DateTime']['output'];
@@ -492,6 +496,7 @@ export type Mutation = {
   deleteForumReply: ForumReply;
   deleteForumTopic: ForumTopic;
   deleteMedia: Media;
+  deleteMessage: Scalars['Boolean']['output'];
   deleteNotification: Notification;
   deleteProperty: Property;
   deleteSavedSearch: Scalars['Boolean']['output'];
@@ -675,6 +680,11 @@ export type MutationDeleteForumTopicArgs = {
 
 export type MutationDeleteMediaArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteMessageArgs = {
+  messageId: Scalars['String']['input'];
 };
 
 
@@ -1728,6 +1738,7 @@ export type User = {
   roleId: Scalars['Int']['output'];
   sessionToken?: Maybe<Scalars['String']['output']>;
   status: Scalars['String']['output'];
+  subscriptions?: Maybe<Array<Subscription>>;
   updatedAt: Scalars['DateTime']['output'];
   username?: Maybe<Scalars['String']['output']>;
 };
@@ -1803,6 +1814,13 @@ export type MarkConversationAsReadMutationVariables = Exact<{
 
 
 export type MarkConversationAsReadMutation = { __typename?: 'Mutation', markConversationAsRead: boolean };
+
+export type DeleteMessageMutationVariables = Exact<{
+  messageId: Scalars['String']['input'];
+}>;
+
+
+export type DeleteMessageMutation = { __typename?: 'Mutation', deleteMessage: boolean };
 
 export type MarkNotificationAsReadMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -1975,14 +1993,14 @@ export type ZonesQuery = { __typename?: 'Query', zones: Array<{ __typename?: 'Zo
 export type MyConversationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyConversationsQuery = { __typename?: 'Query', myConversations: Array<{ __typename?: 'Conversation', id: string, participant1Id: string, participant2Id: string, propertyId?: string | null, lastMessageAt?: any | null, createdAt: any, messages?: Array<{ __typename?: 'Message', id: string, content: string, senderId: string, createdAt: any, readAt?: any | null }> | null }> };
+export type MyConversationsQuery = { __typename?: 'Query', myConversations: Array<{ __typename?: 'Conversation', id: string, participant1Id: string, participant2Id: string, propertyId?: string | null, lastMessageAt?: any | null, createdAt: any, participant1?: { __typename?: 'User', id: string, email: string, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null, pictureUrl?: string | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, endDate: any }> | null } | null, participant2?: { __typename?: 'User', id: string, email: string, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null, pictureUrl?: string | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, endDate: any }> | null } | null, messages?: Array<{ __typename?: 'Message', id: string, content: string, senderId: string, createdAt: any, readAt?: any | null }> | null }> };
 
 export type ConversationMessagesQueryVariables = Exact<{
   conversationId: Scalars['String']['input'];
 }>;
 
 
-export type ConversationMessagesQuery = { __typename?: 'Query', conversationMessages: Array<{ __typename?: 'Message', id: string, conversationId: string, senderId: string, receiverId: string, propertyId?: string | null, content: string, status: MessageStatus, readAt?: any | null, createdAt: any }> };
+export type ConversationMessagesQuery = { __typename?: 'Query', conversationMessages: Array<{ __typename?: 'Message', id: string, conversationId: string, senderId: string, receiverId: string, propertyId?: string | null, content: string, status: MessageStatus, readAt?: any | null, createdAt: any, sender?: { __typename?: 'User', id: string, email: string, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null, pictureUrl?: string | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, endDate: any }> | null } | null, receiver?: { __typename?: 'User', id: string, email: string, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null, pictureUrl?: string | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, endDate: any }> | null } | null }> };
 
 export type NotificationsQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -2178,6 +2196,19 @@ export function useMarkConversationAsReadMutation(baseOptions?: ApolloReactHooks
 export type MarkConversationAsReadMutationHookResult = ReturnType<typeof useMarkConversationAsReadMutation>;
 export type MarkConversationAsReadMutationResult = ApolloReactCommon.MutationResult<MarkConversationAsReadMutation>;
 export type MarkConversationAsReadMutationOptions = ApolloReactCommon.BaseMutationOptions<MarkConversationAsReadMutation, MarkConversationAsReadMutationVariables>;
+export const DeleteMessageDocument = gql`
+    mutation DeleteMessage($messageId: String!) {
+  deleteMessage(messageId: $messageId)
+}
+    `;
+export type DeleteMessageMutationFn = ApolloReactCommon.MutationFunction<DeleteMessageMutation, DeleteMessageMutationVariables>;
+export function useDeleteMessageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteMessageMutation, DeleteMessageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<DeleteMessageMutation, DeleteMessageMutationVariables>(DeleteMessageDocument, options);
+      }
+export type DeleteMessageMutationHookResult = ReturnType<typeof useDeleteMessageMutation>;
+export type DeleteMessageMutationResult = ApolloReactCommon.MutationResult<DeleteMessageMutation>;
+export type DeleteMessageMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteMessageMutation, DeleteMessageMutationVariables>;
 export const MarkNotificationAsReadDocument = gql`
     mutation MarkNotificationAsRead($id: String!) {
   markNotificationAsRead(id: $id) {
@@ -2831,7 +2862,37 @@ export const MyConversationsDocument = gql`
   myConversations {
     id
     participant1Id
+    participant1 {
+      id
+      email
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+      subscriptions {
+        id
+        plan
+        status
+        endDate
+      }
+    }
     participant2Id
+    participant2 {
+      id
+      email
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+      subscriptions {
+        id
+        plan
+        status
+        endDate
+      }
+    }
     propertyId
     lastMessageAt
     createdAt
@@ -2869,7 +2930,37 @@ export const ConversationMessagesDocument = gql`
     id
     conversationId
     senderId
+    sender {
+      id
+      email
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+      subscriptions {
+        id
+        plan
+        status
+        endDate
+      }
+    }
     receiverId
+    receiver {
+      id
+      email
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+      subscriptions {
+        id
+        plan
+        status
+        endDate
+      }
+    }
     propertyId
     content
     status

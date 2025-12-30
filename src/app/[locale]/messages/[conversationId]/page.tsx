@@ -7,10 +7,12 @@ import {
   useConversationMessagesQuery,
   useSendMessageMutation,
   useMarkConversationAsReadMutation,
+  useDeleteMessageMutation,
 } from "@/lib/graphql/generated";
-import { MessageThread } from "@/components/messaging/message-thread";
+import { MessageThreadEnhanced } from "@/components/messaging/message-thread-enhanced";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { useEffect } from "react";
+import { useAuthStore } from "@/store/auth";
 import { toast } from "sonner";
 
 function ConversationPageContent() {
@@ -18,6 +20,7 @@ function ConversationPageContent() {
   const router = useRouter();
   const locale = params.locale as string;
   const conversationId = params.conversationId as string;
+  const { user } = useAuthStore();
 
   const { data, loading, refetch } = useConversationMessagesQuery({
     variables: { conversationId },
@@ -26,8 +29,17 @@ function ConversationPageContent() {
 
   const [sendMessage] = useSendMessageMutation();
   const [markAsRead] = useMarkConversationAsReadMutation();
+  const [deleteMessage] = useDeleteMessageMutation();
 
   const messages = data?.conversationMessages || [];
+
+  // Get other user from messages
+  const otherUser =
+    messages.length > 0
+      ? messages[0].senderId === user?.id
+        ? messages[0].receiver
+        : messages[0].sender
+      : undefined;
 
   // Mark conversation as read when opened
   useEffect(() => {
@@ -46,7 +58,10 @@ function ConversationPageContent() {
         throw new Error("No messages found");
       }
 
-      const receiverId = firstMessage.receiverId;
+      const receiverId =
+        firstMessage.senderId === user?.id
+          ? firstMessage.receiverId
+          : firstMessage.senderId;
 
       await sendMessage({
         variables: {
@@ -62,18 +77,28 @@ function ConversationPageContent() {
       await refetch();
     } catch (error: any) {
       console.error("Error sending message:", error);
+      toast.error(
+        locale === "es" ? "Error al enviar mensaje" : "Error sending message"
+      );
+      throw error;
+    }
+  };
 
-      if (error.message?.includes("Premium feature")) {
-        toast.error(
-          locale === "es"
-            ? "La mensajería directa es una función Premium"
-            : "Direct messaging is a Premium feature"
-        );
-      } else {
-        toast.error(
-          locale === "es" ? "Error al enviar mensaje" : "Error sending message"
-        );
-      }
+  const handleDeleteMessage = async (messageId: string) => {
+    try {
+      await deleteMessage({
+        variables: { messageId },
+      });
+
+      toast.success(locale === "es" ? "Mensaje eliminado" : "Message deleted");
+
+      // Refetch messages
+      await refetch();
+    } catch (error: any) {
+      console.error("Error deleting message:", error);
+      toast.error(
+        locale === "es" ? "Error al eliminar mensaje" : "Error deleting message"
+      );
       throw error;
     }
   };
@@ -111,12 +136,14 @@ function ConversationPageContent() {
 
       {/* Messages Thread */}
       <div className="container mx-auto h-[calc(100%-5rem)]">
-        <MessageThread
-          messages={messages}
+        <MessageThreadEnhanced
+          messages={messages as any}
           conversationId={conversationId}
           onSendMessage={handleSendMessage}
+          onDeleteMessage={handleDeleteMessage}
           loading={loading}
           locale={locale}
+          otherUser={otherUser as any}
         />
       </div>
     </div>

@@ -20,3 +20,9 @@ export const MARK_CONVERSATION_AS_READ = gql`
     markConversationAsRead(conversationId: $conversationId)
   }
 `;
+
+export const DELETE_MESSAGE = gql`
+  mutation DeleteMessage($messageId: String!) {
+    deleteMessage(messageId: $messageId)
+  }
+`;

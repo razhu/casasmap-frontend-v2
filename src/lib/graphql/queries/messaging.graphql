@@ -2,7 +2,37 @@ query MyConversations {
   myConversations {
     id
     participant1Id
+    participant1 {
+      id
+      email
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+      subscriptions {
+        id
+        plan
+        status
+        endDate
+      }
+    }
     participant2Id
+    participant2 {
+      id
+      email
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+      subscriptions {
+        id
+        plan
+        status
+        endDate
+      }
+    }
     propertyId
     lastMessageAt
     createdAt
@@ -21,7 +51,37 @@ query ConversationMessages($conversationId: String!) {
     id
     conversationId
     senderId
+    sender {
+      id
+      email
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+      subscriptions {
+        id
+        plan
+        status
+        endDate
+      }
+    }
     receiverId
+    receiver {
+      id
+      email
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+      subscriptions {
+        id
+        plan
+        status
+        endDate
+      }
+    }
     propertyId
     content
     status

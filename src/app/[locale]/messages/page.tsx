@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useMyConversationsQuery } from "@/lib/graphql/generated";
-import { ConversationList } from "@/components/messaging/conversation-list";
+import { ConversationListEnhanced } from "@/components/messaging/conversation-list-enhanced";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
@@ -61,7 +61,10 @@ function MessagesPageContent() {
       </div>
 
       {/* Conversations List */}
-      <ConversationList conversations={conversations as any} locale={locale} />
+      <ConversationListEnhanced
+        conversations={conversations as any}
+        locale={locale}
+      />
     </div>
   );
 }
