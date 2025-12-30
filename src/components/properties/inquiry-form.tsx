@@ -77,8 +77,16 @@ export function InquiryForm({
           onSuccess();
         }, 2000);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error sending inquiry:", error);
+      // Show error to user
+      if (error.message) {
+        alert(
+          locale === "es"
+            ? `Error al enviar mensaje: ${error.message}`
+            : `Error sending message: ${error.message}`
+        );
+      }
     }
   };
 
