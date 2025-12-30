@@ -1,0 +1,60 @@
+query MyInquiries {
+  myInquiries {
+    id
+    propertyId
+    name
+    email
+    phone
+    message
+    status
+    source
+    createdAt
+    property {
+      id
+      title
+      titleEn
+      address
+      priceUS
+      priceBS
+      status
+    }
+  }
+}
+
+query PropertyInquiries($propertyId: String!) {
+  propertyInquiries(propertyId: $propertyId) {
+    id
+    propertyId
+    userId
+    name
+    email
+    phone
+    message
+    status
+    source
+    createdAt
+    updatedAt
+  }
+}
+
+query Inquiry($inquiryId: String!) {
+  inquiry(inquiryId: $inquiryId) {
+    id
+    propertyId
+    userId
+    name
+    email
+    phone
+    message
+    status
+    source
+    createdAt
+    updatedAt
+    property {
+      id
+      title
+      titleEn
+      address
+    }
+  }
+}
