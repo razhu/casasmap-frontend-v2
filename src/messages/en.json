@@ -127,5 +127,28 @@
     "cancel": "Cancel",
     "success": "Profile updated successfully",
     "error": "Error updating profile"
+  },
+  "compare": {
+    "title": "Compare Properties",
+    "noProperties": "No properties to compare",
+    "selectProperties": "Select properties from the search page to compare them",
+    "backToProperties": "Back to Properties",
+    "error": "Error loading comparison",
+    "errorMessage": "Could not load properties for comparison",
+    "feature": "Feature",
+    "viewDetails": "View Details",
+    "location": "Location",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "totalArea": "Total Area",
+    "coveredArea": "Covered Area",
+    "parkingSpaces": "Parking Spaces",
+    "yearBuilt": "Year Built",
+    "furnished": "Furnished",
+    "pool": "Pool",
+    "balcony": "Balcony",
+    "terrace": "Terrace",
+    "security": "Security",
+    "storage": "Storage"
   }
 }

@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FavoriteButton } from "./favorite-button";
+import { AddToCompareButton } from "./add-to-compare-button";
 
 interface PropertyCardProps {
   property: {
@@ -66,7 +67,12 @@ export function PropertyCard({
               <Maximize className={compact ? "h-8 w-8" : "h-12 w-12"} />
             </div>
             {!compact && (
-              <div className="absolute top-2 right-2 z-10">
+              <div className="absolute top-2 right-2 z-10 flex gap-2">
+                <AddToCompareButton
+                  property={property}
+                  locale={locale}
+                  variant="icon"
+                />
                 <FavoriteButton
                   propertyId={property.id}
                   locale={locale}

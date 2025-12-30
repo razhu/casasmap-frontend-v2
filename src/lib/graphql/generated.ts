@@ -1809,6 +1809,20 @@ export type TestConnectionQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TestConnectionQuery = { __typename: 'Query' };
 
+export type SaveComparisonMutationVariables = Exact<{
+  input: SaveComparisonInput;
+}>;
+
+
+export type SaveComparisonMutation = { __typename?: 'Mutation', saveComparison: { __typename?: 'PropertyComparison', id: string, propertyIds: Array<string>, createdAt: any } };
+
+export type DeleteComparisonMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type DeleteComparisonMutation = { __typename?: 'Mutation', deleteComparison: boolean };
+
 export type AddFavoriteMutationVariables = Exact<{
   input: AddFavoriteInput;
 }>;
@@ -1965,6 +1979,18 @@ export type RefreshTokenMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } } };
 
+export type ComparePropertiesQueryVariables = Exact<{
+  input: ComparePropertiesInput;
+}>;
+
+
+export type ComparePropertiesQuery = { __typename?: 'Query', compareProperties: { __typename?: 'PropertyComparisonResult', properties: Array<{ __typename?: 'Property', id: string, title: string, titleEn: string, priceUS?: number | null, priceBS?: number | null, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, yearBuilt?: number | null, furnished?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, security?: boolean | null, storage?: boolean | null, address: string, propertyTypeId: number, dealTypeId: number, latitude?: number | null, longitude?: number | null }>, matrix: { __typename?: 'ComparisonMatrix', features: Array<{ __typename?: 'ComparisonFeature', name: string, values: Array<string> }> } } };
+
+export type MyComparisonsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyComparisonsQuery = { __typename?: 'Query', myComparisons: Array<{ __typename?: 'PropertyComparison', id: string, propertyIds: Array<string>, createdAt: any }> };
+
 export type MyFavoritesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2096,6 +2122,36 @@ export function useTestConnectionSuspenseQuery(baseOptions?: ApolloReactHooks.Sk
 export type TestConnectionQueryHookResult = ReturnType<typeof useTestConnectionQuery>;
 export type TestConnectionLazyQueryHookResult = ReturnType<typeof useTestConnectionLazyQuery>;
 export type TestConnectionQueryResult = ApolloReactCommon.QueryResult<TestConnectionQuery, TestConnectionQueryVariables>;
+export const SaveComparisonDocument = gql`
+    mutation SaveComparison($input: SaveComparisonInput!) {
+  saveComparison(input: $input) {
+    id
+    propertyIds
+    createdAt
+  }
+}
+    `;
+export type SaveComparisonMutationFn = ApolloReactCommon.MutationFunction<SaveComparisonMutation, SaveComparisonMutationVariables>;
+export function useSaveComparisonMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SaveComparisonMutation, SaveComparisonMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<SaveComparisonMutation, SaveComparisonMutationVariables>(SaveComparisonDocument, options);
+      }
+export type SaveComparisonMutationHookResult = ReturnType<typeof useSaveComparisonMutation>;
+export type SaveComparisonMutationResult = ApolloReactCommon.MutationResult<SaveComparisonMutation>;
+export type SaveComparisonMutationOptions = ApolloReactCommon.BaseMutationOptions<SaveComparisonMutation, SaveComparisonMutationVariables>;
+export const DeleteComparisonDocument = gql`
+    mutation DeleteComparison($id: String!) {
+  deleteComparison(id: $id)
+}
+    `;
+export type DeleteComparisonMutationFn = ApolloReactCommon.MutationFunction<DeleteComparisonMutation, DeleteComparisonMutationVariables>;
+export function useDeleteComparisonMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteComparisonMutation, DeleteComparisonMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<DeleteComparisonMutation, DeleteComparisonMutationVariables>(DeleteComparisonDocument, options);
+      }
+export type DeleteComparisonMutationHookResult = ReturnType<typeof useDeleteComparisonMutation>;
+export type DeleteComparisonMutationResult = ApolloReactCommon.MutationResult<DeleteComparisonMutation>;
+export type DeleteComparisonMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteComparisonMutation, DeleteComparisonMutationVariables>;
 export const AddFavoriteDocument = gql`
     mutation AddFavorite($input: AddFavoriteInput!) {
   addFavorite(input: $input) {
@@ -2571,6 +2627,87 @@ export function useRefreshTokenMutation(baseOptions?: ApolloReactHooks.MutationH
 export type RefreshTokenMutationHookResult = ReturnType<typeof useRefreshTokenMutation>;
 export type RefreshTokenMutationResult = ApolloReactCommon.MutationResult<RefreshTokenMutation>;
 export type RefreshTokenMutationOptions = ApolloReactCommon.BaseMutationOptions<RefreshTokenMutation, RefreshTokenMutationVariables>;
+export const ComparePropertiesDocument = gql`
+    query CompareProperties($input: ComparePropertiesInput!) {
+  compareProperties(input: $input) {
+    properties {
+      id
+      title
+      titleEn
+      priceUS
+      priceBS
+      bedrooms
+      bathrooms
+      totalArea
+      coveredArea
+      parkingSpaces
+      yearBuilt
+      furnished
+      pool
+      balcony
+      terrace
+      security
+      storage
+      address
+      propertyTypeId
+      dealTypeId
+      latitude
+      longitude
+    }
+    matrix {
+      features {
+        name
+        values
+      }
+    }
+  }
+}
+    `;
+export function useComparePropertiesQuery(baseOptions: ApolloReactHooks.QueryHookOptions<ComparePropertiesQuery, ComparePropertiesQueryVariables> & ({ variables: ComparePropertiesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<ComparePropertiesQuery, ComparePropertiesQueryVariables>(ComparePropertiesDocument, options);
+      }
+export function useComparePropertiesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ComparePropertiesQuery, ComparePropertiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<ComparePropertiesQuery, ComparePropertiesQueryVariables>(ComparePropertiesDocument, options);
+        }
+// @ts-ignore
+export function useComparePropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<ComparePropertiesQuery, ComparePropertiesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ComparePropertiesQuery, ComparePropertiesQueryVariables>;
+export function useComparePropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ComparePropertiesQuery, ComparePropertiesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ComparePropertiesQuery | undefined, ComparePropertiesQueryVariables>;
+export function useComparePropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ComparePropertiesQuery, ComparePropertiesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<ComparePropertiesQuery, ComparePropertiesQueryVariables>(ComparePropertiesDocument, options);
+        }
+export type ComparePropertiesQueryHookResult = ReturnType<typeof useComparePropertiesQuery>;
+export type ComparePropertiesLazyQueryHookResult = ReturnType<typeof useComparePropertiesLazyQuery>;
+export type ComparePropertiesQueryResult = ApolloReactCommon.QueryResult<ComparePropertiesQuery, ComparePropertiesQueryVariables>;
+export const MyComparisonsDocument = gql`
+    query MyComparisons {
+  myComparisons {
+    id
+    propertyIds
+    createdAt
+  }
+}
+    `;
+export function useMyComparisonsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MyComparisonsQuery, MyComparisonsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<MyComparisonsQuery, MyComparisonsQueryVariables>(MyComparisonsDocument, options);
+      }
+export function useMyComparisonsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MyComparisonsQuery, MyComparisonsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<MyComparisonsQuery, MyComparisonsQueryVariables>(MyComparisonsDocument, options);
+        }
+// @ts-ignore
+export function useMyComparisonsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<MyComparisonsQuery, MyComparisonsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MyComparisonsQuery, MyComparisonsQueryVariables>;
+export function useMyComparisonsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MyComparisonsQuery, MyComparisonsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MyComparisonsQuery | undefined, MyComparisonsQueryVariables>;
+export function useMyComparisonsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MyComparisonsQuery, MyComparisonsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<MyComparisonsQuery, MyComparisonsQueryVariables>(MyComparisonsDocument, options);
+        }
+export type MyComparisonsQueryHookResult = ReturnType<typeof useMyComparisonsQuery>;
+export type MyComparisonsLazyQueryHookResult = ReturnType<typeof useMyComparisonsLazyQuery>;
+export type MyComparisonsQueryResult = ApolloReactCommon.QueryResult<MyComparisonsQuery, MyComparisonsQueryVariables>;
 export const MyFavoritesDocument = gql`
     query MyFavorites {
   myFavorites {

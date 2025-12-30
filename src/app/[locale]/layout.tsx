@@ -6,6 +6,7 @@ import { ApolloWrapper } from "@/lib/apollo/provider";
 import { Toaster } from "@/components/ui/sonner";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { ComparisonBar } from "@/components/properties/comparison-bar";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import type { Metadata } from "next";
 import "../globals.css";
@@ -52,6 +53,7 @@ export default async function LocaleLayout({
               <Navbar />
               <main className="min-h-screen pt-16">{children}</main>
               <Footer />
+              <ComparisonBar locale={locale} />
               <Toaster />
             </ApolloWrapper>
           </NextIntlClientProvider>

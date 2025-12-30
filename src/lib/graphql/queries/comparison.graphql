@@ -1,0 +1,42 @@
+query CompareProperties($input: ComparePropertiesInput!) {
+  compareProperties(input: $input) {
+    properties {
+      id
+      title
+      titleEn
+      priceUS
+      priceBS
+      bedrooms
+      bathrooms
+      totalArea
+      coveredArea
+      parkingSpaces
+      yearBuilt
+      furnished
+      pool
+      balcony
+      terrace
+      security
+      storage
+      address
+      propertyTypeId
+      dealTypeId
+      latitude
+      longitude
+    }
+    matrix {
+      features {
+        name
+        values
+      }
+    }
+  }
+}
+
+query MyComparisons {
+  myComparisons {
+    id
+    propertyIds
+    createdAt
+  }
+}

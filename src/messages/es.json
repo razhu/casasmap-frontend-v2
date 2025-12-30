@@ -127,5 +127,28 @@
     "cancel": "Cancelar",
     "success": "Perfil actualizado exitosamente",
     "error": "Error al actualizar perfil"
+  },
+  "compare": {
+    "title": "Comparar Propiedades",
+    "noProperties": "No hay propiedades para comparar",
+    "selectProperties": "Selecciona propiedades desde la página de búsqueda para compararlas",
+    "backToProperties": "Volver a Propiedades",
+    "error": "Error al cargar comparación",
+    "errorMessage": "No se pudieron cargar las propiedades para comparar",
+    "feature": "Característica",
+    "viewDetails": "Ver Detalles",
+    "location": "Ubicación",
+    "bedrooms": "Habitaciones",
+    "bathrooms": "Baños",
+    "totalArea": "Área Total",
+    "coveredArea": "Área Cubierta",
+    "parkingSpaces": "Estacionamientos",
+    "yearBuilt": "Año de Construcción",
+    "furnished": "Amoblado",
+    "pool": "Piscina",
+    "balcony": "Balcón",
+    "terrace": "Terraza",
+    "security": "Seguridad",
+    "storage": "Depósito"
   }
 }
