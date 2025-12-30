@@ -13,6 +13,7 @@ import {
   Settings,
   Menu,
   Plus,
+  Bookmark,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -60,6 +61,12 @@ export function Navbar() {
       href: "/favorites",
       icon: Heart,
       label: t("favorites"),
+      requiresAuth: true,
+    },
+    {
+      href: "/saved-searches",
+      icon: Bookmark,
+      label: locale === "es" ? "Búsquedas" : "Searches",
       requiresAuth: true,
     },
     {

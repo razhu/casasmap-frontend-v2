@@ -1,0 +1,39 @@
+query MySavedSearches {
+  mySavedSearches {
+    id
+    name
+    query
+    minPrice
+    maxPrice
+    bedrooms
+    bathrooms
+    propertyTypeId
+    dealTypeId
+    cityId
+    zoneId
+    alertsEnabled
+    lastAlertAt
+    createdAt
+    updatedAt
+  }
+}
+
+query SavedSearch($id: String!) {
+  savedSearch(id: $id) {
+    id
+    name
+    query
+    minPrice
+    maxPrice
+    bedrooms
+    bathrooms
+    propertyTypeId
+    dealTypeId
+    cityId
+    zoneId
+    alertsEnabled
+    lastAlertAt
+    createdAt
+    updatedAt
+  }
+}

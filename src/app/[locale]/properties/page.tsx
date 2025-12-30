@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useSearchPropertiesQuery } from "@/lib/graphql/generated";
 import { PropertyCard } from "@/components/properties/property-card";
 import { PropertyFilters } from "@/components/properties/property-filters";
+import { SaveSearchButton } from "@/components/properties/save-search-button";
 import { Button } from "@/components/ui/button";
 
 export default function PropertiesPage() {
@@ -79,12 +80,24 @@ export default function PropertiesPage() {
           {/* Search and Filters */}
           <PropertyFilters onSearch={handleSearch} />
 
-          {meta && (
-            <p className="text-muted-foreground mt-4">
-              {meta.total}{" "}
-              {locale === "es" ? "propiedades encontradas" : "properties found"}
-            </p>
-          )}
+          <div className="flex items-center justify-between mt-4">
+            {meta && (
+              <p className="text-muted-foreground">
+                {meta.total}{" "}
+                {locale === "es"
+                  ? "propiedades encontradas"
+                  : "properties found"}
+              </p>
+            )}
+            {(filters.query ||
+              filters.minPrice ||
+              filters.maxPrice ||
+              filters.bedrooms ||
+              filters.bathrooms ||
+              filters.dealTypeId) && (
+              <SaveSearchButton filters={filters} locale={locale} />
+            )}
+          </div>
         </div>
 
         {loading ? (

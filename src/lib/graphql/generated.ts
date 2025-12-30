@@ -1854,6 +1854,36 @@ export type CreatePropertyMutationVariables = Exact<{
 
 export type CreatePropertyMutation = { __typename?: 'Mutation', createProperty: { __typename?: 'Property', id: string, title: string, titleEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, yearBuilt?: number | null, furnished?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, security?: boolean | null, storage?: boolean | null, petsAllowed?: boolean | null, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, createdAt: any } };
 
+export type CreateSavedSearchMutationVariables = Exact<{
+  input: CreateSavedSearchInput;
+}>;
+
+
+export type CreateSavedSearchMutation = { __typename?: 'Mutation', createSavedSearch: { __typename?: 'SavedSearch', id: string, name: string, query?: string | null, minPrice?: number | null, maxPrice?: number | null, bedrooms?: number | null, bathrooms?: number | null, propertyTypeId?: number | null, dealTypeId?: number | null, cityId?: number | null, zoneId?: number | null, alertsEnabled: boolean, createdAt: any } };
+
+export type UpdateSavedSearchMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+  input: UpdateSavedSearchInput;
+}>;
+
+
+export type UpdateSavedSearchMutation = { __typename?: 'Mutation', updateSavedSearch: { __typename?: 'SavedSearch', id: string, name: string, alertsEnabled: boolean, updatedAt: any } };
+
+export type DeleteSavedSearchMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type DeleteSavedSearchMutation = { __typename?: 'Mutation', deleteSavedSearch: boolean };
+
+export type ToggleSavedSearchAlertsMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+  enabled: Scalars['Boolean']['input'];
+}>;
+
+
+export type ToggleSavedSearchAlertsMutation = { __typename?: 'Mutation', toggleSavedSearchAlerts: { __typename?: 'SavedSearch', id: string, alertsEnabled: boolean, updatedAt: any } };
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1997,6 +2027,18 @@ export type SearchPropertiesQueryVariables = Exact<{
 
 
 export type SearchPropertiesQuery = { __typename?: 'Query', searchProperties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, userId: string }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
+
+export type MySavedSearchesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MySavedSearchesQuery = { __typename?: 'Query', mySavedSearches: Array<{ __typename?: 'SavedSearch', id: string, name: string, query?: string | null, minPrice?: number | null, maxPrice?: number | null, bedrooms?: number | null, bathrooms?: number | null, propertyTypeId?: number | null, dealTypeId?: number | null, cityId?: number | null, zoneId?: number | null, alertsEnabled: boolean, lastAlertAt?: any | null, createdAt: any, updatedAt: any }> };
+
+export type SavedSearchQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type SavedSearchQuery = { __typename?: 'Query', savedSearch: { __typename?: 'SavedSearch', id: string, name: string, query?: string | null, minPrice?: number | null, maxPrice?: number | null, bedrooms?: number | null, bathrooms?: number | null, propertyTypeId?: number | null, dealTypeId?: number | null, cityId?: number | null, zoneId?: number | null, alertsEnabled: boolean, lastAlertAt?: any | null, createdAt: any, updatedAt: any } };
 
 
 export const TestConnectionDocument = gql`
@@ -2161,6 +2203,81 @@ export function useCreatePropertyMutation(baseOptions?: ApolloReactHooks.Mutatio
 export type CreatePropertyMutationHookResult = ReturnType<typeof useCreatePropertyMutation>;
 export type CreatePropertyMutationResult = ApolloReactCommon.MutationResult<CreatePropertyMutation>;
 export type CreatePropertyMutationOptions = ApolloReactCommon.BaseMutationOptions<CreatePropertyMutation, CreatePropertyMutationVariables>;
+export const CreateSavedSearchDocument = gql`
+    mutation CreateSavedSearch($input: CreateSavedSearchInput!) {
+  createSavedSearch(input: $input) {
+    id
+    name
+    query
+    minPrice
+    maxPrice
+    bedrooms
+    bathrooms
+    propertyTypeId
+    dealTypeId
+    cityId
+    zoneId
+    alertsEnabled
+    createdAt
+  }
+}
+    `;
+export type CreateSavedSearchMutationFn = ApolloReactCommon.MutationFunction<CreateSavedSearchMutation, CreateSavedSearchMutationVariables>;
+export function useCreateSavedSearchMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateSavedSearchMutation, CreateSavedSearchMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<CreateSavedSearchMutation, CreateSavedSearchMutationVariables>(CreateSavedSearchDocument, options);
+      }
+export type CreateSavedSearchMutationHookResult = ReturnType<typeof useCreateSavedSearchMutation>;
+export type CreateSavedSearchMutationResult = ApolloReactCommon.MutationResult<CreateSavedSearchMutation>;
+export type CreateSavedSearchMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateSavedSearchMutation, CreateSavedSearchMutationVariables>;
+export const UpdateSavedSearchDocument = gql`
+    mutation UpdateSavedSearch($id: String!, $input: UpdateSavedSearchInput!) {
+  updateSavedSearch(id: $id, input: $input) {
+    id
+    name
+    alertsEnabled
+    updatedAt
+  }
+}
+    `;
+export type UpdateSavedSearchMutationFn = ApolloReactCommon.MutationFunction<UpdateSavedSearchMutation, UpdateSavedSearchMutationVariables>;
+export function useUpdateSavedSearchMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateSavedSearchMutation, UpdateSavedSearchMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<UpdateSavedSearchMutation, UpdateSavedSearchMutationVariables>(UpdateSavedSearchDocument, options);
+      }
+export type UpdateSavedSearchMutationHookResult = ReturnType<typeof useUpdateSavedSearchMutation>;
+export type UpdateSavedSearchMutationResult = ApolloReactCommon.MutationResult<UpdateSavedSearchMutation>;
+export type UpdateSavedSearchMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateSavedSearchMutation, UpdateSavedSearchMutationVariables>;
+export const DeleteSavedSearchDocument = gql`
+    mutation DeleteSavedSearch($id: String!) {
+  deleteSavedSearch(id: $id)
+}
+    `;
+export type DeleteSavedSearchMutationFn = ApolloReactCommon.MutationFunction<DeleteSavedSearchMutation, DeleteSavedSearchMutationVariables>;
+export function useDeleteSavedSearchMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteSavedSearchMutation, DeleteSavedSearchMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<DeleteSavedSearchMutation, DeleteSavedSearchMutationVariables>(DeleteSavedSearchDocument, options);
+      }
+export type DeleteSavedSearchMutationHookResult = ReturnType<typeof useDeleteSavedSearchMutation>;
+export type DeleteSavedSearchMutationResult = ApolloReactCommon.MutationResult<DeleteSavedSearchMutation>;
+export type DeleteSavedSearchMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteSavedSearchMutation, DeleteSavedSearchMutationVariables>;
+export const ToggleSavedSearchAlertsDocument = gql`
+    mutation ToggleSavedSearchAlerts($id: String!, $enabled: Boolean!) {
+  toggleSavedSearchAlerts(id: $id, enabled: $enabled) {
+    id
+    alertsEnabled
+    updatedAt
+  }
+}
+    `;
+export type ToggleSavedSearchAlertsMutationFn = ApolloReactCommon.MutationFunction<ToggleSavedSearchAlertsMutation, ToggleSavedSearchAlertsMutationVariables>;
+export function useToggleSavedSearchAlertsMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ToggleSavedSearchAlertsMutation, ToggleSavedSearchAlertsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<ToggleSavedSearchAlertsMutation, ToggleSavedSearchAlertsMutationVariables>(ToggleSavedSearchAlertsDocument, options);
+      }
+export type ToggleSavedSearchAlertsMutationHookResult = ReturnType<typeof useToggleSavedSearchAlertsMutation>;
+export type ToggleSavedSearchAlertsMutationResult = ApolloReactCommon.MutationResult<ToggleSavedSearchAlertsMutation>;
+export type ToggleSavedSearchAlertsMutationOptions = ApolloReactCommon.BaseMutationOptions<ToggleSavedSearchAlertsMutation, ToggleSavedSearchAlertsMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -2857,3 +2974,81 @@ export function useSearchPropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.
 export type SearchPropertiesQueryHookResult = ReturnType<typeof useSearchPropertiesQuery>;
 export type SearchPropertiesLazyQueryHookResult = ReturnType<typeof useSearchPropertiesLazyQuery>;
 export type SearchPropertiesQueryResult = ApolloReactCommon.QueryResult<SearchPropertiesQuery, SearchPropertiesQueryVariables>;
+export const MySavedSearchesDocument = gql`
+    query MySavedSearches {
+  mySavedSearches {
+    id
+    name
+    query
+    minPrice
+    maxPrice
+    bedrooms
+    bathrooms
+    propertyTypeId
+    dealTypeId
+    cityId
+    zoneId
+    alertsEnabled
+    lastAlertAt
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export function useMySavedSearchesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MySavedSearchesQuery, MySavedSearchesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<MySavedSearchesQuery, MySavedSearchesQueryVariables>(MySavedSearchesDocument, options);
+      }
+export function useMySavedSearchesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MySavedSearchesQuery, MySavedSearchesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<MySavedSearchesQuery, MySavedSearchesQueryVariables>(MySavedSearchesDocument, options);
+        }
+// @ts-ignore
+export function useMySavedSearchesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<MySavedSearchesQuery, MySavedSearchesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MySavedSearchesQuery, MySavedSearchesQueryVariables>;
+export function useMySavedSearchesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MySavedSearchesQuery, MySavedSearchesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MySavedSearchesQuery | undefined, MySavedSearchesQueryVariables>;
+export function useMySavedSearchesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MySavedSearchesQuery, MySavedSearchesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<MySavedSearchesQuery, MySavedSearchesQueryVariables>(MySavedSearchesDocument, options);
+        }
+export type MySavedSearchesQueryHookResult = ReturnType<typeof useMySavedSearchesQuery>;
+export type MySavedSearchesLazyQueryHookResult = ReturnType<typeof useMySavedSearchesLazyQuery>;
+export type MySavedSearchesQueryResult = ApolloReactCommon.QueryResult<MySavedSearchesQuery, MySavedSearchesQueryVariables>;
+export const SavedSearchDocument = gql`
+    query SavedSearch($id: String!) {
+  savedSearch(id: $id) {
+    id
+    name
+    query
+    minPrice
+    maxPrice
+    bedrooms
+    bathrooms
+    propertyTypeId
+    dealTypeId
+    cityId
+    zoneId
+    alertsEnabled
+    lastAlertAt
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export function useSavedSearchQuery(baseOptions: ApolloReactHooks.QueryHookOptions<SavedSearchQuery, SavedSearchQueryVariables> & ({ variables: SavedSearchQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<SavedSearchQuery, SavedSearchQueryVariables>(SavedSearchDocument, options);
+      }
+export function useSavedSearchLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<SavedSearchQuery, SavedSearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<SavedSearchQuery, SavedSearchQueryVariables>(SavedSearchDocument, options);
+        }
+// @ts-ignore
+export function useSavedSearchSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<SavedSearchQuery, SavedSearchQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<SavedSearchQuery, SavedSearchQueryVariables>;
+export function useSavedSearchSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<SavedSearchQuery, SavedSearchQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<SavedSearchQuery | undefined, SavedSearchQueryVariables>;
+export function useSavedSearchSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<SavedSearchQuery, SavedSearchQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<SavedSearchQuery, SavedSearchQueryVariables>(SavedSearchDocument, options);
+        }
+export type SavedSearchQueryHookResult = ReturnType<typeof useSavedSearchQuery>;
+export type SavedSearchLazyQueryHookResult = ReturnType<typeof useSavedSearchLazyQuery>;
+export type SavedSearchQueryResult = ApolloReactCommon.QueryResult<SavedSearchQuery, SavedSearchQueryVariables>;
