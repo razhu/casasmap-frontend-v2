@@ -3,6 +3,12 @@
 import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useAuthStore } from "@/store/auth";
 import {
   useIsFavoritedQuery,
@@ -85,33 +91,50 @@ export function FavoriteButton({
 
   if (variant === "icon") {
     return (
-      <button
-        onClick={handleToggleFavorite}
-        disabled={isLoading}
-        className={cn(
-          "p-2 rounded-full bg-white/90 hover:bg-white transition-all shadow-md",
-          isLoading && "opacity-50 cursor-not-allowed",
-          className
-        )}
-        aria-label={
-          isFavorited
-            ? locale === "es"
-              ? "Quitar de favoritos"
-              : "Remove from favorites"
-            : locale === "es"
-            ? "Agregar a favoritos"
-            : "Add to favorites"
-        }
-      >
-        <Heart
-          className={cn(
-            "h-5 w-5 transition-all",
-            isFavorited
-              ? "fill-red-500 text-red-500"
-              : "text-gray-600 hover:text-red-500"
-          )}
-        />
-      </button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={handleToggleFavorite}
+              disabled={isLoading}
+              className={cn(
+                "p-2 rounded-full bg-white/90 hover:bg-white transition-all shadow-md",
+                isLoading && "opacity-50 cursor-not-allowed",
+                className
+              )}
+              aria-label={
+                isFavorited
+                  ? locale === "es"
+                    ? "Quitar de favoritos"
+                    : "Remove from favorites"
+                  : locale === "es"
+                  ? "Agregar a favoritos"
+                  : "Add to favorites"
+              }
+            >
+              <Heart
+                className={cn(
+                  "h-5 w-5 transition-all",
+                  isFavorited
+                    ? "fill-red-500 text-red-500"
+                    : "text-gray-600 hover:text-red-500"
+                )}
+              />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>
+              {isFavorited
+                ? locale === "es"
+                  ? "Quitar de favoritos"
+                  : "Remove from favorites"
+                : locale === "es"
+                ? "Agregar a favoritos"
+                : "Add to favorites"}
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   }
 

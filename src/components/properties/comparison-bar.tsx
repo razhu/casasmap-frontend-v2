@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { X, GitCompare } from "lucide-react";
+import { X, Scale } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useComparisonStore } from "@/store/comparison";
 
@@ -35,7 +35,7 @@ export function ComparisonBar({ locale }: ComparisonBarProps) {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <GitCompare className="h-5 w-5 text-primary" />
+            <Scale className="h-5 w-5 text-primary" />
             <span className="font-semibold">
               {locale === "es" ? "Comparar propiedades" : "Compare properties"}{" "}
               ({properties.length}/4)

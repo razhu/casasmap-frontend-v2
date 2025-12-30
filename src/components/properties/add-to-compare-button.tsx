@@ -1,7 +1,13 @@
 "use client";
 
-import { GitCompare, Check } from "lucide-react";
+import { Scale, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useComparisonStore } from "@/store/comparison";
 import { cn } from "@/lib/utils";
 
@@ -50,31 +56,52 @@ export function AddToCompareButton({
 
   if (variant === "icon") {
     return (
-      <button
-        onClick={handleToggle}
-        disabled={!inComparison && isFull}
-        className={cn(
-          "p-2 rounded-full bg-white/90 hover:bg-white transition-all shadow-md",
-          inComparison && "bg-blue-500 hover:bg-blue-600",
-          !inComparison && isFull && "opacity-50 cursor-not-allowed",
-          className
-        )}
-        aria-label={
-          inComparison
-            ? locale === "es"
-              ? "Quitar de comparación"
-              : "Remove from comparison"
-            : locale === "es"
-            ? "Agregar a comparación"
-            : "Add to comparison"
-        }
-      >
-        {inComparison ? (
-          <Check className="h-5 w-5 text-white" />
-        ) : (
-          <GitCompare className="h-5 w-5 text-gray-600" />
-        )}
-      </button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={handleToggle}
+              disabled={!inComparison && isFull}
+              className={cn(
+                "p-2 rounded-full bg-white/90 hover:bg-white transition-all shadow-md",
+                inComparison && "bg-blue-500 hover:bg-blue-600",
+                !inComparison && isFull && "opacity-50 cursor-not-allowed",
+                className
+              )}
+              aria-label={
+                inComparison
+                  ? locale === "es"
+                    ? "Quitar de comparación"
+                    : "Remove from comparison"
+                  : locale === "es"
+                  ? "Agregar a comparación"
+                  : "Add to comparison"
+              }
+            >
+              {inComparison ? (
+                <Check className="h-5 w-5 text-white" />
+              ) : (
+                <Scale className="h-5 w-5 text-gray-600" />
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>
+              {inComparison
+                ? locale === "es"
+                  ? "Quitar de comparación"
+                  : "Remove from comparison"
+                : isFull
+                ? locale === "es"
+                  ? "Máximo 4 propiedades"
+                  : "Maximum 4 properties"
+                : locale === "es"
+                ? "Agregar a comparación"
+                : "Add to comparison"}
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   }
 
@@ -89,7 +116,7 @@ export function AddToCompareButton({
       {inComparison ? (
         <Check className="h-4 w-4 mr-2" />
       ) : (
-        <GitCompare className="h-4 w-4 mr-2" />
+        <Scale className="h-4 w-4 mr-2" />
       )}
       {inComparison
         ? locale === "es"
