@@ -113,7 +113,7 @@ export function MapPicker({
               onDragEnd={handleMarkerDragEnd}
             >
               <div className="cursor-move">
-                <MapPin className="h-10 w-10 text-primary fill-primary drop-shadow-lg" />
+                <MapPin className="h-10 w-10 text-red-600 fill-red-600 drop-shadow-lg stroke-white stroke-[0.5]" />
               </div>
             </Marker>
           )}
