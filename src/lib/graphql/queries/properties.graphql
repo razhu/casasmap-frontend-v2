@@ -165,3 +165,56 @@ mutation CreateProperty($input: CreatePropertyInput!) {
     createdAt
   }
 }
+
+query MyProperties($page: Int, $limit: Int) {
+  myProperties(page: $page, limit: $limit) {
+    data {
+      id
+      title
+      titleEn
+      description
+      priceUS
+      priceBS
+      address
+      bedrooms
+      bathrooms
+      totalArea
+      coveredArea
+      latitude
+      longitude
+      status
+      priority
+      createdAt
+      propertyTypeId
+      dealTypeId
+      cityId
+      zoneId
+      city {
+        id
+        name
+      }
+      propertyType {
+        id
+        name
+      }
+      analytics {
+        id
+        views
+        clicks
+        favorites
+        inquiries
+        phoneClicks
+        emailClicks
+        whatsappClicks
+        shares
+        conversionRate
+      }
+    }
+    meta {
+      total
+      page
+      limit
+      totalPages
+    }
+  }
+}

@@ -195,5 +195,40 @@
       "title": "Pago fallido",
       "message": "Tu pago de {amount} falló. Por favor intenta nuevamente"
     }
+  },
+  "analytics": {
+    "title": "Estadísticas",
+    "overview": "Resumen",
+    "performance": "Rendimiento de tus propiedades",
+    "noProperties": "No tienes propiedades publicadas",
+    "publishProperty": "Publicar Propiedad",
+    "viewDetails": "Ver Detalles",
+    "backToAnalytics": "Volver a Estadísticas",
+    "viewProperty": "Ver Anuncio",
+    "stats": {
+      "totalViews": "Vistas Totales",
+      "clicks": "Clics",
+      "favorites": "Favoritos",
+      "inquiries": "Consultas",
+      "phoneClicks": "Clics en Teléfono",
+      "emailClicks": "Clics en Email",
+      "whatsappClicks": "Clics en WhatsApp",
+      "shares": "Compartidos",
+      "conversionRate": "Tasa de Conversión",
+      "qrScans": "Escaneos QR",
+      "averageTime": "Tiempo Promedio",
+      "lastViewed": "Última vista",
+      "interactions": "Interacciones"
+    },
+    "descriptions": {
+      "views": "Número de veces que se vio tu anuncio",
+      "clicks": "Clics en tu anuncio",
+      "favorites": "Usuarios que guardaron tu anuncio",
+      "inquiries": "Mensajes recibidos",
+      "conversionRate": "Consultas / Vistas",
+      "qrScans": "Códigos QR escaneados",
+      "averageTime": "Tiempo en el anuncio"
+    },
+    "noData": "No se pudieron cargar las estadísticas"
   }
 }

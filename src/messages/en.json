@@ -195,5 +195,40 @@
       "title": "Payment failed",
       "message": "Your payment of {amount} failed. Please try again"
     }
+  },
+  "analytics": {
+    "title": "Analytics",
+    "overview": "Overview",
+    "performance": "Your properties performance",
+    "noProperties": "You have no published properties",
+    "publishProperty": "Publish Property",
+    "viewDetails": "View Details",
+    "backToAnalytics": "Back to Analytics",
+    "viewProperty": "View Property",
+    "stats": {
+      "totalViews": "Total Views",
+      "clicks": "Clicks",
+      "favorites": "Favorites",
+      "inquiries": "Inquiries",
+      "phoneClicks": "Phone Clicks",
+      "emailClicks": "Email Clicks",
+      "whatsappClicks": "WhatsApp Clicks",
+      "shares": "Shares",
+      "conversionRate": "Conversion Rate",
+      "qrScans": "QR Scans",
+      "averageTime": "Average Time",
+      "lastViewed": "Last viewed",
+      "interactions": "Interactions"
+    },
+    "descriptions": {
+      "views": "Number of times your listing was viewed",
+      "clicks": "Clicks on your listing",
+      "favorites": "Users who saved your listing",
+      "inquiries": "Messages received",
+      "conversionRate": "Inquiries / Views",
+      "qrScans": "QR codes scanned",
+      "averageTime": "Time on listing"
+    },
+    "noData": "Could not load analytics"
   }
 }

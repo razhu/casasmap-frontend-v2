@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
-  Home,
   Search,
   Heart,
   MessageSquare,
@@ -14,6 +13,7 @@ import {
   Menu,
   Plus,
   Bookmark,
+  BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -51,7 +51,6 @@ export function Navbar() {
   };
 
   const navLinks = [
-    { href: "/", icon: Home, label: t("home"), requiresAuth: false },
     {
       href: "/properties",
       icon: Search,
@@ -74,6 +73,12 @@ export function Navbar() {
       href: "/messages",
       icon: MessageSquare,
       label: locale === "es" ? "Consultas" : "Inquiries",
+      requiresAuth: true,
+    },
+    {
+      href: "/dashboard/analytics",
+      icon: BarChart3,
+      label: locale === "es" ? "Estadísticas" : "Analytics",
       requiresAuth: true,
     },
   ];
@@ -167,6 +172,17 @@ export function Navbar() {
                     >
                       <User className="mr-2 h-4 w-4" />
                       <span>{t("profile")}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={getLocalePath("/dashboard/analytics")}
+                      className="cursor-pointer"
+                    >
+                      <BarChart3 className="mr-2 h-4 w-4" />
+                      <span>
+                        {locale === "es" ? "Estadísticas" : "Analytics"}
+                      </span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
@@ -303,6 +319,15 @@ export function Navbar() {
                           <Button variant="outline" className="w-full mb-2">
                             <User className="mr-2 h-4 w-4" />
                             {t("profile")}
+                          </Button>
+                        </Link>
+                        <Link
+                          href={getLocalePath("/dashboard/analytics")}
+                          onClick={() => setOpen(false)}
+                        >
+                          <Button variant="outline" className="w-full mb-2">
+                            <BarChart3 className="mr-2 h-4 w-4" />
+                            {locale === "es" ? "Estadísticas" : "Analytics"}
                           </Button>
                         </Link>
                         <Button

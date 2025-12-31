@@ -1,0 +1,49 @@
+query PropertyAnalytics($propertyId: String!) {
+  propertyAnalytics(propertyId: $propertyId) {
+    id
+    propertyId
+    views
+    clicks
+    shares
+    favorites
+    inquiries
+    phoneClicks
+    emailClicks
+    whatsappClicks
+    shortCodeViews
+    qrCodeScans
+    lastViewedAt
+    averageViewTime
+    conversionRate
+    createdAt
+    updatedAt
+  }
+}
+
+query PropertyViewHistory(
+  $propertyId: String!
+  $startDate: DateTime!
+  $endDate: DateTime!
+) {
+  propertyViewHistory(
+    propertyId: $propertyId
+    startDate: $startDate
+    endDate: $endDate
+  ) {
+    id
+    date
+    views
+    uniqueViews
+    clicks
+    shares
+  }
+}
+
+query PopularSearches($limit: Int) {
+  popularSearches(limit: $limit) {
+    id
+    searchQuery
+    count
+    lastSearched
+  }
+}

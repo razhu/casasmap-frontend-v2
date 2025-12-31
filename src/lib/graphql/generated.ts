@@ -1105,10 +1105,12 @@ export type Property = {
   __typename?: 'Property';
   address: Scalars['String']['output'];
   agencyId?: Maybe<Scalars['String']['output']>;
+  analytics?: Maybe<PropertyAnalytics>;
   availableFrom?: Maybe<Scalars['DateTime']['output']>;
   balcony?: Maybe<Scalars['Boolean']['output']>;
   bathrooms?: Maybe<Scalars['Int']['output']>;
   bedrooms?: Maybe<Scalars['Int']['output']>;
+  city?: Maybe<City>;
   cityId: Scalars['Int']['output'];
   condition?: Maybe<Scalars['String']['output']>;
   cooling?: Maybe<Scalars['String']['output']>;
@@ -1143,6 +1145,7 @@ export type Property = {
   priority: Scalars['String']['output'];
   propertyCondition?: Maybe<Scalars['String']['output']>;
   propertyTax?: Maybe<Scalars['Float']['output']>;
+  propertyType?: Maybe<PropertyType>;
   propertyTypeId: Scalars['Int']['output'];
   renovationYear?: Maybe<Scalars['Int']['output']>;
   security?: Maybe<Scalars['Boolean']['output']>;
@@ -1243,6 +1246,12 @@ export type PropertyResult = {
   __typename?: 'PropertyResult';
   data: Array<Property>;
   meta: PropertyMeta;
+};
+
+export type PropertyType = {
+  __typename?: 'PropertyType';
+  id: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
 };
 
 export type PropertyTypeDistribution = {
@@ -1810,6 +1819,53 @@ export type TestConnectionQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TestConnectionQuery = { __typename: 'Query' };
 
+export type TrackPropertyViewMutationVariables = Exact<{
+  propertyId: Scalars['String']['input'];
+  sessionId?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type TrackPropertyViewMutation = { __typename?: 'Mutation', trackPropertyView: boolean };
+
+export type TrackPropertyClickMutationVariables = Exact<{
+  propertyId: Scalars['String']['input'];
+}>;
+
+
+export type TrackPropertyClickMutation = { __typename?: 'Mutation', trackPropertyClick: boolean };
+
+export type TrackPhoneClickMutationVariables = Exact<{
+  propertyId: Scalars['String']['input'];
+  sessionId?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type TrackPhoneClickMutation = { __typename?: 'Mutation', trackPhoneClick: boolean };
+
+export type TrackEmailClickMutationVariables = Exact<{
+  propertyId: Scalars['String']['input'];
+  sessionId?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type TrackEmailClickMutation = { __typename?: 'Mutation', trackEmailClick: boolean };
+
+export type TrackWhatsAppClickMutationVariables = Exact<{
+  propertyId: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type TrackWhatsAppClickMutation = { __typename?: 'Mutation', trackWhatsAppClick: boolean };
+
+export type TrackSearchMutationVariables = Exact<{
+  query: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type TrackSearchMutation = { __typename?: 'Mutation', trackSearch: boolean };
+
 export type SaveComparisonMutationVariables = Exact<{
   input: SaveComparisonInput;
 }>;
@@ -1947,6 +2003,29 @@ export type ToggleSavedSearchAlertsMutationVariables = Exact<{
 
 
 export type ToggleSavedSearchAlertsMutation = { __typename?: 'Mutation', toggleSavedSearchAlerts: { __typename?: 'SavedSearch', id: string, alertsEnabled: boolean, updatedAt: any } };
+
+export type PropertyAnalyticsQueryVariables = Exact<{
+  propertyId: Scalars['String']['input'];
+}>;
+
+
+export type PropertyAnalyticsQuery = { __typename?: 'Query', propertyAnalytics: { __typename?: 'PropertyAnalytics', id: string, propertyId: string, views: number, clicks: number, shares: number, favorites: number, inquiries: number, phoneClicks: number, emailClicks: number, whatsappClicks: number, shortCodeViews: number, qrCodeScans: number, lastViewedAt?: any | null, averageViewTime?: number | null, conversionRate: number, createdAt: any, updatedAt: any } };
+
+export type PropertyViewHistoryQueryVariables = Exact<{
+  propertyId: Scalars['String']['input'];
+  startDate: Scalars['DateTime']['input'];
+  endDate: Scalars['DateTime']['input'];
+}>;
+
+
+export type PropertyViewHistoryQuery = { __typename?: 'Query', propertyViewHistory: Array<{ __typename?: 'PropertyViewHistory', id: string, date: any, views: number, uniqueViews: number, clicks: number, shares: number }> };
+
+export type PopularSearchesQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type PopularSearchesQuery = { __typename?: 'Query', popularSearches: Array<{ __typename?: 'PopularSearch', id: string, searchQuery: string, count: number, lastSearched: any }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2117,6 +2196,14 @@ export type SearchPropertiesQueryVariables = Exact<{
 
 export type SearchPropertiesQuery = { __typename?: 'Query', searchProperties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, userId: string }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
 
+export type MyPropertiesQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type MyPropertiesQuery = { __typename?: 'Query', myProperties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, titleEn: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, city?: { __typename?: 'City', id: number, name: string } | null, propertyType?: { __typename?: 'PropertyType', id: number, name: string } | null, analytics?: { __typename?: 'PropertyAnalytics', id: string, views: number, clicks: number, favorites: number, inquiries: number, phoneClicks: number, emailClicks: number, whatsappClicks: number, shares: number, conversionRate: number } | null }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
+
 export type MySavedSearchesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2153,6 +2240,84 @@ export function useTestConnectionSuspenseQuery(baseOptions?: ApolloReactHooks.Sk
 export type TestConnectionQueryHookResult = ReturnType<typeof useTestConnectionQuery>;
 export type TestConnectionLazyQueryHookResult = ReturnType<typeof useTestConnectionLazyQuery>;
 export type TestConnectionQueryResult = ApolloReactCommon.QueryResult<TestConnectionQuery, TestConnectionQueryVariables>;
+export const TrackPropertyViewDocument = gql`
+    mutation TrackPropertyView($propertyId: String!, $sessionId: String) {
+  trackPropertyView(propertyId: $propertyId, sessionId: $sessionId)
+}
+    `;
+export type TrackPropertyViewMutationFn = ApolloReactCommon.MutationFunction<TrackPropertyViewMutation, TrackPropertyViewMutationVariables>;
+export function useTrackPropertyViewMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<TrackPropertyViewMutation, TrackPropertyViewMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<TrackPropertyViewMutation, TrackPropertyViewMutationVariables>(TrackPropertyViewDocument, options);
+      }
+export type TrackPropertyViewMutationHookResult = ReturnType<typeof useTrackPropertyViewMutation>;
+export type TrackPropertyViewMutationResult = ApolloReactCommon.MutationResult<TrackPropertyViewMutation>;
+export type TrackPropertyViewMutationOptions = ApolloReactCommon.BaseMutationOptions<TrackPropertyViewMutation, TrackPropertyViewMutationVariables>;
+export const TrackPropertyClickDocument = gql`
+    mutation TrackPropertyClick($propertyId: String!) {
+  trackPropertyClick(propertyId: $propertyId)
+}
+    `;
+export type TrackPropertyClickMutationFn = ApolloReactCommon.MutationFunction<TrackPropertyClickMutation, TrackPropertyClickMutationVariables>;
+export function useTrackPropertyClickMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<TrackPropertyClickMutation, TrackPropertyClickMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<TrackPropertyClickMutation, TrackPropertyClickMutationVariables>(TrackPropertyClickDocument, options);
+      }
+export type TrackPropertyClickMutationHookResult = ReturnType<typeof useTrackPropertyClickMutation>;
+export type TrackPropertyClickMutationResult = ApolloReactCommon.MutationResult<TrackPropertyClickMutation>;
+export type TrackPropertyClickMutationOptions = ApolloReactCommon.BaseMutationOptions<TrackPropertyClickMutation, TrackPropertyClickMutationVariables>;
+export const TrackPhoneClickDocument = gql`
+    mutation TrackPhoneClick($propertyId: String!, $sessionId: String) {
+  trackPhoneClick(propertyId: $propertyId, sessionId: $sessionId)
+}
+    `;
+export type TrackPhoneClickMutationFn = ApolloReactCommon.MutationFunction<TrackPhoneClickMutation, TrackPhoneClickMutationVariables>;
+export function useTrackPhoneClickMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<TrackPhoneClickMutation, TrackPhoneClickMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<TrackPhoneClickMutation, TrackPhoneClickMutationVariables>(TrackPhoneClickDocument, options);
+      }
+export type TrackPhoneClickMutationHookResult = ReturnType<typeof useTrackPhoneClickMutation>;
+export type TrackPhoneClickMutationResult = ApolloReactCommon.MutationResult<TrackPhoneClickMutation>;
+export type TrackPhoneClickMutationOptions = ApolloReactCommon.BaseMutationOptions<TrackPhoneClickMutation, TrackPhoneClickMutationVariables>;
+export const TrackEmailClickDocument = gql`
+    mutation TrackEmailClick($propertyId: String!, $sessionId: String) {
+  trackEmailClick(propertyId: $propertyId, sessionId: $sessionId)
+}
+    `;
+export type TrackEmailClickMutationFn = ApolloReactCommon.MutationFunction<TrackEmailClickMutation, TrackEmailClickMutationVariables>;
+export function useTrackEmailClickMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<TrackEmailClickMutation, TrackEmailClickMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<TrackEmailClickMutation, TrackEmailClickMutationVariables>(TrackEmailClickDocument, options);
+      }
+export type TrackEmailClickMutationHookResult = ReturnType<typeof useTrackEmailClickMutation>;
+export type TrackEmailClickMutationResult = ApolloReactCommon.MutationResult<TrackEmailClickMutation>;
+export type TrackEmailClickMutationOptions = ApolloReactCommon.BaseMutationOptions<TrackEmailClickMutation, TrackEmailClickMutationVariables>;
+export const TrackWhatsAppClickDocument = gql`
+    mutation TrackWhatsAppClick($propertyId: String!, $userId: String) {
+  trackWhatsAppClick(propertyId: $propertyId, userId: $userId)
+}
+    `;
+export type TrackWhatsAppClickMutationFn = ApolloReactCommon.MutationFunction<TrackWhatsAppClickMutation, TrackWhatsAppClickMutationVariables>;
+export function useTrackWhatsAppClickMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<TrackWhatsAppClickMutation, TrackWhatsAppClickMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<TrackWhatsAppClickMutation, TrackWhatsAppClickMutationVariables>(TrackWhatsAppClickDocument, options);
+      }
+export type TrackWhatsAppClickMutationHookResult = ReturnType<typeof useTrackWhatsAppClickMutation>;
+export type TrackWhatsAppClickMutationResult = ApolloReactCommon.MutationResult<TrackWhatsAppClickMutation>;
+export type TrackWhatsAppClickMutationOptions = ApolloReactCommon.BaseMutationOptions<TrackWhatsAppClickMutation, TrackWhatsAppClickMutationVariables>;
+export const TrackSearchDocument = gql`
+    mutation TrackSearch($query: String!, $userId: String) {
+  trackSearch(query: $query, userId: $userId)
+}
+    `;
+export type TrackSearchMutationFn = ApolloReactCommon.MutationFunction<TrackSearchMutation, TrackSearchMutationVariables>;
+export function useTrackSearchMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<TrackSearchMutation, TrackSearchMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<TrackSearchMutation, TrackSearchMutationVariables>(TrackSearchDocument, options);
+      }
+export type TrackSearchMutationHookResult = ReturnType<typeof useTrackSearchMutation>;
+export type TrackSearchMutationResult = ApolloReactCommon.MutationResult<TrackSearchMutation>;
+export type TrackSearchMutationOptions = ApolloReactCommon.BaseMutationOptions<TrackSearchMutation, TrackSearchMutationVariables>;
 export const SaveComparisonDocument = gql`
     mutation SaveComparison($input: SaveComparisonInput!) {
   saveComparison(input: $input) {
@@ -2504,6 +2669,109 @@ export function useToggleSavedSearchAlertsMutation(baseOptions?: ApolloReactHook
 export type ToggleSavedSearchAlertsMutationHookResult = ReturnType<typeof useToggleSavedSearchAlertsMutation>;
 export type ToggleSavedSearchAlertsMutationResult = ApolloReactCommon.MutationResult<ToggleSavedSearchAlertsMutation>;
 export type ToggleSavedSearchAlertsMutationOptions = ApolloReactCommon.BaseMutationOptions<ToggleSavedSearchAlertsMutation, ToggleSavedSearchAlertsMutationVariables>;
+export const PropertyAnalyticsDocument = gql`
+    query PropertyAnalytics($propertyId: String!) {
+  propertyAnalytics(propertyId: $propertyId) {
+    id
+    propertyId
+    views
+    clicks
+    shares
+    favorites
+    inquiries
+    phoneClicks
+    emailClicks
+    whatsappClicks
+    shortCodeViews
+    qrCodeScans
+    lastViewedAt
+    averageViewTime
+    conversionRate
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export function usePropertyAnalyticsQuery(baseOptions: ApolloReactHooks.QueryHookOptions<PropertyAnalyticsQuery, PropertyAnalyticsQueryVariables> & ({ variables: PropertyAnalyticsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<PropertyAnalyticsQuery, PropertyAnalyticsQueryVariables>(PropertyAnalyticsDocument, options);
+      }
+export function usePropertyAnalyticsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<PropertyAnalyticsQuery, PropertyAnalyticsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<PropertyAnalyticsQuery, PropertyAnalyticsQueryVariables>(PropertyAnalyticsDocument, options);
+        }
+// @ts-ignore
+export function usePropertyAnalyticsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<PropertyAnalyticsQuery, PropertyAnalyticsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PropertyAnalyticsQuery, PropertyAnalyticsQueryVariables>;
+export function usePropertyAnalyticsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PropertyAnalyticsQuery, PropertyAnalyticsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PropertyAnalyticsQuery | undefined, PropertyAnalyticsQueryVariables>;
+export function usePropertyAnalyticsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PropertyAnalyticsQuery, PropertyAnalyticsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<PropertyAnalyticsQuery, PropertyAnalyticsQueryVariables>(PropertyAnalyticsDocument, options);
+        }
+export type PropertyAnalyticsQueryHookResult = ReturnType<typeof usePropertyAnalyticsQuery>;
+export type PropertyAnalyticsLazyQueryHookResult = ReturnType<typeof usePropertyAnalyticsLazyQuery>;
+export type PropertyAnalyticsQueryResult = ApolloReactCommon.QueryResult<PropertyAnalyticsQuery, PropertyAnalyticsQueryVariables>;
+export const PropertyViewHistoryDocument = gql`
+    query PropertyViewHistory($propertyId: String!, $startDate: DateTime!, $endDate: DateTime!) {
+  propertyViewHistory(
+    propertyId: $propertyId
+    startDate: $startDate
+    endDate: $endDate
+  ) {
+    id
+    date
+    views
+    uniqueViews
+    clicks
+    shares
+  }
+}
+    `;
+export function usePropertyViewHistoryQuery(baseOptions: ApolloReactHooks.QueryHookOptions<PropertyViewHistoryQuery, PropertyViewHistoryQueryVariables> & ({ variables: PropertyViewHistoryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<PropertyViewHistoryQuery, PropertyViewHistoryQueryVariables>(PropertyViewHistoryDocument, options);
+      }
+export function usePropertyViewHistoryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<PropertyViewHistoryQuery, PropertyViewHistoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<PropertyViewHistoryQuery, PropertyViewHistoryQueryVariables>(PropertyViewHistoryDocument, options);
+        }
+// @ts-ignore
+export function usePropertyViewHistorySuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<PropertyViewHistoryQuery, PropertyViewHistoryQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PropertyViewHistoryQuery, PropertyViewHistoryQueryVariables>;
+export function usePropertyViewHistorySuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PropertyViewHistoryQuery, PropertyViewHistoryQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PropertyViewHistoryQuery | undefined, PropertyViewHistoryQueryVariables>;
+export function usePropertyViewHistorySuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PropertyViewHistoryQuery, PropertyViewHistoryQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<PropertyViewHistoryQuery, PropertyViewHistoryQueryVariables>(PropertyViewHistoryDocument, options);
+        }
+export type PropertyViewHistoryQueryHookResult = ReturnType<typeof usePropertyViewHistoryQuery>;
+export type PropertyViewHistoryLazyQueryHookResult = ReturnType<typeof usePropertyViewHistoryLazyQuery>;
+export type PropertyViewHistoryQueryResult = ApolloReactCommon.QueryResult<PropertyViewHistoryQuery, PropertyViewHistoryQueryVariables>;
+export const PopularSearchesDocument = gql`
+    query PopularSearches($limit: Int) {
+  popularSearches(limit: $limit) {
+    id
+    searchQuery
+    count
+    lastSearched
+  }
+}
+    `;
+export function usePopularSearchesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<PopularSearchesQuery, PopularSearchesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<PopularSearchesQuery, PopularSearchesQueryVariables>(PopularSearchesDocument, options);
+      }
+export function usePopularSearchesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<PopularSearchesQuery, PopularSearchesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<PopularSearchesQuery, PopularSearchesQueryVariables>(PopularSearchesDocument, options);
+        }
+// @ts-ignore
+export function usePopularSearchesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<PopularSearchesQuery, PopularSearchesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PopularSearchesQuery, PopularSearchesQueryVariables>;
+export function usePopularSearchesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PopularSearchesQuery, PopularSearchesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PopularSearchesQuery | undefined, PopularSearchesQueryVariables>;
+export function usePopularSearchesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PopularSearchesQuery, PopularSearchesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<PopularSearchesQuery, PopularSearchesQueryVariables>(PopularSearchesDocument, options);
+        }
+export type PopularSearchesQueryHookResult = ReturnType<typeof usePopularSearchesQuery>;
+export type PopularSearchesLazyQueryHookResult = ReturnType<typeof usePopularSearchesLazyQuery>;
+export type PopularSearchesQueryResult = ApolloReactCommon.QueryResult<PopularSearchesQuery, PopularSearchesQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -3392,6 +3660,78 @@ export function useSearchPropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.
 export type SearchPropertiesQueryHookResult = ReturnType<typeof useSearchPropertiesQuery>;
 export type SearchPropertiesLazyQueryHookResult = ReturnType<typeof useSearchPropertiesLazyQuery>;
 export type SearchPropertiesQueryResult = ApolloReactCommon.QueryResult<SearchPropertiesQuery, SearchPropertiesQueryVariables>;
+export const MyPropertiesDocument = gql`
+    query MyProperties($page: Int, $limit: Int) {
+  myProperties(page: $page, limit: $limit) {
+    data {
+      id
+      title
+      titleEn
+      description
+      priceUS
+      priceBS
+      address
+      bedrooms
+      bathrooms
+      totalArea
+      coveredArea
+      latitude
+      longitude
+      status
+      priority
+      createdAt
+      propertyTypeId
+      dealTypeId
+      cityId
+      zoneId
+      city {
+        id
+        name
+      }
+      propertyType {
+        id
+        name
+      }
+      analytics {
+        id
+        views
+        clicks
+        favorites
+        inquiries
+        phoneClicks
+        emailClicks
+        whatsappClicks
+        shares
+        conversionRate
+      }
+    }
+    meta {
+      total
+      page
+      limit
+      totalPages
+    }
+  }
+}
+    `;
+export function useMyPropertiesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MyPropertiesQuery, MyPropertiesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<MyPropertiesQuery, MyPropertiesQueryVariables>(MyPropertiesDocument, options);
+      }
+export function useMyPropertiesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MyPropertiesQuery, MyPropertiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<MyPropertiesQuery, MyPropertiesQueryVariables>(MyPropertiesDocument, options);
+        }
+// @ts-ignore
+export function useMyPropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<MyPropertiesQuery, MyPropertiesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MyPropertiesQuery, MyPropertiesQueryVariables>;
+export function useMyPropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MyPropertiesQuery, MyPropertiesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MyPropertiesQuery | undefined, MyPropertiesQueryVariables>;
+export function useMyPropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MyPropertiesQuery, MyPropertiesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<MyPropertiesQuery, MyPropertiesQueryVariables>(MyPropertiesDocument, options);
+        }
+export type MyPropertiesQueryHookResult = ReturnType<typeof useMyPropertiesQuery>;
+export type MyPropertiesLazyQueryHookResult = ReturnType<typeof useMyPropertiesLazyQuery>;
+export type MyPropertiesQueryResult = ApolloReactCommon.QueryResult<MyPropertiesQuery, MyPropertiesQueryVariables>;
 export const MySavedSearchesDocument = gql`
     query MySavedSearches {
   mySavedSearches {
