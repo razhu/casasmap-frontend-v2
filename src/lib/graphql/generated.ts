@@ -60,6 +60,17 @@ export type AuthResponse = {
   user: User;
 };
 
+export type BlockedUser = {
+  __typename?: 'BlockedUser';
+  blocked?: Maybe<User>;
+  blockedId: Scalars['ID']['output'];
+  blocker?: Maybe<User>;
+  blockerId: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+};
+
 export type ChangePasswordInput = {
   currentPassword: Scalars['String']['input'];
   newPassword: Scalars['String']['input'];
@@ -458,6 +469,19 @@ export type Message = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
+export type MessageReport = {
+  __typename?: 'MessageReport';
+  createdAt: Scalars['DateTime']['output'];
+  details?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  messageId: Scalars['ID']['output'];
+  reason: Scalars['String']['output'];
+  reporter?: Maybe<User>;
+  reporterId: Scalars['ID']['output'];
+  status: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
 export enum MessageStatus {
   Delivered = 'DELIVERED',
   Read = 'READ',
@@ -471,6 +495,7 @@ export type Mutation = {
   approvePayment: Payment;
   approveProperty: Property;
   assignUserToAgency: User;
+  blockUser: BlockedUser;
   /** Cancel pending payment */
   cancelPayment: Payment;
   cancelSubscription: Subscription;
@@ -520,6 +545,7 @@ export type Mutation = {
   rejectProperty: Property;
   removeFavorite: Scalars['Boolean']['output'];
   removeUserFromAgency: User;
+  reportMessage: MessageReport;
   /** Reset password with token from email */
   resetPassword: Scalars['Boolean']['output'];
   saveComparison: PropertyComparison;
@@ -536,6 +562,7 @@ export type Mutation = {
   trackSearch: Scalars['Boolean']['output'];
   trackShare: Scalars['Boolean']['output'];
   trackWhatsAppClick: Scalars['Boolean']['output'];
+  unblockUser: Scalars['Boolean']['output'];
   unsubscribeEmail: EmailSubscriber;
   updateAgency: Agency;
   updateFavorite: Favorite;
@@ -569,6 +596,12 @@ export type MutationApprovePropertyArgs = {
 
 export type MutationAssignUserToAgencyArgs = {
   assignUserToAgencyInput: AssignUserToAgencyInput;
+};
+
+
+export type MutationBlockUserArgs = {
+  blockedId: Scalars['String']['input'];
+  reason?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -779,6 +812,13 @@ export type MutationRemoveUserFromAgencyArgs = {
 };
 
 
+export type MutationReportMessageArgs = {
+  details?: InputMaybe<Scalars['String']['input']>;
+  messageId: Scalars['String']['input'];
+  reason: Scalars['String']['input'];
+};
+
+
 export type MutationResetPasswordArgs = {
   input: ResetPasswordInput;
 };
@@ -859,6 +899,11 @@ export type MutationTrackShareArgs = {
 export type MutationTrackWhatsAppClickArgs = {
   propertyId: Scalars['String']['input'];
   userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type MutationUnblockUserArgs = {
+  blockedId: Scalars['String']['input'];
 };
 
 
@@ -1245,6 +1290,7 @@ export type Query = {
   isFavorited: Scalars['Boolean']['output'];
   marketAnalysis: MarketAnalysisReport;
   me: User;
+  myBlockedUsers: Array<BlockedUser>;
   myComparisons: Array<PropertyComparison>;
   myConversations: Array<Conversation>;
   myFavorites: Array<Favorite>;
