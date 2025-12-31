@@ -12,7 +12,7 @@ function MessagesPageContent() {
   const locale = params.locale as string;
 
   const { data, loading } = useMyConversationsQuery({
-    pollInterval: 10000, // Poll every 10 seconds for new messages
+    pollInterval: 15000, // Poll every 15 seconds for new messages
   });
 
   const conversations = data?.myConversations || [];

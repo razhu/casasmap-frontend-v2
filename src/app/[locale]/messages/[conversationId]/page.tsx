@@ -26,7 +26,7 @@ function ConversationPageContent() {
 
   const { data, loading, refetch } = useConversationMessagesQuery({
     variables: { conversationId },
-    pollInterval: 5000, // Poll every 5 seconds for new messages
+    pollInterval: 10000, // Poll every 10 seconds for new messages
   });
 
   const [sendMessage] = useSendMessageMutation();
