@@ -8,8 +8,10 @@ import {
   useSendMessageMutation,
   useMarkConversationAsReadMutation,
   useDeleteMessageMutation,
+  useBlockUserMutation,
+  useReportMessageMutation,
 } from "@/lib/graphql/generated";
-import { MessageThreadEnhanced } from "@/components/messaging/message-thread-enhanced";
+import { MessageThreadWithActions } from "@/components/messaging/message-thread-with-actions";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { useEffect } from "react";
 import { useAuthStore } from "@/store/auth";
@@ -30,6 +32,8 @@ function ConversationPageContent() {
   const [sendMessage] = useSendMessageMutation();
   const [markAsRead] = useMarkConversationAsReadMutation();
   const [deleteMessage] = useDeleteMessageMutation();
+  const [blockUser] = useBlockUserMutation();
+  const [reportMessage] = useReportMessageMutation();
 
   const messages = data?.conversationMessages || [];
 
@@ -103,6 +107,58 @@ function ConversationPageContent() {
     }
   };
 
+  const handleBlockUser = async (userId: string, reason?: string) => {
+    try {
+      await blockUser({
+        variables: { blockedId: userId, reason },
+      });
+
+      toast.success(locale === "es" ? "Usuario bloqueado" : "User blocked");
+
+      // Redirect back to messages
+      const messagesPath =
+        locale === "es" ? "/messages" : `/${locale}/messages`;
+      router.push(messagesPath);
+    } catch (error: any) {
+      console.error("Error blocking user:", error);
+      toast.error(
+        locale === "es" ? "Error al bloquear usuario" : "Error blocking user"
+      );
+      throw error;
+    }
+  };
+
+  const handleReportMessage = async (
+    messageId: string,
+    reason: string,
+    details?: string
+  ) => {
+    try {
+      await reportMessage({
+        variables: { messageId, reason, details },
+      });
+
+      toast.success(locale === "es" ? "Mensaje reportado" : "Message reported");
+    } catch (error: any) {
+      console.error("Error reporting message:", error);
+
+      if (error.message?.includes("already reported")) {
+        toast.error(
+          locale === "es"
+            ? "Ya has reportado este mensaje"
+            : "You have already reported this message"
+        );
+      } else {
+        toast.error(
+          locale === "es"
+            ? "Error al reportar mensaje"
+            : "Error reporting message"
+        );
+      }
+      throw error;
+    }
+  };
+
   const handleBack = () => {
     const messagesPath = locale === "es" ? "/messages" : `/${locale}/messages`;
     router.push(messagesPath);
@@ -136,11 +192,13 @@ function ConversationPageContent() {
 
       {/* Messages Thread */}
       <div className="container mx-auto h-[calc(100%-5rem)]">
-        <MessageThreadEnhanced
+        <MessageThreadWithActions
           messages={messages as any}
           conversationId={conversationId}
           onSendMessage={handleSendMessage}
           onDeleteMessage={handleDeleteMessage}
+          onBlockUser={handleBlockUser}
+          onReportMessage={handleReportMessage}
           loading={loading}
           locale={locale}
           otherUser={otherUser as any}

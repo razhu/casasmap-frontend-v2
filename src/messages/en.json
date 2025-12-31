@@ -150,5 +150,50 @@
     "terrace": "Terrace",
     "security": "Security",
     "storage": "Storage"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllAsRead": "Mark all as read",
+    "noNotifications": "You have no notifications",
+    "new_message": {
+      "title": "New message",
+      "message": "You have a new message from {senderName}"
+    },
+    "property_inquiry": {
+      "title": "New inquiry",
+      "message": "{name} sent an inquiry about {title}"
+    },
+    "price_drop": {
+      "title": "Price dropped",
+      "message": "The price of {title} dropped to {price}"
+    },
+    "new_property": {
+      "title": "New property",
+      "message": "New property matching your search: {title}"
+    },
+    "property_approved": {
+      "title": "Property approved",
+      "message": "Your property {title} was approved"
+    },
+    "property_rejected": {
+      "title": "Property rejected",
+      "message": "Your property {title} was rejected. Reason: {reason}"
+    },
+    "subscription_expiring": {
+      "title": "Subscription expiring",
+      "message": "Your {plan} subscription expires in {days} days"
+    },
+    "subscription_expired": {
+      "title": "Subscription expired",
+      "message": "Your {plan} subscription has expired"
+    },
+    "payment_received": {
+      "title": "Payment received",
+      "message": "We received your payment of {amount}"
+    },
+    "payment_failed": {
+      "title": "Payment failed",
+      "message": "Your payment of {amount} failed. Please try again"
+    }
   }
 }

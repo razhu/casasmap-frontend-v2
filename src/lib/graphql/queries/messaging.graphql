@@ -89,3 +89,11 @@ query ConversationMessages($conversationId: String!) {
     createdAt
   }
 }
+
+query ConversationWithProperty($conversationId: String!) {
+  conversationMessages(conversationId: $conversationId) {
+    id
+    conversationId
+    propertyId
+  }
+}

@@ -150,5 +150,50 @@
     "terrace": "Terraza",
     "security": "Seguridad",
     "storage": "Depósito"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "markAllAsRead": "Marcar todas como leídas",
+    "noNotifications": "No tienes notificaciones",
+    "new_message": {
+      "title": "Nuevo mensaje",
+      "message": "Tienes un nuevo mensaje de {senderName}"
+    },
+    "property_inquiry": {
+      "title": "Nueva consulta",
+      "message": "{name} envió una consulta sobre {title}"
+    },
+    "price_drop": {
+      "title": "Bajó el precio",
+      "message": "El precio de {title} bajó a {price}"
+    },
+    "new_property": {
+      "title": "Nueva propiedad",
+      "message": "Nueva propiedad que coincide con tu búsqueda: {title}"
+    },
+    "property_approved": {
+      "title": "Propiedad aprobada",
+      "message": "Tu propiedad {title} fue aprobada"
+    },
+    "property_rejected": {
+      "title": "Propiedad rechazada",
+      "message": "Tu propiedad {title} fue rechazada. Razón: {reason}"
+    },
+    "subscription_expiring": {
+      "title": "Suscripción por vencer",
+      "message": "Tu suscripción {plan} vence en {days} días"
+    },
+    "subscription_expired": {
+      "title": "Suscripción vencida",
+      "message": "Tu suscripción {plan} ha vencido"
+    },
+    "payment_received": {
+      "title": "Pago recibido",
+      "message": "Recibimos tu pago de {amount}"
+    },
+    "payment_failed": {
+      "title": "Pago fallido",
+      "message": "Tu pago de {amount} falló. Por favor intenta nuevamente"
+    }
   }
 }
