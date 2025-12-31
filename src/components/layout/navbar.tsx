@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   Search,
@@ -41,6 +41,7 @@ import { useAuthStore } from "@/store/auth";
 
 export function Navbar() {
   const params = useParams();
+  const pathname = usePathname();
   const locale = params.locale as string;
   const t = useTranslations("nav");
   const [open, setOpen] = useState(false);
@@ -49,6 +50,11 @@ export function Navbar() {
 
   const getLocalePath = (path: string) => {
     return locale === "es" ? path : `/${locale}${path}`;
+  };
+
+  const isActive = (href: string) => {
+    const fullPath = getLocalePath(href);
+    return pathname === fullPath || pathname?.startsWith(fullPath + "/");
   };
 
   const navLinks = [
@@ -128,9 +134,14 @@ export function Navbar() {
               .filter((link) => !link.requiresAuth || isAuthenticated)
               .map((link) => {
                 const Icon = link.icon;
+                const active = isActive(link.href);
                 return (
                   <Link key={link.href} href={getLocalePath(link.href)}>
-                    <Button variant="ghost" size="sm">
+                    <Button
+                      variant={active ? "default" : "ghost"}
+                      size="sm"
+                      className={active ? "" : ""}
+                    >
                       <Icon className="h-4 w-4 mr-2" />
                       {link.label}
                     </Button>
@@ -295,6 +306,7 @@ export function Navbar() {
                     .filter((link) => !link.requiresAuth || isAuthenticated)
                     .map((link) => {
                       const Icon = link.icon;
+                      const active = isActive(link.href);
                       return (
                         <Link
                           key={link.href}
@@ -302,7 +314,7 @@ export function Navbar() {
                           onClick={() => setOpen(false)}
                         >
                           <Button
-                            variant="ghost"
+                            variant={active ? "default" : "ghost"}
                             className="w-full justify-start"
                             size="lg"
                           >

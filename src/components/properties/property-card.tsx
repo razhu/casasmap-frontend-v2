@@ -43,6 +43,21 @@ export function PropertyCard({
     return locale === "es" ? path : `/${locale}${path}`;
   };
 
+  const getPropertyUrl = () => {
+    const slug = locale === "en" ? property.slugEn : property.slug;
+
+    // If slug exists, use nice URL
+    if (slug) {
+      // Both Spanish and English use /inmuebles/[slug]
+      // Spanish: /inmuebles/casa-en-venta
+      // English: /en/inmuebles/beautiful-house-for-sale
+      return locale === "es" ? `/inmuebles/${slug}` : `/en/inmuebles/${slug}`;
+    }
+
+    // Fallback to ID-based URL
+    return getLocalePath(`/properties/${property.id}`);
+  };
+
   const formatPrice = (priceUS?: number | null, priceBS?: number | null) => {
     if (priceUS) {
       return `$${priceUS.toLocaleString()}`;
@@ -54,7 +69,7 @@ export function PropertyCard({
   };
 
   return (
-    <Link href={getLocalePath(`/properties/${property.id}`)}>
+    <Link href={getPropertyUrl()}>
       <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full">
         <CardHeader className="p-0">
           <div

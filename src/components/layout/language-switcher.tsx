@@ -25,6 +25,16 @@ export function LanguageSwitcher() {
 
   const basePath = getPathWithoutLocale();
 
+  // Special handling for property slug pages
+  const getLanguagePath = (langCode: string) => {
+    // If on a property slug page, redirect to properties list instead
+    if (basePath.startsWith("/inmuebles/")) {
+      return langCode === "es" ? "/properties" : "/en/properties";
+    }
+
+    return langCode === "es" ? basePath : `/${langCode}${basePath}`;
+  };
+
   const languages = [
     { code: "es", name: "Español" },
     { code: "en", name: "English" },
@@ -41,7 +51,7 @@ export function LanguageSwitcher() {
         {languages.map((lang) => (
           <DropdownMenuItem key={lang.code} asChild>
             <Link
-              href={lang.code === "es" ? basePath : `/${lang.code}${basePath}`}
+              href={getLanguagePath(lang.code)}
               className={`flex items-center gap-2 cursor-pointer ${
                 locale === lang.code ? "bg-accent" : ""
               }`}
