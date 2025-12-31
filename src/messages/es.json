@@ -230,5 +230,34 @@
       "averageTime": "Tiempo en el anuncio"
     },
     "noData": "No se pudieron cargar las estadísticas"
+  },
+  "reports": {
+    "title": "Reportes de Mercado",
+    "subtitle": "Análisis detallado del mercado inmobiliario en Bolivia",
+    "premiumOnly": "Función Premium Plus",
+    "premiumMessage": "Los reportes de mercado están disponibles solo para usuarios Premium Plus",
+    "viewPlans": "Ver Planes Premium",
+    "generate": "Generar Reporte",
+    "selectCity": "Selecciona ciudad",
+    "selectPropertyType": "Tipo de Propiedad (Opcional)",
+    "allTypes": "Todos los tipos",
+    "cityRequired": "Ciudad *",
+    "stats": {
+      "totalProperties": "Propiedades Totales",
+      "averagePrice": "Precio Promedio",
+      "medianPrice": "Precio Mediano",
+      "pricePerSqm": "Precio por m²",
+      "averageArea": "Área promedio",
+      "priceRange": "Rango de Precios",
+      "minimum": "Mínimo",
+      "maximum": "Máximo",
+      "average": "Promedio"
+    },
+    "distribution": {
+      "price": "Distribución de Precios",
+      "propertyType": "Distribución por Tipo de Propiedad",
+      "properties": "propiedades"
+    },
+    "error": "Error al cargar el reporte. Por favor intenta nuevamente."
   }
 }

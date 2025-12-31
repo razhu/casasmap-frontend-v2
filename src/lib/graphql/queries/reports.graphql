@@ -1,0 +1,37 @@
+query MarketAnalysis($input: MarketAnalysisInput!) {
+  marketAnalysis(input: $input) {
+    cityId
+    cityName
+    propertyTypeId
+    propertyTypeName
+    totalProperties
+    averagePriceUS
+    averagePriceBS
+    medianPriceUS
+    medianPriceBS
+    minPriceUS
+    maxPriceUS
+    averageArea
+    pricePerSqmUS
+    priceDistribution {
+      range
+      count
+      percentage
+    }
+    propertyTypeDistribution {
+      propertyType
+      count
+      percentage
+      averagePrice
+    }
+  }
+}
+
+query PriceHistory($input: PriceHistoryInput!) {
+  priceHistory(input: $input) {
+    month
+    averagePriceUS
+    averagePriceBS
+    propertyCount
+  }
+}

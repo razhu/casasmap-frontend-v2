@@ -14,6 +14,7 @@ import {
   Plus,
   Bookmark,
   BarChart3,
+  TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -83,6 +84,21 @@ export function Navbar() {
     },
   ];
 
+  // Premium Plus only links
+  const premiumPlusLinks =
+    user?.subscription?.plan === "PREMIUM_PLUS"
+      ? [
+          {
+            href: "/reports",
+            icon: TrendingUp,
+            label: locale === "es" ? "Reportes" : "Reports",
+            requiresAuth: true,
+          },
+        ]
+      : [];
+
+  const allNavLinks = [...navLinks, ...premiumPlusLinks];
+
   const handleLogout = () => {
     logout();
     window.location.href = getLocalePath("/");
@@ -108,7 +124,7 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-4">
-            {navLinks
+            {allNavLinks
               .filter((link) => !link.requiresAuth || isAuthenticated)
               .map((link) => {
                 const Icon = link.icon;
@@ -275,7 +291,7 @@ export function Navbar() {
                     </Button>
                   </Link>
 
-                  {navLinks
+                  {allNavLinks
                     .filter((link) => !link.requiresAuth || isAuthenticated)
                     .map((link) => {
                       const Icon = link.icon;

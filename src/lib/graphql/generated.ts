@@ -2204,6 +2204,20 @@ export type MyPropertiesQueryVariables = Exact<{
 
 export type MyPropertiesQuery = { __typename?: 'Query', myProperties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, titleEn: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, city?: { __typename?: 'City', id: number, name: string } | null, propertyType?: { __typename?: 'PropertyType', id: number, name: string } | null, analytics?: { __typename?: 'PropertyAnalytics', id: string, views: number, clicks: number, favorites: number, inquiries: number, phoneClicks: number, emailClicks: number, whatsappClicks: number, shares: number, conversionRate: number } | null }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
 
+export type MarketAnalysisQueryVariables = Exact<{
+  input: MarketAnalysisInput;
+}>;
+
+
+export type MarketAnalysisQuery = { __typename?: 'Query', marketAnalysis: { __typename?: 'MarketAnalysisReport', cityId: number, cityName: string, propertyTypeId?: number | null, propertyTypeName?: string | null, totalProperties: number, averagePriceUS: number, averagePriceBS: number, medianPriceUS: number, medianPriceBS: number, minPriceUS: number, maxPriceUS: number, averageArea: number, pricePerSqmUS: number, priceDistribution: Array<{ __typename?: 'PriceDistribution', range: string, count: number, percentage: number }>, propertyTypeDistribution: Array<{ __typename?: 'PropertyTypeDistribution', propertyType: string, count: number, percentage: number, averagePrice: number }> } };
+
+export type PriceHistoryQueryVariables = Exact<{
+  input: PriceHistoryInput;
+}>;
+
+
+export type PriceHistoryQuery = { __typename?: 'Query', priceHistory: Array<{ __typename?: 'PriceHistoryPoint', month: string, averagePriceUS: number, averagePriceBS: number, propertyCount: number }> };
+
 export type MySavedSearchesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3732,6 +3746,82 @@ export function useMyPropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.Skip
 export type MyPropertiesQueryHookResult = ReturnType<typeof useMyPropertiesQuery>;
 export type MyPropertiesLazyQueryHookResult = ReturnType<typeof useMyPropertiesLazyQuery>;
 export type MyPropertiesQueryResult = ApolloReactCommon.QueryResult<MyPropertiesQuery, MyPropertiesQueryVariables>;
+export const MarketAnalysisDocument = gql`
+    query MarketAnalysis($input: MarketAnalysisInput!) {
+  marketAnalysis(input: $input) {
+    cityId
+    cityName
+    propertyTypeId
+    propertyTypeName
+    totalProperties
+    averagePriceUS
+    averagePriceBS
+    medianPriceUS
+    medianPriceBS
+    minPriceUS
+    maxPriceUS
+    averageArea
+    pricePerSqmUS
+    priceDistribution {
+      range
+      count
+      percentage
+    }
+    propertyTypeDistribution {
+      propertyType
+      count
+      percentage
+      averagePrice
+    }
+  }
+}
+    `;
+export function useMarketAnalysisQuery(baseOptions: ApolloReactHooks.QueryHookOptions<MarketAnalysisQuery, MarketAnalysisQueryVariables> & ({ variables: MarketAnalysisQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<MarketAnalysisQuery, MarketAnalysisQueryVariables>(MarketAnalysisDocument, options);
+      }
+export function useMarketAnalysisLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MarketAnalysisQuery, MarketAnalysisQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<MarketAnalysisQuery, MarketAnalysisQueryVariables>(MarketAnalysisDocument, options);
+        }
+// @ts-ignore
+export function useMarketAnalysisSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<MarketAnalysisQuery, MarketAnalysisQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MarketAnalysisQuery, MarketAnalysisQueryVariables>;
+export function useMarketAnalysisSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MarketAnalysisQuery, MarketAnalysisQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MarketAnalysisQuery | undefined, MarketAnalysisQueryVariables>;
+export function useMarketAnalysisSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MarketAnalysisQuery, MarketAnalysisQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<MarketAnalysisQuery, MarketAnalysisQueryVariables>(MarketAnalysisDocument, options);
+        }
+export type MarketAnalysisQueryHookResult = ReturnType<typeof useMarketAnalysisQuery>;
+export type MarketAnalysisLazyQueryHookResult = ReturnType<typeof useMarketAnalysisLazyQuery>;
+export type MarketAnalysisQueryResult = ApolloReactCommon.QueryResult<MarketAnalysisQuery, MarketAnalysisQueryVariables>;
+export const PriceHistoryDocument = gql`
+    query PriceHistory($input: PriceHistoryInput!) {
+  priceHistory(input: $input) {
+    month
+    averagePriceUS
+    averagePriceBS
+    propertyCount
+  }
+}
+    `;
+export function usePriceHistoryQuery(baseOptions: ApolloReactHooks.QueryHookOptions<PriceHistoryQuery, PriceHistoryQueryVariables> & ({ variables: PriceHistoryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<PriceHistoryQuery, PriceHistoryQueryVariables>(PriceHistoryDocument, options);
+      }
+export function usePriceHistoryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<PriceHistoryQuery, PriceHistoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<PriceHistoryQuery, PriceHistoryQueryVariables>(PriceHistoryDocument, options);
+        }
+// @ts-ignore
+export function usePriceHistorySuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<PriceHistoryQuery, PriceHistoryQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PriceHistoryQuery, PriceHistoryQueryVariables>;
+export function usePriceHistorySuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PriceHistoryQuery, PriceHistoryQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PriceHistoryQuery | undefined, PriceHistoryQueryVariables>;
+export function usePriceHistorySuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PriceHistoryQuery, PriceHistoryQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<PriceHistoryQuery, PriceHistoryQueryVariables>(PriceHistoryDocument, options);
+        }
+export type PriceHistoryQueryHookResult = ReturnType<typeof usePriceHistoryQuery>;
+export type PriceHistoryLazyQueryHookResult = ReturnType<typeof usePriceHistoryLazyQuery>;
+export type PriceHistoryQueryResult = ApolloReactCommon.QueryResult<PriceHistoryQuery, PriceHistoryQueryVariables>;
 export const MySavedSearchesDocument = gql`
     query MySavedSearches {
   mySavedSearches {

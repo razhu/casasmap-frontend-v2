@@ -230,5 +230,34 @@
       "averageTime": "Time on listing"
     },
     "noData": "Could not load analytics"
+  },
+  "reports": {
+    "title": "Market Reports",
+    "subtitle": "Detailed analysis of the real estate market in Bolivia",
+    "premiumOnly": "Premium Plus Feature",
+    "premiumMessage": "Market reports are available only for Premium Plus users",
+    "viewPlans": "View Premium Plans",
+    "generate": "Generate Report",
+    "selectCity": "Select city",
+    "selectPropertyType": "Property Type (Optional)",
+    "allTypes": "All types",
+    "cityRequired": "City *",
+    "stats": {
+      "totalProperties": "Total Properties",
+      "averagePrice": "Average Price",
+      "medianPrice": "Median Price",
+      "pricePerSqm": "Price per m²",
+      "averageArea": "Average area",
+      "priceRange": "Price Range",
+      "minimum": "Minimum",
+      "maximum": "Maximum",
+      "average": "Average"
+    },
+    "distribution": {
+      "price": "Price Distribution",
+      "propertyType": "Distribution by Property Type",
+      "properties": "properties"
+    },
+    "error": "Error loading report. Please try again."
   }
 }
