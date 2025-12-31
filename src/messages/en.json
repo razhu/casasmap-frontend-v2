@@ -259,5 +259,30 @@
       "properties": "properties"
     },
     "error": "Error loading report. Please try again."
+  },
+  "property": {
+    "downloadFlyer": "Download Flyer",
+    "downloadFlyerPDF": "Download PDF Flyer",
+    "generatingFlyer": "Generating flyer...",
+    "flyerGenerated": "Flyer generated",
+    "flyerGeneratedSuccess": "PDF flyer generated successfully",
+    "flyerError": "Could not generate flyer",
+    "notFound": "Property not found",
+    "notFoundMessage": "The property you're looking for doesn't exist or has been removed",
+    "goHome": "Go home",
+    "contact": "Contact",
+    "sendMessage": "Send Message",
+    "call": "Call",
+    "publishedBy": "Published by",
+    "description": "Description",
+    "additionalDetails": "Additional Details",
+    "yearBuilt": "Year built",
+    "furnished": "Furnished",
+    "yes": "Yes",
+    "no": "No",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "totalArea": "Total Area",
+    "parking": "Parking"
   }
 }

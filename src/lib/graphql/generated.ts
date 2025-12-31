@@ -1315,6 +1315,7 @@ export type Query = {
   properties: PropertyResult;
   property: Property;
   propertyAnalytics: PropertyAnalytics;
+  propertyBySlug: Property;
   propertyLimits: PropertyLimits;
   propertyMedia: Array<Media>;
   propertyViewHistory: Array<PropertyViewHistory>;
@@ -1455,6 +1456,12 @@ export type QueryPropertyArgs = {
 
 export type QueryPropertyAnalyticsArgs = {
   propertyId: Scalars['String']['input'];
+};
+
+
+export type QueryPropertyBySlugArgs = {
+  locale?: Scalars['String']['input'];
+  slug: Scalars['String']['input'];
 };
 
 
@@ -1967,12 +1974,12 @@ export type DeleteNotificationMutationVariables = Exact<{
 
 export type DeleteNotificationMutation = { __typename?: 'Mutation', deleteNotification: { __typename?: 'Notification', id: string } };
 
-export type CreatePropertyMutationVariables = Exact<{
-  input: CreatePropertyInput;
+export type GeneratePropertyFlyerMutationVariables = Exact<{
+  propertyId: Scalars['String']['input'];
 }>;
 
 
-export type CreatePropertyMutation = { __typename?: 'Mutation', createProperty: { __typename?: 'Property', id: string, title: string, titleEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, yearBuilt?: number | null, furnished?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, security?: boolean | null, storage?: boolean | null, petsAllowed?: boolean | null, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, createdAt: any } };
+export type GeneratePropertyFlyerMutation = { __typename?: 'Mutation', generatePropertyFlyer: string };
 
 export type CreateSavedSearchMutationVariables = Exact<{
   input: CreateSavedSearchInput;
@@ -2094,7 +2101,7 @@ export type ComparePropertiesQueryVariables = Exact<{
 }>;
 
 
-export type ComparePropertiesQuery = { __typename?: 'Query', compareProperties: { __typename?: 'PropertyComparisonResult', properties: Array<{ __typename?: 'Property', id: string, title: string, titleEn: string, priceUS?: number | null, priceBS?: number | null, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, yearBuilt?: number | null, furnished?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, security?: boolean | null, storage?: boolean | null, address: string, propertyTypeId: number, dealTypeId: number, latitude?: number | null, longitude?: number | null }>, matrix: { __typename?: 'ComparisonMatrix', features: Array<{ __typename?: 'ComparisonFeature', name: string, values: Array<string> }> } } };
+export type ComparePropertiesQuery = { __typename?: 'Query', compareProperties: { __typename?: 'PropertyComparisonResult', properties: Array<{ __typename?: 'Property', id: string, title: string, titleEn: string, slug: string, slugEn: string, priceUS?: number | null, priceBS?: number | null, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, yearBuilt?: number | null, furnished?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, security?: boolean | null, storage?: boolean | null, address: string, propertyTypeId: number, dealTypeId: number, latitude?: number | null, longitude?: number | null }>, matrix: { __typename?: 'ComparisonMatrix', features: Array<{ __typename?: 'ComparisonFeature', name: string, values: Array<string> }> } } };
 
 export type MyComparisonsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2104,7 +2111,7 @@ export type MyComparisonsQuery = { __typename?: 'Query', myComparisons: Array<{ 
 export type MyFavoritesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyFavoritesQuery = { __typename?: 'Query', myFavorites: Array<{ __typename?: 'Favorite', id: string, propertyId: string, priceAlertEnabled: boolean, lastPrice?: number | null, notes?: string | null, createdAt: any, property?: { __typename?: 'Property', id: string, title: string, titleEn: string, description: string, priceUS?: number | null, priceBS?: number | null, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, status: string, priority: string, address: string, latitude?: number | null, longitude?: number | null, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, createdAt: any } | null }> };
+export type MyFavoritesQuery = { __typename?: 'Query', myFavorites: Array<{ __typename?: 'Favorite', id: string, propertyId: string, priceAlertEnabled: boolean, lastPrice?: number | null, notes?: string | null, createdAt: any, property?: { __typename?: 'Property', id: string, title: string, titleEn: string, slug: string, slugEn: string, description: string, priceUS?: number | null, priceBS?: number | null, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, status: string, priority: string, address: string, latitude?: number | null, longitude?: number | null, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, createdAt: any } | null }> };
 
 export type IsFavoritedQueryVariables = Exact<{
   propertyId: Scalars['String']['input'];
@@ -2177,14 +2184,14 @@ export type PropertiesQueryVariables = Exact<{
 }>;
 
 
-export type PropertiesQuery = { __typename?: 'Query', properties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, userId: string }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
+export type PropertiesQuery = { __typename?: 'Query', properties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, slug: string, slugEn: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, userId: string }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
 
 export type PropertyQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
 
-export type PropertyQuery = { __typename?: 'Query', property: { __typename?: 'Property', id: string, title: string, titleEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, phoneNumber?: string | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, yearBuilt?: number | null, furnished?: boolean | null, petsAllowed?: boolean | null, maintenanceFee?: number | null, propertyTax?: number | null, availableFrom?: any | null, virtualTourUrl?: string | null, floorPlanUrl?: string | null, condition?: string | null, stories?: number | null, elevators?: number | null, heating?: string | null, cooling?: string | null, security?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, storage?: boolean | null, createdAt: any, updatedAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, userId: string, agencyId?: string | null, user?: { __typename?: 'User', id: string, email: string, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } | null } };
+export type PropertyQuery = { __typename?: 'Query', property: { __typename?: 'Property', id: string, title: string, titleEn: string, slug: string, slugEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, phoneNumber?: string | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, yearBuilt?: number | null, furnished?: boolean | null, petsAllowed?: boolean | null, maintenanceFee?: number | null, propertyTax?: number | null, availableFrom?: any | null, virtualTourUrl?: string | null, floorPlanUrl?: string | null, condition?: string | null, stories?: number | null, elevators?: number | null, heating?: string | null, cooling?: string | null, security?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, storage?: boolean | null, createdAt: any, updatedAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, userId: string, agencyId?: string | null, user?: { __typename?: 'User', id: string, email: string, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } | null } };
 
 export type SearchPropertiesQueryVariables = Exact<{
   query?: InputMaybe<Scalars['String']['input']>;
@@ -2194,7 +2201,14 @@ export type SearchPropertiesQueryVariables = Exact<{
 }>;
 
 
-export type SearchPropertiesQuery = { __typename?: 'Query', searchProperties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, userId: string }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
+export type SearchPropertiesQuery = { __typename?: 'Query', searchProperties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, slug: string, slugEn: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, userId: string }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
+
+export type CreatePropertyMutationVariables = Exact<{
+  input: CreatePropertyInput;
+}>;
+
+
+export type CreatePropertyMutation = { __typename?: 'Mutation', createProperty: { __typename?: 'Property', id: string, title: string, titleEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, yearBuilt?: number | null, furnished?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, security?: boolean | null, storage?: boolean | null, petsAllowed?: boolean | null, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, createdAt: any } };
 
 export type MyPropertiesQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -2203,6 +2217,14 @@ export type MyPropertiesQueryVariables = Exact<{
 
 
 export type MyPropertiesQuery = { __typename?: 'Query', myProperties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, titleEn: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, city?: { __typename?: 'City', id: number, name: string } | null, propertyType?: { __typename?: 'PropertyType', id: number, name: string } | null, analytics?: { __typename?: 'PropertyAnalytics', id: string, views: number, clicks: number, favorites: number, inquiries: number, phoneClicks: number, emailClicks: number, whatsappClicks: number, shares: number, conversionRate: number } | null }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
+
+export type PropertyBySlugQueryVariables = Exact<{
+  slug: Scalars['String']['input'];
+  locale: Scalars['String']['input'];
+}>;
+
+
+export type PropertyBySlugQuery = { __typename?: 'Query', propertyBySlug: { __typename?: 'Property', id: string, title: string, titleEn: string, slug: string, slugEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, phoneNumber?: string | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, yearBuilt?: number | null, furnished?: boolean | null, petsAllowed?: boolean | null, maintenanceFee?: number | null, propertyTax?: number | null, availableFrom?: any | null, virtualTourUrl?: string | null, floorPlanUrl?: string | null, condition?: string | null, stories?: number | null, elevators?: number | null, heating?: string | null, cooling?: string | null, security?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, storage?: boolean | null, createdAt: any, updatedAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, userId: string, agencyId?: string | null, user?: { __typename?: 'User', id: string, email: string, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } | null } };
 
 export type MarketAnalysisQueryVariables = Exact<{
   input: MarketAnalysisInput;
@@ -2563,51 +2585,19 @@ export function useDeleteNotificationMutation(baseOptions?: ApolloReactHooks.Mut
 export type DeleteNotificationMutationHookResult = ReturnType<typeof useDeleteNotificationMutation>;
 export type DeleteNotificationMutationResult = ApolloReactCommon.MutationResult<DeleteNotificationMutation>;
 export type DeleteNotificationMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteNotificationMutation, DeleteNotificationMutationVariables>;
-export const CreatePropertyDocument = gql`
-    mutation CreateProperty($input: CreatePropertyInput!) {
-  createProperty(createPropertyInput: $input) {
-    id
-    title
-    titleEn
-    description
-    descriptionEn
-    priceUS
-    priceBS
-    address
-    bedrooms
-    bathrooms
-    totalArea
-    coveredArea
-    parkingSpaces
-    latitude
-    longitude
-    status
-    yearBuilt
-    furnished
-    pool
-    balcony
-    terrace
-    security
-    storage
-    petsAllowed
-    propertyTypeId
-    dealTypeId
-    cityId
-    zoneId
-    stateId
-    countryId
-    createdAt
-  }
+export const GeneratePropertyFlyerDocument = gql`
+    mutation GeneratePropertyFlyer($propertyId: String!) {
+  generatePropertyFlyer(propertyId: $propertyId)
 }
     `;
-export type CreatePropertyMutationFn = ApolloReactCommon.MutationFunction<CreatePropertyMutation, CreatePropertyMutationVariables>;
-export function useCreatePropertyMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreatePropertyMutation, CreatePropertyMutationVariables>) {
+export type GeneratePropertyFlyerMutationFn = ApolloReactCommon.MutationFunction<GeneratePropertyFlyerMutation, GeneratePropertyFlyerMutationVariables>;
+export function useGeneratePropertyFlyerMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<GeneratePropertyFlyerMutation, GeneratePropertyFlyerMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useMutation<CreatePropertyMutation, CreatePropertyMutationVariables>(CreatePropertyDocument, options);
+        return ApolloReactHooks.useMutation<GeneratePropertyFlyerMutation, GeneratePropertyFlyerMutationVariables>(GeneratePropertyFlyerDocument, options);
       }
-export type CreatePropertyMutationHookResult = ReturnType<typeof useCreatePropertyMutation>;
-export type CreatePropertyMutationResult = ApolloReactCommon.MutationResult<CreatePropertyMutation>;
-export type CreatePropertyMutationOptions = ApolloReactCommon.BaseMutationOptions<CreatePropertyMutation, CreatePropertyMutationVariables>;
+export type GeneratePropertyFlyerMutationHookResult = ReturnType<typeof useGeneratePropertyFlyerMutation>;
+export type GeneratePropertyFlyerMutationResult = ApolloReactCommon.MutationResult<GeneratePropertyFlyerMutation>;
+export type GeneratePropertyFlyerMutationOptions = ApolloReactCommon.BaseMutationOptions<GeneratePropertyFlyerMutation, GeneratePropertyFlyerMutationVariables>;
 export const CreateSavedSearchDocument = gql`
     mutation CreateSavedSearch($input: CreateSavedSearchInput!) {
   createSavedSearch(input: $input) {
@@ -3009,6 +2999,8 @@ export const ComparePropertiesDocument = gql`
       id
       title
       titleEn
+      slug
+      slugEn
       priceUS
       priceBS
       bedrooms
@@ -3096,6 +3088,8 @@ export const MyFavoritesDocument = gql`
       id
       title
       titleEn
+      slug
+      slugEn
       description
       priceUS
       priceBS
@@ -3496,6 +3490,8 @@ export const PropertiesDocument = gql`
     data {
       id
       title
+      slug
+      slugEn
       description
       priceUS
       priceBS
@@ -3548,6 +3544,8 @@ export const PropertyDocument = gql`
     id
     title
     titleEn
+    slug
+    slugEn
     description
     descriptionEn
     priceUS
@@ -3628,6 +3626,8 @@ export const SearchPropertiesDocument = gql`
     data {
       id
       title
+      slug
+      slugEn
       description
       priceUS
       priceBS
@@ -3674,6 +3674,51 @@ export function useSearchPropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.
 export type SearchPropertiesQueryHookResult = ReturnType<typeof useSearchPropertiesQuery>;
 export type SearchPropertiesLazyQueryHookResult = ReturnType<typeof useSearchPropertiesLazyQuery>;
 export type SearchPropertiesQueryResult = ApolloReactCommon.QueryResult<SearchPropertiesQuery, SearchPropertiesQueryVariables>;
+export const CreatePropertyDocument = gql`
+    mutation CreateProperty($input: CreatePropertyInput!) {
+  createProperty(createPropertyInput: $input) {
+    id
+    title
+    titleEn
+    description
+    descriptionEn
+    priceUS
+    priceBS
+    address
+    bedrooms
+    bathrooms
+    totalArea
+    coveredArea
+    parkingSpaces
+    latitude
+    longitude
+    status
+    yearBuilt
+    furnished
+    pool
+    balcony
+    terrace
+    security
+    storage
+    petsAllowed
+    propertyTypeId
+    dealTypeId
+    cityId
+    zoneId
+    stateId
+    countryId
+    createdAt
+  }
+}
+    `;
+export type CreatePropertyMutationFn = ApolloReactCommon.MutationFunction<CreatePropertyMutation, CreatePropertyMutationVariables>;
+export function useCreatePropertyMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreatePropertyMutation, CreatePropertyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<CreatePropertyMutation, CreatePropertyMutationVariables>(CreatePropertyDocument, options);
+      }
+export type CreatePropertyMutationHookResult = ReturnType<typeof useCreatePropertyMutation>;
+export type CreatePropertyMutationResult = ApolloReactCommon.MutationResult<CreatePropertyMutation>;
+export type CreatePropertyMutationOptions = ApolloReactCommon.BaseMutationOptions<CreatePropertyMutation, CreatePropertyMutationVariables>;
 export const MyPropertiesDocument = gql`
     query MyProperties($page: Int, $limit: Int) {
   myProperties(page: $page, limit: $limit) {
@@ -3746,6 +3791,86 @@ export function useMyPropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.Skip
 export type MyPropertiesQueryHookResult = ReturnType<typeof useMyPropertiesQuery>;
 export type MyPropertiesLazyQueryHookResult = ReturnType<typeof useMyPropertiesLazyQuery>;
 export type MyPropertiesQueryResult = ApolloReactCommon.QueryResult<MyPropertiesQuery, MyPropertiesQueryVariables>;
+export const PropertyBySlugDocument = gql`
+    query PropertyBySlug($slug: String!, $locale: String!) {
+  propertyBySlug(slug: $slug, locale: $locale) {
+    id
+    title
+    titleEn
+    slug
+    slugEn
+    description
+    descriptionEn
+    priceUS
+    priceBS
+    phoneNumber
+    address
+    bedrooms
+    bathrooms
+    totalArea
+    coveredArea
+    parkingSpaces
+    latitude
+    longitude
+    status
+    priority
+    yearBuilt
+    furnished
+    petsAllowed
+    maintenanceFee
+    propertyTax
+    availableFrom
+    virtualTourUrl
+    floorPlanUrl
+    condition
+    stories
+    elevators
+    heating
+    cooling
+    security
+    pool
+    balcony
+    terrace
+    storage
+    createdAt
+    updatedAt
+    propertyTypeId
+    dealTypeId
+    cityId
+    zoneId
+    stateId
+    countryId
+    userId
+    agencyId
+    user {
+      id
+      email
+      profile {
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+export function usePropertyBySlugQuery(baseOptions: ApolloReactHooks.QueryHookOptions<PropertyBySlugQuery, PropertyBySlugQueryVariables> & ({ variables: PropertyBySlugQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<PropertyBySlugQuery, PropertyBySlugQueryVariables>(PropertyBySlugDocument, options);
+      }
+export function usePropertyBySlugLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<PropertyBySlugQuery, PropertyBySlugQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<PropertyBySlugQuery, PropertyBySlugQueryVariables>(PropertyBySlugDocument, options);
+        }
+// @ts-ignore
+export function usePropertyBySlugSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<PropertyBySlugQuery, PropertyBySlugQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PropertyBySlugQuery, PropertyBySlugQueryVariables>;
+export function usePropertyBySlugSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PropertyBySlugQuery, PropertyBySlugQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PropertyBySlugQuery | undefined, PropertyBySlugQueryVariables>;
+export function usePropertyBySlugSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PropertyBySlugQuery, PropertyBySlugQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<PropertyBySlugQuery, PropertyBySlugQueryVariables>(PropertyBySlugDocument, options);
+        }
+export type PropertyBySlugQueryHookResult = ReturnType<typeof usePropertyBySlugQuery>;
+export type PropertyBySlugLazyQueryHookResult = ReturnType<typeof usePropertyBySlugLazyQuery>;
+export type PropertyBySlugQueryResult = ApolloReactCommon.QueryResult<PropertyBySlugQuery, PropertyBySlugQueryVariables>;
 export const MarketAnalysisDocument = gql`
     query MarketAnalysis($input: MarketAnalysisInput!) {
   marketAnalysis(input: $input) {

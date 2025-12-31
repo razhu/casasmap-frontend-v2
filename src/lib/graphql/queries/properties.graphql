@@ -3,6 +3,8 @@ query Properties($page: Int, $limit: Int) {
     data {
       id
       title
+      slug
+      slugEn
       description
       priceUS
       priceBS
@@ -36,6 +38,8 @@ query Property($id: String!) {
     id
     title
     titleEn
+    slug
+    slugEn
     description
     descriptionEn
     priceUS
@@ -102,6 +106,8 @@ query SearchProperties(
     data {
       id
       title
+      slug
+      slugEn
       description
       priceUS
       priceBS
@@ -215,6 +221,67 @@ query MyProperties($page: Int, $limit: Int) {
       page
       limit
       totalPages
+    }
+  }
+}
+
+query PropertyBySlug($slug: String!, $locale: String!) {
+  propertyBySlug(slug: $slug, locale: $locale) {
+    id
+    title
+    titleEn
+    slug
+    slugEn
+    description
+    descriptionEn
+    priceUS
+    priceBS
+    phoneNumber
+    address
+    bedrooms
+    bathrooms
+    totalArea
+    coveredArea
+    parkingSpaces
+    latitude
+    longitude
+    status
+    priority
+    yearBuilt
+    furnished
+    petsAllowed
+    maintenanceFee
+    propertyTax
+    availableFrom
+    virtualTourUrl
+    floorPlanUrl
+    condition
+    stories
+    elevators
+    heating
+    cooling
+    security
+    pool
+    balcony
+    terrace
+    storage
+    createdAt
+    updatedAt
+    propertyTypeId
+    dealTypeId
+    cityId
+    zoneId
+    stateId
+    countryId
+    userId
+    agencyId
+    user {
+      id
+      email
+      profile {
+        firstName
+        lastName
+      }
     }
   }
 }

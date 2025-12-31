@@ -18,10 +18,12 @@ import {
   ArrowLeft,
   Share2,
   Heart,
+  Download,
 } from "lucide-react";
 import {
   usePropertyQuery,
   useSearchPropertiesQuery,
+  useGeneratePropertyFlyerMutation,
 } from "@/lib/graphql/generated";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,6 +39,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PropertyCard } from "@/components/properties/property-card";
 import { FavoriteButton } from "@/components/properties/favorite-button";
 import { MessageButton } from "@/components/messaging/message-button";
+import { useAuthStore } from "@/store/auth";
+import { useToast } from "@/hooks/use-toast";
 
 // Set Mapbox token
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
@@ -49,10 +53,47 @@ export default function PropertyDetailPage() {
   const t = useTranslations("properties");
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const { user } = useAuthStore();
+  const { toast } = useToast();
 
   const { data, loading, error } = usePropertyQuery({
     variables: { id: propertyId },
   });
+
+  const [generateFlyer, { loading: generatingFlyer }] =
+    useGeneratePropertyFlyerMutation();
+
+  const handleDownloadFlyer = async () => {
+    if (!data?.property) return;
+
+    try {
+      const result = await generateFlyer({
+        variables: { propertyId: data.property.id },
+      });
+
+      if (result.data?.generatePropertyFlyer) {
+        window.open(result.data.generatePropertyFlyer, "_blank");
+        toast({
+          title: locale === "es" ? "Volante generado" : "Flyer generated",
+          description:
+            locale === "es"
+              ? "El volante PDF se ha generado exitosamente"
+              : "PDF flyer generated successfully",
+        });
+      }
+    } catch (err: any) {
+      const errorMessage = err?.message || err?.graphQLErrors?.[0]?.message;
+      toast({
+        title: locale === "es" ? "Error" : "Error",
+        description:
+          errorMessage ||
+          (locale === "es"
+            ? "No se pudo generar el volante"
+            : "Could not generate flyer"),
+        variant: "destructive",
+      });
+    }
+  };
 
   // Fetch similar properties (same city, excluding current property)
   const { data: similarData } = useSearchPropertiesQuery({
@@ -126,6 +167,9 @@ export default function PropertyDetailPage() {
   const title = locale === "es" ? property.title : property.titleEn;
   const description =
     locale === "es" ? property.description : property.descriptionEn;
+
+  // Check if current user owns this property
+  const isOwner = user?.id === property.userId;
 
   const formatPrice = (priceUS?: number | null, priceBS?: number | null) => {
     if (priceUS) {
@@ -394,6 +438,20 @@ export default function PropertyDetailPage() {
                   variant="outline"
                   size="lg"
                 />
+                {isOwner && (
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    size="lg"
+                    onClick={handleDownloadFlyer}
+                    disabled={generatingFlyer}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    {locale === "es"
+                      ? "Descargar Volante PDF"
+                      : "Download PDF Flyer"}
+                  </Button>
+                )}
                 <Separator />
                 <div className="flex gap-2">
                   <FavoriteButton

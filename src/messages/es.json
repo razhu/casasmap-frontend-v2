@@ -259,5 +259,30 @@
       "properties": "propiedades"
     },
     "error": "Error al cargar el reporte. Por favor intenta nuevamente."
+  },
+  "property": {
+    "downloadFlyer": "Descargar Volante",
+    "downloadFlyerPDF": "Descargar Volante PDF",
+    "generatingFlyer": "Generando volante...",
+    "flyerGenerated": "Volante generado",
+    "flyerGeneratedSuccess": "El volante PDF se ha generado exitosamente",
+    "flyerError": "No se pudo generar el volante",
+    "notFound": "Propiedad no encontrada",
+    "notFoundMessage": "La propiedad que buscas no existe o ha sido eliminada",
+    "goHome": "Volver al inicio",
+    "contact": "Contactar",
+    "sendMessage": "Enviar Mensaje",
+    "call": "Llamar",
+    "publishedBy": "Publicado por",
+    "description": "Descripción",
+    "additionalDetails": "Detalles Adicionales",
+    "yearBuilt": "Año de construcción",
+    "furnished": "Amoblado",
+    "yes": "Sí",
+    "no": "No",
+    "bedrooms": "Dormitorios",
+    "bathrooms": "Baños",
+    "totalArea": "Área Total",
+    "parking": "Estacionamiento"
   }
 }

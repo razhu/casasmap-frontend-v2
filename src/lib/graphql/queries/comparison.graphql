@@ -4,6 +4,8 @@ query CompareProperties($input: ComparePropertiesInput!) {
       id
       title
       titleEn
+      slug
+      slugEn
       priceUS
       priceBS
       bedrooms
