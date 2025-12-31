@@ -16,6 +16,7 @@ import { ProtectedRoute } from "@/components/auth/protected-route";
 import { useEffect } from "react";
 import { useAuthStore } from "@/store/auth";
 import { toast } from "sonner";
+import { APP_CONFIG } from "@/config/app.config";
 
 function ConversationPageContent() {
   const params = useParams();
@@ -26,7 +27,7 @@ function ConversationPageContent() {
 
   const { data, loading, refetch } = useConversationMessagesQuery({
     variables: { conversationId },
-    pollInterval: 10000, // Poll every 10 seconds for new messages
+    pollInterval: APP_CONFIG.polling.messages,
   });
 
   const [sendMessage] = useSendMessageMutation();

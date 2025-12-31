@@ -6,13 +6,14 @@ import { ConversationListEnhanced } from "@/components/messaging/conversation-li
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
+import { APP_CONFIG } from "@/config/app.config";
 
 function MessagesPageContent() {
   const params = useParams();
   const locale = params.locale as string;
 
   const { data, loading } = useMyConversationsQuery({
-    pollInterval: 15000, // Poll every 15 seconds for new messages
+    pollInterval: APP_CONFIG.polling.inbox,
   });
 
   const conversations = data?.myConversations || [];
