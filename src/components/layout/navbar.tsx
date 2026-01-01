@@ -65,6 +65,12 @@ export function Navbar() {
       requiresAuth: false,
     },
     {
+      href: "/pricing",
+      icon: TrendingUp,
+      label: locale === "es" ? "Precios" : "Pricing",
+      requiresAuth: false,
+    },
+    {
       href: "/favorites",
       icon: Heart,
       label: t("favorites"),

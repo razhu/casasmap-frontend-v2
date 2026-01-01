@@ -439,18 +439,64 @@ export default function PropertySlugPage() {
                   size="lg"
                 />
                 {isOwner && (
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    size="lg"
-                    onClick={handleDownloadFlyer}
-                    disabled={generatingFlyer}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    {locale === "es"
-                      ? "Descargar Volante PDF"
-                      : "Download PDF Flyer"}
-                  </Button>
+                  <>
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      size="lg"
+                      onClick={handleDownloadFlyer}
+                      disabled={generatingFlyer}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      {locale === "es"
+                        ? "Descargar Volante PDF"
+                        : "Download PDF Flyer"}
+                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="default"
+                        className="flex-1"
+                        size="lg"
+                        onClick={() =>
+                          router.push(
+                            `/${
+                              locale === "es" ? "" : locale + "/"
+                            }properties/${property.id}/edit`
+                          )
+                        }
+                      >
+                        {locale === "es" ? "Editar" : "Edit"}
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        className="flex-1"
+                        size="lg"
+                        onClick={() => {
+                          if (
+                            confirm(
+                              locale === "es"
+                                ? "¿Estás seguro de eliminar esta propiedad?"
+                                : "Are you sure you want to delete this property?"
+                            )
+                          ) {
+                            // TODO: Implement delete
+                            toast({
+                              title:
+                                locale === "es"
+                                  ? "Función en desarrollo"
+                                  : "Feature in development",
+                              description:
+                                locale === "es"
+                                  ? "La eliminación estará disponible pronto"
+                                  : "Delete will be available soon",
+                            });
+                          }
+                        }}
+                      >
+                        {locale === "es" ? "Eliminar" : "Delete"}
+                      </Button>
+                    </div>
+                  </>
                 )}
                 <Separator />
                 <div className="flex gap-2">
