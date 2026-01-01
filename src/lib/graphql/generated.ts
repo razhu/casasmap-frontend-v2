@@ -1981,6 +1981,21 @@ export type GeneratePropertyFlyerMutationVariables = Exact<{
 
 export type GeneratePropertyFlyerMutation = { __typename?: 'Mutation', generatePropertyFlyer: string };
 
+export type DeletePropertyMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type DeletePropertyMutation = { __typename?: 'Mutation', deleteProperty: { __typename?: 'Property', id: string, title: string } };
+
+export type UpdatePropertyMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+  input: UpdatePropertyInput;
+}>;
+
+
+export type UpdatePropertyMutation = { __typename?: 'Mutation', updateProperty: { __typename?: 'Property', id: string, title: string, titleEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, address: string, latitude?: number | null, longitude?: number | null, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, yearBuilt?: number | null, propertyTypeId: number, dealTypeId: number, cityId: number, stateId: number, countryId: number, zoneId: number, furnished?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, storage?: boolean | null, security?: boolean | null, petsAllowed?: boolean | null, phoneNumber?: string | null } };
+
 export type CreateSavedSearchMutationVariables = Exact<{
   input: CreateSavedSearchInput;
 }>;
@@ -2598,6 +2613,66 @@ export function useGeneratePropertyFlyerMutation(baseOptions?: ApolloReactHooks.
 export type GeneratePropertyFlyerMutationHookResult = ReturnType<typeof useGeneratePropertyFlyerMutation>;
 export type GeneratePropertyFlyerMutationResult = ApolloReactCommon.MutationResult<GeneratePropertyFlyerMutation>;
 export type GeneratePropertyFlyerMutationOptions = ApolloReactCommon.BaseMutationOptions<GeneratePropertyFlyerMutation, GeneratePropertyFlyerMutationVariables>;
+export const DeletePropertyDocument = gql`
+    mutation DeleteProperty($id: String!) {
+  deleteProperty(id: $id) {
+    id
+    title
+  }
+}
+    `;
+export type DeletePropertyMutationFn = ApolloReactCommon.MutationFunction<DeletePropertyMutation, DeletePropertyMutationVariables>;
+export function useDeletePropertyMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeletePropertyMutation, DeletePropertyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<DeletePropertyMutation, DeletePropertyMutationVariables>(DeletePropertyDocument, options);
+      }
+export type DeletePropertyMutationHookResult = ReturnType<typeof useDeletePropertyMutation>;
+export type DeletePropertyMutationResult = ApolloReactCommon.MutationResult<DeletePropertyMutation>;
+export type DeletePropertyMutationOptions = ApolloReactCommon.BaseMutationOptions<DeletePropertyMutation, DeletePropertyMutationVariables>;
+export const UpdatePropertyDocument = gql`
+    mutation UpdateProperty($id: String!, $input: UpdatePropertyInput!) {
+  updateProperty(id: $id, updatePropertyInput: $input) {
+    id
+    title
+    titleEn
+    description
+    descriptionEn
+    priceUS
+    priceBS
+    address
+    latitude
+    longitude
+    bedrooms
+    bathrooms
+    totalArea
+    coveredArea
+    parkingSpaces
+    yearBuilt
+    propertyTypeId
+    dealTypeId
+    cityId
+    stateId
+    countryId
+    zoneId
+    furnished
+    pool
+    balcony
+    terrace
+    storage
+    security
+    petsAllowed
+    phoneNumber
+  }
+}
+    `;
+export type UpdatePropertyMutationFn = ApolloReactCommon.MutationFunction<UpdatePropertyMutation, UpdatePropertyMutationVariables>;
+export function useUpdatePropertyMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdatePropertyMutation, UpdatePropertyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<UpdatePropertyMutation, UpdatePropertyMutationVariables>(UpdatePropertyDocument, options);
+      }
+export type UpdatePropertyMutationHookResult = ReturnType<typeof useUpdatePropertyMutation>;
+export type UpdatePropertyMutationResult = ApolloReactCommon.MutationResult<UpdatePropertyMutation>;
+export type UpdatePropertyMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdatePropertyMutation, UpdatePropertyMutationVariables>;
 export const CreateSavedSearchDocument = gql`
     mutation CreateSavedSearch($input: CreateSavedSearchInput!) {
   createSavedSearch(input: $input) {

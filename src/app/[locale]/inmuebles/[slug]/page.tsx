@@ -40,6 +40,7 @@ import { PropertyCard } from "@/components/properties/property-card";
 import { FavoriteButton } from "@/components/properties/favorite-button";
 import { MessageButton } from "@/components/messaging/message-button";
 import { useAuthStore } from "@/store/auth";
+import { DeletePropertyDialog } from "@/components/properties/delete-property-dialog";
 import { useToast } from "@/hooks/use-toast";
 
 // Set Mapbox token
@@ -428,10 +429,11 @@ export default function PropertySlugPage() {
                   </Button>
                 )}
                 <MessageButton
-                  receiverId={property.user.id}
+                  receiverId={property.user?.id || ""}
                   receiverName={
-                    property.user.profile?.firstName ||
-                    property.user.email.split("@")[0]
+                    property.user?.profile?.firstName ||
+                    property.user?.email.split("@")[0] ||
+                    "User"
                   }
                   propertyId={property.id}
                   locale={locale}
@@ -467,34 +469,11 @@ export default function PropertySlugPage() {
                       >
                         {locale === "es" ? "Editar" : "Edit"}
                       </Button>
-                      <Button
-                        variant="destructive"
-                        className="flex-1"
-                        size="lg"
-                        onClick={() => {
-                          if (
-                            confirm(
-                              locale === "es"
-                                ? "¿Estás seguro de eliminar esta propiedad?"
-                                : "Are you sure you want to delete this property?"
-                            )
-                          ) {
-                            // TODO: Implement delete
-                            toast({
-                              title:
-                                locale === "es"
-                                  ? "Función en desarrollo"
-                                  : "Feature in development",
-                              description:
-                                locale === "es"
-                                  ? "La eliminación estará disponible pronto"
-                                  : "Delete will be available soon",
-                            });
-                          }
-                        }}
-                      >
-                        {locale === "es" ? "Eliminar" : "Delete"}
-                      </Button>
+                      <DeletePropertyDialog
+                        propertyId={property.id}
+                        propertyTitle={property.title}
+                        locale={locale}
+                      />
                     </div>
                   </>
                 )}
