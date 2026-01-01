@@ -20,6 +20,13 @@ query Me {
       bio
       birthdate
     }
+    subscriptions {
+      id
+      plan
+      status
+      startDate
+      endDate
+    }
   }
 }
 
@@ -39,6 +46,13 @@ mutation Login($email: String!, $password: String!) {
         lastName
         pictureUrl
       }
+      subscriptions {
+        id
+        plan
+        status
+        startDate
+        endDate
+      }
     }
   }
 }
@@ -57,6 +71,13 @@ mutation Register($registerInput: RegisterInput!) {
       profile {
         firstName
         lastName
+      }
+      subscriptions {
+        id
+        plan
+        status
+        startDate
+        endDate
       }
     }
   }
@@ -118,6 +139,13 @@ mutation RefreshToken {
       profile {
         firstName
         lastName
+      }
+      subscriptions {
+        id
+        plan
+        status
+        startDate
+        endDate
       }
     }
   }

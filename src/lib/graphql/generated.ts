@@ -2037,7 +2037,7 @@ export type PopularSearchesQuery = { __typename?: 'Query', popularSearches: Arra
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, email: string, username?: string | null, roleId: number, status: string, isVerified: boolean, createdAt: any, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', id: string, firstName?: string | null, lastName?: string | null, phoneNumber?: string | null, pictureUrl?: string | null, bio?: string | null, birthdate?: any | null } | null } };
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, email: string, username?: string | null, roleId: number, status: string, isVerified: boolean, createdAt: any, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', id: string, firstName?: string | null, lastName?: string | null, phoneNumber?: string | null, pictureUrl?: string | null, bio?: string | null, birthdate?: any | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, startDate: any, endDate: any }> | null } };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String']['input'];
@@ -2045,14 +2045,14 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null, pictureUrl?: string | null } | null } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null, pictureUrl?: string | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, startDate: any, endDate: any }> | null } } };
 
 export type RegisterMutationVariables = Exact<{
   registerInput: RegisterInput;
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, startDate: any, endDate: any }> | null } } };
 
 export type ForgotPasswordMutationVariables = Exact<{
   email: Scalars['String']['input'];
@@ -2094,7 +2094,7 @@ export type UpdateUsernameMutation = { __typename?: 'Mutation', updateUsername: 
 export type RefreshTokenMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } } };
+export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, startDate: any, endDate: any }> | null } } };
 
 export type ComparePropertiesQueryVariables = Exact<{
   input: ComparePropertiesInput;
@@ -2233,12 +2233,12 @@ export type MarketAnalysisQueryVariables = Exact<{
 
 export type MarketAnalysisQuery = { __typename?: 'Query', marketAnalysis: { __typename?: 'MarketAnalysisReport', cityId: number, cityName: string, propertyTypeId?: number | null, propertyTypeName?: string | null, totalProperties: number, averagePriceUS: number, averagePriceBS: number, medianPriceUS: number, medianPriceBS: number, minPriceUS: number, maxPriceUS: number, averageArea: number, pricePerSqmUS: number, priceDistribution: Array<{ __typename?: 'PriceDistribution', range: string, count: number, percentage: number }>, propertyTypeDistribution: Array<{ __typename?: 'PropertyTypeDistribution', propertyType: string, count: number, percentage: number, averagePrice: number }> } };
 
-export type PriceHistoryQueryVariables = Exact<{
-  input: PriceHistoryInput;
+export type StatesForReportsQueryVariables = Exact<{
+  countryId: Scalars['Int']['input'];
 }>;
 
 
-export type PriceHistoryQuery = { __typename?: 'Query', priceHistory: Array<{ __typename?: 'PriceHistoryPoint', month: string, averagePriceUS: number, averagePriceBS: number, propertyCount: number }> };
+export type StatesForReportsQuery = { __typename?: 'Query', states: Array<{ __typename?: 'State', id: number, name: string, cities?: Array<{ __typename?: 'City', id: number, name: string }> | null }> };
 
 export type MySavedSearchesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2799,6 +2799,13 @@ export const MeDocument = gql`
       bio
       birthdate
     }
+    subscriptions {
+      id
+      plan
+      status
+      startDate
+      endDate
+    }
   }
 }
     `;
@@ -2837,6 +2844,13 @@ export const LoginDocument = gql`
         lastName
         pictureUrl
       }
+      subscriptions {
+        id
+        plan
+        status
+        startDate
+        endDate
+      }
     }
   }
 }
@@ -2864,6 +2878,13 @@ export const RegisterDocument = gql`
       profile {
         firstName
         lastName
+      }
+      subscriptions {
+        id
+        plan
+        status
+        startDate
+        endDate
       }
     }
   }
@@ -2979,6 +3000,13 @@ export const RefreshTokenDocument = gql`
       profile {
         firstName
         lastName
+      }
+      subscriptions {
+        id
+        plan
+        status
+        startDate
+        endDate
       }
     }
   }
@@ -3919,34 +3947,36 @@ export function useMarketAnalysisSuspenseQuery(baseOptions?: ApolloReactHooks.Sk
 export type MarketAnalysisQueryHookResult = ReturnType<typeof useMarketAnalysisQuery>;
 export type MarketAnalysisLazyQueryHookResult = ReturnType<typeof useMarketAnalysisLazyQuery>;
 export type MarketAnalysisQueryResult = ApolloReactCommon.QueryResult<MarketAnalysisQuery, MarketAnalysisQueryVariables>;
-export const PriceHistoryDocument = gql`
-    query PriceHistory($input: PriceHistoryInput!) {
-  priceHistory(input: $input) {
-    month
-    averagePriceUS
-    averagePriceBS
-    propertyCount
+export const StatesForReportsDocument = gql`
+    query StatesForReports($countryId: Int!) {
+  states(countryId: $countryId) {
+    id
+    name
+    cities {
+      id
+      name
+    }
   }
 }
     `;
-export function usePriceHistoryQuery(baseOptions: ApolloReactHooks.QueryHookOptions<PriceHistoryQuery, PriceHistoryQueryVariables> & ({ variables: PriceHistoryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useStatesForReportsQuery(baseOptions: ApolloReactHooks.QueryHookOptions<StatesForReportsQuery, StatesForReportsQueryVariables> & ({ variables: StatesForReportsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useQuery<PriceHistoryQuery, PriceHistoryQueryVariables>(PriceHistoryDocument, options);
+        return ApolloReactHooks.useQuery<StatesForReportsQuery, StatesForReportsQueryVariables>(StatesForReportsDocument, options);
       }
-export function usePriceHistoryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<PriceHistoryQuery, PriceHistoryQueryVariables>) {
+export function useStatesForReportsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<StatesForReportsQuery, StatesForReportsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useLazyQuery<PriceHistoryQuery, PriceHistoryQueryVariables>(PriceHistoryDocument, options);
+          return ApolloReactHooks.useLazyQuery<StatesForReportsQuery, StatesForReportsQueryVariables>(StatesForReportsDocument, options);
         }
 // @ts-ignore
-export function usePriceHistorySuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<PriceHistoryQuery, PriceHistoryQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PriceHistoryQuery, PriceHistoryQueryVariables>;
-export function usePriceHistorySuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PriceHistoryQuery, PriceHistoryQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<PriceHistoryQuery | undefined, PriceHistoryQueryVariables>;
-export function usePriceHistorySuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<PriceHistoryQuery, PriceHistoryQueryVariables>) {
+export function useStatesForReportsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<StatesForReportsQuery, StatesForReportsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<StatesForReportsQuery, StatesForReportsQueryVariables>;
+export function useStatesForReportsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<StatesForReportsQuery, StatesForReportsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<StatesForReportsQuery | undefined, StatesForReportsQueryVariables>;
+export function useStatesForReportsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<StatesForReportsQuery, StatesForReportsQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useSuspenseQuery<PriceHistoryQuery, PriceHistoryQueryVariables>(PriceHistoryDocument, options);
+          return ApolloReactHooks.useSuspenseQuery<StatesForReportsQuery, StatesForReportsQueryVariables>(StatesForReportsDocument, options);
         }
-export type PriceHistoryQueryHookResult = ReturnType<typeof usePriceHistoryQuery>;
-export type PriceHistoryLazyQueryHookResult = ReturnType<typeof usePriceHistoryLazyQuery>;
-export type PriceHistoryQueryResult = ApolloReactCommon.QueryResult<PriceHistoryQuery, PriceHistoryQueryVariables>;
+export type StatesForReportsQueryHookResult = ReturnType<typeof useStatesForReportsQuery>;
+export type StatesForReportsLazyQueryHookResult = ReturnType<typeof useStatesForReportsLazyQuery>;
+export type StatesForReportsQueryResult = ApolloReactCommon.QueryResult<StatesForReportsQuery, StatesForReportsQueryVariables>;
 export const MySavedSearchesDocument = gql`
     query MySavedSearches {
   mySavedSearches {

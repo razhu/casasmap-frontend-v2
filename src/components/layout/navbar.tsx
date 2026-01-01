@@ -92,7 +92,7 @@ export function Navbar() {
 
   // Premium Plus only links
   const premiumPlusLinks =
-    user?.subscription?.plan === "PREMIUM_PLUS"
+    user?.subscriptions?.[0]?.plan === "PREMIUM_PLUS"
       ? [
           {
             href: "/reports",

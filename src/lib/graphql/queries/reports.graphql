@@ -27,11 +27,13 @@ query MarketAnalysis($input: MarketAnalysisInput!) {
   }
 }
 
-query PriceHistory($input: PriceHistoryInput!) {
-  priceHistory(input: $input) {
-    month
-    averagePriceUS
-    averagePriceBS
-    propertyCount
+query StatesForReports($countryId: Int!) {
+  states(countryId: $countryId) {
+    id
+    name
+    cities {
+      id
+      name
+    }
   }
 }

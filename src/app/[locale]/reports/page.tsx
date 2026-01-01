@@ -1,20 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/auth";
+import { useState, useMemo } from "react";
+import { useParams } from "next/navigation";
 import {
-  useMarketAnalysisLazyQuery,
-  useCitiesQuery,
-  usePropertyTypesQuery,
+  useMarketAnalysisQuery,
+  useStatesForReportsQuery,
 } from "@/lib/graphql/generated";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -24,74 +16,68 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  TrendingUp,
-  Building2,
-  DollarSign,
-  BarChart3,
-  PieChart,
-  Crown,
-} from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { BarChart3, TrendingUp, Home, DollarSign } from "lucide-react";
+import { useAuthStore } from "@/store/auth";
 
-export default function MarketReportsPage() {
-  const router = useRouter();
-  const { user, isAuthenticated } = useAuthStore();
-  const [selectedCity, setSelectedCity] = useState<string>("");
-  const [selectedPropertyType, setSelectedPropertyType] = useState<string>("");
+export default function ReportsPage() {
+  const params = useParams();
+  const locale = (params.locale as string) || "es";
+  const { user } = useAuthStore();
 
-  const { data: citiesData } = useCitiesQuery();
-  const { data: propertyTypesData } = usePropertyTypesQuery();
+  const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
+  const [selectedPropertyTypeId, setSelectedPropertyTypeId] = useState<
+    number | null
+  >(null);
 
-  const [getMarketAnalysis, { data, loading, error }] =
-    useMarketAnalysisLazyQuery();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.push("/login");
+  // Get all states and cities for Bolivia (countryId = 1)
+  const { data: statesData, loading: loadingCities } = useStatesForReportsQuery(
+    {
+      variables: { countryId: 1 },
     }
-  }, [isAuthenticated, router]);
+  );
 
-  // Check if user has Premium Plus subscription
-  const isPremiumPlus = user?.subscription?.plan === "PREMIUM_PLUS";
+  // Flatten all cities from all states
+  const allCities = useMemo(() => {
+    if (!statesData?.states) return [];
+    return statesData.states.flatMap(
+      (state) =>
+        state.cities?.map((city) => ({
+          id: city.id,
+          name: `${city.name}, ${state.name}`,
+        })) || []
+    );
+  }, [statesData]);
 
-  const handleGenerateReport = () => {
-    if (!selectedCity) return;
-
-    getMarketAnalysis({
-      variables: {
-        input: {
-          cityId: parseInt(selectedCity),
-          propertyTypeId: selectedPropertyType
-            ? parseInt(selectedPropertyType)
-            : undefined,
-        },
+  const { data, loading, refetch } = useMarketAnalysisQuery({
+    variables: {
+      input: {
+        cityId: selectedCityId || 0,
+        propertyTypeId: selectedPropertyTypeId,
       },
-    });
-  };
+    },
+    skip: !selectedCityId,
+  });
+
+  const isPremiumPlus = user?.subscriptions?.[0]?.plan === "PREMIUM_PLUS";
 
   if (!isPremiumPlus) {
     return (
       <div className="container mx-auto py-8">
         <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Crown className="h-6 w-6 text-yellow-500" />
-              <CardTitle>Reportes de Mercado</CardTitle>
-            </div>
-            <CardDescription>
-              Análisis detallado del mercado inmobiliario
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center py-12">
-            <Crown className="h-16 w-16 mx-auto mb-4 text-yellow-500" />
-            <h3 className="text-xl font-semibold mb-2">Función Premium Plus</h3>
+          <CardContent className="pt-6 text-center">
+            <BarChart3 className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+            <h2 className="text-2xl font-bold mb-2">
+              {locale === "es" ? "Reportes de Mercado" : "Market Reports"}
+            </h2>
             <p className="text-muted-foreground mb-6">
-              Los reportes de mercado están disponibles solo para usuarios
-              Premium Plus
+              {locale === "es"
+                ? "Esta función está disponible solo para usuarios Premium Plus"
+                : "This feature is only available for Premium Plus users"}
             </p>
-            <Button onClick={() => router.push("/pricing")}>
-              Ver Planes Premium
+            <Button>
+              {locale === "es"
+                ? "Actualizar a Premium Plus"
+                : "Upgrade to Premium Plus"}
             </Button>
           </CardContent>
         </Card>
@@ -103,32 +89,48 @@ export default function MarketReportsPage() {
 
   return (
     <div className="container mx-auto py-8 space-y-6">
-      {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Reportes de Mercado</h1>
+        <h1 className="text-3xl font-bold mb-2">
+          {locale === "es" ? "Reportes de Mercado" : "Market Reports"}
+        </h1>
         <p className="text-muted-foreground">
-          Análisis detallado del mercado inmobiliario en Bolivia
+          {locale === "es"
+            ? "Análisis del mercado inmobiliario en Bolivia"
+            : "Real estate market analysis in Bolivia"}
         </p>
       </div>
 
       {/* Filters */}
       <Card>
         <CardHeader>
-          <CardTitle>Generar Reporte</CardTitle>
-          <CardDescription>
-            Selecciona una ciudad y tipo de propiedad para ver el análisis
-          </CardDescription>
+          <CardTitle>{locale === "es" ? "Filtros" : "Filters"}</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium mb-2 block">Ciudad *</label>
-              <Select value={selectedCity} onValueChange={setSelectedCity}>
+              <label className="text-sm font-medium mb-2 block">
+                {locale === "es" ? "Ciudad" : "City"} *
+              </label>
+              <Select
+                value={selectedCityId?.toString()}
+                onValueChange={(value) => setSelectedCityId(parseInt(value))}
+                disabled={loadingCities}
+              >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecciona ciudad" />
+                  <SelectValue
+                    placeholder={
+                      loadingCities
+                        ? locale === "es"
+                          ? "Cargando..."
+                          : "Loading..."
+                        : locale === "es"
+                        ? "Seleccionar ciudad"
+                        : "Select city"
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  {citiesData?.cities.map((city) => (
+                  {allCities.map((city: any) => (
                     <SelectItem key={city.id} value={city.id.toString()}>
                       {city.name}
                     </SelectItem>
@@ -139,80 +141,85 @@ export default function MarketReportsPage() {
 
             <div>
               <label className="text-sm font-medium mb-2 block">
-                Tipo de Propiedad (Opcional)
+                {locale === "es" ? "Tipo de Propiedad" : "Property Type"} (
+                {locale === "es" ? "Opcional" : "Optional"})
               </label>
               <Select
-                value={selectedPropertyType}
-                onValueChange={setSelectedPropertyType}
+                value={selectedPropertyTypeId?.toString() || "all"}
+                onValueChange={(value) =>
+                  setSelectedPropertyTypeId(
+                    value === "all" ? null : parseInt(value)
+                  )
+                }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Todos los tipos" />
+                  <SelectValue
+                    placeholder={
+                      locale === "es" ? "Todos los tipos" : "All types"
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos los tipos</SelectItem>
-                  {propertyTypesData?.propertyTypes.map((type) => (
-                    <SelectItem key={type.id} value={type.id.toString()}>
-                      {type.name}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="all">
+                    {locale === "es" ? "Todos los tipos" : "All types"}
+                  </SelectItem>
+                  <SelectItem value="1">
+                    {locale === "es" ? "Casa" : "House"}
+                  </SelectItem>
+                  <SelectItem value="2">
+                    {locale === "es" ? "Departamento" : "Apartment"}
+                  </SelectItem>
+                  <SelectItem value="3">
+                    {locale === "es" ? "Terreno" : "Land"}
+                  </SelectItem>
+                  <SelectItem value="4">
+                    {locale === "es" ? "Oficina" : "Office"}
+                  </SelectItem>
+                  <SelectItem value="5">
+                    {locale === "es" ? "Local Comercial" : "Commercial"}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
-
-            <div className="flex items-end">
-              <Button
-                onClick={handleGenerateReport}
-                disabled={!selectedCity || loading}
-                className="w-full"
-              >
-                <BarChart3 className="h-4 w-4 mr-2" />
-                Generar Reporte
-              </Button>
-            </div>
           </div>
+
+          <Button
+            onClick={() => refetch()}
+            disabled={!selectedCityId || loading}
+          >
+            {loading
+              ? locale === "es"
+                ? "Generando..."
+                : "Generating..."
+              : locale === "es"
+              ? "Generar Reporte"
+              : "Generate Report"}
+          </Button>
         </CardContent>
       </Card>
 
-      {/* Loading State */}
       {loading && (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
-            <Card key={i}>
-              <CardHeader>
-                <Skeleton className="h-4 w-24" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-8 w-32" />
-              </CardContent>
-            </Card>
+            <Skeleton key={i} className="h-32" />
           ))}
         </div>
       )}
 
-      {/* Error State */}
-      {error && (
-        <Alert variant="destructive">
-          <AlertDescription>
-            Error al cargar el reporte. Por favor intenta nuevamente.
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {/* Report Results */}
       {report && (
-        <div className="space-y-6">
-          {/* Overview Stats */}
+        <>
+          {/* Summary Stats */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Propiedades Totales
+                  {locale === "es" ? "Total Propiedades" : "Total Properties"}
                 </CardTitle>
-                <Building2 className="h-4 w-4 text-muted-foreground" />
+                <Home className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {report.totalProperties.toLocaleString()}
+                  {report.totalProperties}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {report.cityName}
@@ -224,7 +231,7 @@ export default function MarketReportsPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Precio Promedio
+                  {locale === "es" ? "Precio Promedio" : "Average Price"}
                 </CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -241,7 +248,7 @@ export default function MarketReportsPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Precio Mediano
+                  {locale === "es" ? "Precio Mediano" : "Median Price"}
                 </CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -258,16 +265,17 @@ export default function MarketReportsPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Precio por m²
+                  {locale === "es" ? "Precio por m²" : "Price per m²"}
                 </CardTitle>
                 <BarChart3 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  ${report.pricePerSqmUS.toFixed(2)}
+                  ${report.pricePerSqmUS.toLocaleString()}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Área promedio: {report.averageArea.toFixed(0)} m²
+                  {locale === "es" ? "Área promedio" : "Average area"}:{" "}
+                  {report.averageArea.toFixed(0)} m²
                 </p>
               </CardContent>
             </Card>
@@ -276,24 +284,32 @@ export default function MarketReportsPage() {
           {/* Price Range */}
           <Card>
             <CardHeader>
-              <CardTitle>Rango de Precios</CardTitle>
+              <CardTitle>
+                {locale === "es" ? "Rango de Precios" : "Price Range"}
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm text-muted-foreground">Mínimo</p>
+                  <p className="text-sm text-muted-foreground">
+                    {locale === "es" ? "Mínimo" : "Minimum"}
+                  </p>
                   <p className="text-xl font-bold">
                     ${report.minPriceUS.toLocaleString()}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-sm text-muted-foreground">Promedio</p>
+                  <p className="text-sm text-muted-foreground">
+                    {locale === "es" ? "Promedio" : "Average"}
+                  </p>
                   <p className="text-xl font-bold">
                     ${report.averagePriceUS.toLocaleString()}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-muted-foreground">Máximo</p>
+                  <p className="text-sm text-muted-foreground">
+                    {locale === "es" ? "Máximo" : "Maximum"}
+                  </p>
                   <p className="text-xl font-bold">
                     ${report.maxPriceUS.toLocaleString()}
                   </p>
@@ -305,16 +321,17 @@ export default function MarketReportsPage() {
           {/* Price Distribution */}
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-2">
-                <PieChart className="h-5 w-5" />
-                <CardTitle>Distribución de Precios</CardTitle>
-              </div>
+              <CardTitle>
+                {locale === "es"
+                  ? "Distribución de Precios"
+                  : "Price Distribution"}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {report.priceDistribution.map((dist, index) => (
+                {report.priceDistribution.map((dist: any, index: number) => (
                   <div key={index}>
-                    <div className="flex items-center justify-between mb-1">
+                    <div className="flex justify-between mb-1">
                       <span className="text-sm font-medium">{dist.range}</span>
                       <span className="text-sm text-muted-foreground">
                         {dist.count} ({dist.percentage.toFixed(1)}%)
@@ -335,38 +352,51 @@ export default function MarketReportsPage() {
           {/* Property Type Distribution */}
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-2">
-                <Building2 className="h-5 w-5" />
-                <CardTitle>Distribución por Tipo de Propiedad</CardTitle>
-              </div>
+              <CardTitle>
+                {locale === "es"
+                  ? "Distribución por Tipo"
+                  : "Distribution by Type"}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {report.propertyTypeDistribution.map((dist, index) => (
-                  <div key={index} className="border-b pb-4 last:border-0">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium">{dist.propertyType}</span>
-                      <span className="text-sm text-muted-foreground">
-                        {dist.count} propiedades ({dist.percentage.toFixed(1)}%)
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="w-full bg-secondary rounded-full h-2 mr-4">
+                {report.propertyTypeDistribution.map(
+                  (dist: any, index: number) => (
+                    <div key={index}>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm font-medium">
+                          {dist.propertyType}
+                        </span>
+                        <span className="text-sm text-muted-foreground">
+                          {dist.count} ({dist.percentage.toFixed(1)}%) - $
+                          {dist.averagePrice.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="w-full bg-secondary rounded-full h-2">
                         <div
                           className="bg-primary h-2 rounded-full"
                           style={{ width: `${dist.percentage}%` }}
                         />
                       </div>
-                      <span className="text-sm font-medium whitespace-nowrap">
-                        ${dist.averagePrice.toLocaleString()}
-                      </span>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             </CardContent>
           </Card>
-        </div>
+        </>
+      )}
+
+      {!loading && !report && selectedCityId && (
+        <Card>
+          <CardContent className="pt-6 text-center">
+            <p className="text-muted-foreground">
+              {locale === "es"
+                ? "No hay datos disponibles para los filtros seleccionados"
+                : "No data available for the selected filters"}
+            </p>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
