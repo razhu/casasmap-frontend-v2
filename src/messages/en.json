@@ -284,5 +284,36 @@
     "bathrooms": "Bathrooms",
     "totalArea": "Total Area",
     "parking": "Parking"
+  },
+  "subscription": {
+    "title": "My Subscription",
+    "subtitle": "Manage your plan and usage limits",
+    "activeUntil": "Active until",
+    "startDate": "Start Date",
+    "status": "Status",
+    "cycleProgress": "Cycle Progress",
+    "expired": "Expired",
+    "noSubscription": "You don't have an active subscription",
+    "noSubscriptionDesc": "Subscribe to access premium features and increase your limits.",
+    "viewPlans": "View Plans",
+    "upgrade": "Upgrade Plan",
+    "errorLoading": "Error loading subscription",
+    "retry": "Retry",
+    "usage": {
+      "title": "Account Usage",
+      "subtitle": "Resource consumption of your current plan",
+      "properties": "Published Properties",
+      "favorites": "Saved Favorites",
+      "savedSearches": "Saved Searches"
+    }
+  },
+  "admin": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "properties": "Properties",
+      "users": "Users",
+      "settings": "Settings",
+      "logout": "Logout"
+    }
   }
 }

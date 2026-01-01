@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuthStore } from "@/store/auth";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 export default function PricingPage() {
   const params = useParams();
@@ -119,6 +122,23 @@ export default function PricingPage() {
     },
   ];
 
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState<string | null>(null);
+
+  const handleSelectPlan = async (planName: string) => {
+    setIsLoading(planName);
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(null);
+      toast({
+        title: locale === "es" ? "Plan seleccionado" : "Plan selected",
+        description: locale === "es"
+          ? `Has seleccionado el plan ${planName}. La integración de pagos estará disponible pronto.`
+          : `You selected ${planName} plan. Payment integration coming soon.`,
+      });
+    }, 1000);
+  };
+
   return (
     <div className="container mx-auto py-12">
       <div className="text-center mb-12">
@@ -136,9 +156,8 @@ export default function PricingPage() {
         {plans.map((plan) => (
           <Card
             key={plan.name}
-            className={`relative ${
-              plan.popular ? "border-primary shadow-lg scale-105" : ""
-            }`}
+            className={`relative ${plan.popular ? "border-primary shadow-lg scale-105" : ""
+              }`}
           >
             {plan.popular && (
               <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -175,15 +194,19 @@ export default function PricingPage() {
               <Button
                 className="w-full"
                 variant={plan.popular ? "default" : "outline"}
-                disabled={currentPlan === plan.name}
+                disabled={currentPlan === plan.name || isLoading !== null}
+                onClick={() => handleSelectPlan(plan.name)}
               >
+                {isLoading === plan.name ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : null}
                 {currentPlan === plan.name
                   ? locale === "es"
                     ? "Plan Actual"
                     : "Current Plan"
                   : locale === "es"
-                  ? "Seleccionar"
-                  : "Select"}
+                    ? "Seleccionar"
+                    : "Select"}
               </Button>
             </CardFooter>
           </Card>

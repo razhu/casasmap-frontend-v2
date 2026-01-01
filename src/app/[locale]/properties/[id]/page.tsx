@@ -2,22 +2,15 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef } from "react";
-import mapboxgl from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
 import {
   Bed,
   Bath,
   Maximize,
   MapPin,
-  Calendar,
   Home,
-  DollarSign,
   Phone,
-  Mail,
   ArrowLeft,
   Share2,
-  Heart,
   Download,
 } from "lucide-react";
 import {
@@ -35,24 +28,18 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PropertyCard } from "@/components/properties/property-card";
 import { FavoriteButton } from "@/components/properties/favorite-button";
 import { MessageButton } from "@/components/messaging/message-button";
 import { useAuthStore } from "@/store/auth";
 import { useToast } from "@/hooks/use-toast";
-
-// Set Mapbox token
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
+import { PropertyMap } from "@/components/maps/property-map";
 
 export default function PropertyDetailPage() {
   const params = useParams();
   const router = useRouter();
   const locale = params.locale as string;
   const propertyId = params.id as string;
-  const t = useTranslations("properties");
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
   const { user } = useAuthStore();
   const { toast } = useToast();
 
@@ -110,33 +97,6 @@ export default function PropertyDetailPage() {
   const getLocalePath = (path: string) => {
     return locale === "es" ? path : `/${locale}${path}`;
   };
-
-  // Initialize map
-  useEffect(() => {
-    if (!data?.property || !mapContainer.current || map.current) return;
-
-    const property = data.property;
-    if (!property.latitude || !property.longitude) return;
-
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v12",
-      center: [property.longitude, property.latitude],
-      zoom: 14,
-    });
-
-    // Add marker
-    new mapboxgl.Marker({ color: "#3b82f6" })
-      .setLngLat([property.longitude, property.latitude])
-      .addTo(map.current);
-
-    // Add navigation controls
-    map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
-
-    return () => {
-      map.current?.remove();
-    };
-  }, [data]);
 
   if (loading) {
     return (
@@ -208,10 +168,10 @@ export default function PropertyDetailPage() {
           </div>
           {(property.priority === "HIGHEST" ||
             property.priority === "HIGH") && (
-            <Badge className="absolute top-4 right-4 bg-yellow-500">
-              {locale === "es" ? "Destacado" : "Featured"}
-            </Badge>
-          )}
+              <Badge className="absolute top-4 right-4 bg-yellow-500">
+                {locale === "es" ? "Destacado" : "Featured"}
+              </Badge>
+            )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -238,8 +198,8 @@ export default function PropertyDetailPage() {
                           ? "Venta"
                           : "Sale"
                         : locale === "es"
-                        ? "Alquiler"
-                        : "Rent"}
+                          ? "Alquiler"
+                          : "Rent"}
                     </Badge>
                   </div>
                 </div>
@@ -330,8 +290,8 @@ export default function PropertyDetailPage() {
                           ? "Sí"
                           : "Yes"
                         : locale === "es"
-                        ? "No"
-                        : "No"}
+                          ? "No"
+                          : "No"}
                     </p>
                   </div>
                 )}
@@ -346,8 +306,8 @@ export default function PropertyDetailPage() {
                           ? "Permitidas"
                           : "Allowed"
                         : locale === "es"
-                        ? "No permitidas"
-                        : "Not allowed"}
+                          ? "No permitidas"
+                          : "Not allowed"}
                     </p>
                   </div>
                 )}
@@ -367,48 +327,48 @@ export default function PropertyDetailPage() {
               property.balcony ||
               property.terrace ||
               property.security) && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>
-                    {locale === "es" ? "Características" : "Features"}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {property.pool && (
-                      <Badge variant="secondary">
-                        🏊 {locale === "es" ? "Piscina" : "Pool"}
-                      </Badge>
-                    )}
-                    {property.balcony && (
-                      <Badge variant="secondary">
-                        🏠 {locale === "es" ? "Balcón" : "Balcony"}
-                      </Badge>
-                    )}
-                    {property.terrace && (
-                      <Badge variant="secondary">
-                        🌿 {locale === "es" ? "Terraza" : "Terrace"}
-                      </Badge>
-                    )}
-                    {property.security && (
-                      <Badge variant="secondary">
-                        🔒 {locale === "es" ? "Seguridad" : "Security"}
-                      </Badge>
-                    )}
-                    {property.storage && (
-                      <Badge variant="secondary">
-                        📦 {locale === "es" ? "Depósito" : "Storage"}
-                      </Badge>
-                    )}
-                    {property.elevators && property.elevators > 0 && (
-                      <Badge variant="secondary">
-                        🛗 {locale === "es" ? "Ascensor" : "Elevator"}
-                      </Badge>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>
+                      {locale === "es" ? "Características" : "Features"}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {property.pool && (
+                        <Badge variant="secondary">
+                          🏊 {locale === "es" ? "Piscina" : "Pool"}
+                        </Badge>
+                      )}
+                      {property.balcony && (
+                        <Badge variant="secondary">
+                          🏠 {locale === "es" ? "Balcón" : "Balcony"}
+                        </Badge>
+                      )}
+                      {property.terrace && (
+                        <Badge variant="secondary">
+                          🌿 {locale === "es" ? "Terraza" : "Terrace"}
+                        </Badge>
+                      )}
+                      {property.security && (
+                        <Badge variant="secondary">
+                          🔒 {locale === "es" ? "Seguridad" : "Security"}
+                        </Badge>
+                      )}
+                      {property.storage && (
+                        <Badge variant="secondary">
+                          📦 {locale === "es" ? "Depósito" : "Storage"}
+                        </Badge>
+                      )}
+                      {property.elevators && property.elevators > 0 && (
+                        <Badge variant="secondary">
+                          🛗 {locale === "es" ? "Ascensor" : "Elevator"}
+                        </Badge>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
           </div>
 
           {/* Sidebar */}
@@ -508,9 +468,9 @@ export default function PropertyDetailPage() {
               <CardDescription>{property.address}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div
-                ref={mapContainer}
-                className="h-96 rounded-lg overflow-hidden"
+              <PropertyMap
+                latitude={property.latitude}
+                longitude={property.longitude}
               />
             </CardContent>
           </Card>

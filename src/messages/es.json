@@ -284,5 +284,36 @@
     "bathrooms": "Baños",
     "totalArea": "Área Total",
     "parking": "Estacionamiento"
+  },
+  "subscription": {
+    "title": "Mi Suscripción",
+    "subtitle": "Administra tu plan y límites de uso",
+    "activeUntil": "Activo hasta",
+    "startDate": "Fecha de inicio",
+    "status": "Estado",
+    "cycleProgress": "Progreso del ciclo",
+    "expired": "Vencido",
+    "noSubscription": "No tienes una suscripción activa",
+    "noSubscriptionDesc": "Suscríbete para acceder a funcionalidades premium y aumentar tus límites.",
+    "viewPlans": "Ver Planes",
+    "upgrade": "Mejorar Plan",
+    "errorLoading": "Error al cargar suscripción",
+    "retry": "Reintentar",
+    "usage": {
+      "title": "Uso de la Cuenta",
+      "subtitle": "Consumo de recursos de tu plan actual",
+      "properties": "Propiedades Publicadas",
+      "favorites": "Favoritos Guardados",
+      "savedSearches": "Búsquedas Guardadas"
+    }
+  },
+  "admin": {
+    "nav": {
+      "dashboard": "Panel de Control",
+      "properties": "Propiedades",
+      "users": "Usuarios",
+      "settings": "Configuración",
+      "logout": "Cerrar Sesión"
+    }
   }
 }
