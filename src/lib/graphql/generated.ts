@@ -2267,6 +2267,16 @@ export type SavedSearchQueryVariables = Exact<{
 
 export type SavedSearchQuery = { __typename?: 'Query', savedSearch: { __typename?: 'SavedSearch', id: string, name: string, query?: string | null, minPrice?: number | null, maxPrice?: number | null, bedrooms?: number | null, bathrooms?: number | null, propertyTypeId?: number | null, dealTypeId?: number | null, cityId?: number | null, zoneId?: number | null, alertsEnabled: boolean, lastAlertAt?: any | null, createdAt: any, updatedAt: any } };
 
+export type CurrentSubscriptionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CurrentSubscriptionQuery = { __typename?: 'Query', currentSubscription?: { __typename?: 'Subscription', id: string, userId: string, plan: string, status: string, startDate: any, endDate: any, createdAt: any, updatedAt: any } | null };
+
+export type UserSubscriptionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserSubscriptionsQuery = { __typename?: 'Query', userSubscriptions: Array<{ __typename?: 'Subscription', id: string, userId: string, plan: string, status: string, startDate: any, endDate: any, createdAt: any, updatedAt: any }> };
+
 
 export const TestConnectionDocument = gql`
     query TestConnection {
@@ -4130,3 +4140,67 @@ export function useSavedSearchSuspenseQuery(baseOptions?: ApolloReactHooks.SkipT
 export type SavedSearchQueryHookResult = ReturnType<typeof useSavedSearchQuery>;
 export type SavedSearchLazyQueryHookResult = ReturnType<typeof useSavedSearchLazyQuery>;
 export type SavedSearchQueryResult = ApolloReactCommon.QueryResult<SavedSearchQuery, SavedSearchQueryVariables>;
+export const CurrentSubscriptionDocument = gql`
+    query CurrentSubscription {
+  currentSubscription {
+    id
+    userId
+    plan
+    status
+    startDate
+    endDate
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export function useCurrentSubscriptionQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CurrentSubscriptionQuery, CurrentSubscriptionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<CurrentSubscriptionQuery, CurrentSubscriptionQueryVariables>(CurrentSubscriptionDocument, options);
+      }
+export function useCurrentSubscriptionLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CurrentSubscriptionQuery, CurrentSubscriptionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<CurrentSubscriptionQuery, CurrentSubscriptionQueryVariables>(CurrentSubscriptionDocument, options);
+        }
+// @ts-ignore
+export function useCurrentSubscriptionSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<CurrentSubscriptionQuery, CurrentSubscriptionQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<CurrentSubscriptionQuery, CurrentSubscriptionQueryVariables>;
+export function useCurrentSubscriptionSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<CurrentSubscriptionQuery, CurrentSubscriptionQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<CurrentSubscriptionQuery | undefined, CurrentSubscriptionQueryVariables>;
+export function useCurrentSubscriptionSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<CurrentSubscriptionQuery, CurrentSubscriptionQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<CurrentSubscriptionQuery, CurrentSubscriptionQueryVariables>(CurrentSubscriptionDocument, options);
+        }
+export type CurrentSubscriptionQueryHookResult = ReturnType<typeof useCurrentSubscriptionQuery>;
+export type CurrentSubscriptionLazyQueryHookResult = ReturnType<typeof useCurrentSubscriptionLazyQuery>;
+export type CurrentSubscriptionQueryResult = ApolloReactCommon.QueryResult<CurrentSubscriptionQuery, CurrentSubscriptionQueryVariables>;
+export const UserSubscriptionsDocument = gql`
+    query UserSubscriptions {
+  userSubscriptions {
+    id
+    userId
+    plan
+    status
+    startDate
+    endDate
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export function useUserSubscriptionsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<UserSubscriptionsQuery, UserSubscriptionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<UserSubscriptionsQuery, UserSubscriptionsQueryVariables>(UserSubscriptionsDocument, options);
+      }
+export function useUserSubscriptionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<UserSubscriptionsQuery, UserSubscriptionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<UserSubscriptionsQuery, UserSubscriptionsQueryVariables>(UserSubscriptionsDocument, options);
+        }
+// @ts-ignore
+export function useUserSubscriptionsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<UserSubscriptionsQuery, UserSubscriptionsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<UserSubscriptionsQuery, UserSubscriptionsQueryVariables>;
+export function useUserSubscriptionsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<UserSubscriptionsQuery, UserSubscriptionsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<UserSubscriptionsQuery | undefined, UserSubscriptionsQueryVariables>;
+export function useUserSubscriptionsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<UserSubscriptionsQuery, UserSubscriptionsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<UserSubscriptionsQuery, UserSubscriptionsQueryVariables>(UserSubscriptionsDocument, options);
+        }
+export type UserSubscriptionsQueryHookResult = ReturnType<typeof useUserSubscriptionsQuery>;
+export type UserSubscriptionsLazyQueryHookResult = ReturnType<typeof useUserSubscriptionsLazyQuery>;
+export type UserSubscriptionsQueryResult = ApolloReactCommon.QueryResult<UserSubscriptionsQuery, UserSubscriptionsQueryVariables>;

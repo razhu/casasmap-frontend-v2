@@ -1,0 +1,25 @@
+query CurrentSubscription {
+  currentSubscription {
+    id
+    userId
+    plan
+    status
+    startDate
+    endDate
+    createdAt
+    updatedAt
+  }
+}
+
+query UserSubscriptions {
+  userSubscriptions {
+    id
+    userId
+    plan
+    status
+    startDate
+    endDate
+    createdAt
+    updatedAt
+  }
+}

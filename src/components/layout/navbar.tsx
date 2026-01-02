@@ -15,6 +15,7 @@ import {
   Bookmark,
   BarChart3,
   TrendingUp,
+  Crown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -205,6 +206,17 @@ export function Navbar() {
                     >
                       <User className="mr-2 h-4 w-4" />
                       <span>{t("profile")}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={getLocalePath("/subscription")}
+                      className="cursor-pointer"
+                    >
+                      <Crown className="mr-2 h-4 w-4" />
+                      <span>
+                        {locale === "es" ? "Mi Suscripción" : "My Subscription"}
+                      </span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
