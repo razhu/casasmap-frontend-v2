@@ -2026,6 +2026,20 @@ export type ToggleSavedSearchAlertsMutationVariables = Exact<{
 
 export type ToggleSavedSearchAlertsMutation = { __typename?: 'Mutation', toggleSavedSearchAlerts: { __typename?: 'SavedSearch', id: string, alertsEnabled: boolean, updatedAt: any } };
 
+export type CancelSubscriptionMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type CancelSubscriptionMutation = { __typename?: 'Mutation', cancelSubscription: { __typename?: 'Subscription', id: string, userId: string, plan: string, status: string, startDate: any, endDate: any, createdAt: any, updatedAt: any } };
+
+export type StartFreeTrialMutationVariables = Exact<{
+  durationDays?: InputMaybe<Scalars['Float']['input']>;
+}>;
+
+
+export type StartFreeTrialMutation = { __typename?: 'Mutation', startFreeTrial: { __typename?: 'Subscription', id: string, userId: string, plan: string, status: string, startDate: any, endDate: any, createdAt: any, updatedAt: any } };
+
 export type PropertyAnalyticsQueryVariables = Exact<{
   propertyId: Scalars['String']['input'];
 }>;
@@ -2192,6 +2206,30 @@ export type UnreadNotificationsCountQueryVariables = Exact<{ [key: string]: neve
 
 
 export type UnreadNotificationsCountQuery = { __typename?: 'Query', unreadNotificationsCount: number };
+
+export type MyPaymentsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyPaymentsQuery = { __typename?: 'Query', myPayments: Array<{ __typename?: 'Payment', id: string, userId: string, amount: number, currency: string, method: PaymentMethod, status: PaymentStatus, plan: string, receiptUrl?: string | null, transactionId?: string | null, approvedAt?: any | null, rejectedReason?: string | null, createdAt: any, updatedAt: any }> };
+
+export type AvailablePaymentMethodsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AvailablePaymentMethodsQuery = { __typename?: 'Query', availablePaymentMethods: Array<string> };
+
+export type CreatePaymentMutationVariables = Exact<{
+  input: CreatePaymentInput;
+}>;
+
+
+export type CreatePaymentMutation = { __typename?: 'Mutation', createPayment: { __typename?: 'PaymentInstructions', success: boolean, paymentId: string, status: PaymentStatus, message: string, instructions?: string | null, redirectUrl?: string | null } };
+
+export type CancelPaymentMutationVariables = Exact<{
+  paymentId: Scalars['String']['input'];
+}>;
+
+
+export type CancelPaymentMutation = { __typename?: 'Mutation', cancelPayment: { __typename?: 'Payment', id: string, status: PaymentStatus } };
 
 export type PropertiesQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -2758,6 +2796,50 @@ export function useToggleSavedSearchAlertsMutation(baseOptions?: ApolloReactHook
 export type ToggleSavedSearchAlertsMutationHookResult = ReturnType<typeof useToggleSavedSearchAlertsMutation>;
 export type ToggleSavedSearchAlertsMutationResult = ApolloReactCommon.MutationResult<ToggleSavedSearchAlertsMutation>;
 export type ToggleSavedSearchAlertsMutationOptions = ApolloReactCommon.BaseMutationOptions<ToggleSavedSearchAlertsMutation, ToggleSavedSearchAlertsMutationVariables>;
+export const CancelSubscriptionDocument = gql`
+    mutation CancelSubscription($id: String!) {
+  cancelSubscription(id: $id) {
+    id
+    userId
+    plan
+    status
+    startDate
+    endDate
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export type CancelSubscriptionMutationFn = ApolloReactCommon.MutationFunction<CancelSubscriptionMutation, CancelSubscriptionMutationVariables>;
+export function useCancelSubscriptionMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CancelSubscriptionMutation, CancelSubscriptionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<CancelSubscriptionMutation, CancelSubscriptionMutationVariables>(CancelSubscriptionDocument, options);
+      }
+export type CancelSubscriptionMutationHookResult = ReturnType<typeof useCancelSubscriptionMutation>;
+export type CancelSubscriptionMutationResult = ApolloReactCommon.MutationResult<CancelSubscriptionMutation>;
+export type CancelSubscriptionMutationOptions = ApolloReactCommon.BaseMutationOptions<CancelSubscriptionMutation, CancelSubscriptionMutationVariables>;
+export const StartFreeTrialDocument = gql`
+    mutation StartFreeTrial($durationDays: Float) {
+  startFreeTrial(durationDays: $durationDays) {
+    id
+    userId
+    plan
+    status
+    startDate
+    endDate
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export type StartFreeTrialMutationFn = ApolloReactCommon.MutationFunction<StartFreeTrialMutation, StartFreeTrialMutationVariables>;
+export function useStartFreeTrialMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<StartFreeTrialMutation, StartFreeTrialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<StartFreeTrialMutation, StartFreeTrialMutationVariables>(StartFreeTrialDocument, options);
+      }
+export type StartFreeTrialMutationHookResult = ReturnType<typeof useStartFreeTrialMutation>;
+export type StartFreeTrialMutationResult = ApolloReactCommon.MutationResult<StartFreeTrialMutation>;
+export type StartFreeTrialMutationOptions = ApolloReactCommon.BaseMutationOptions<StartFreeTrialMutation, StartFreeTrialMutationVariables>;
 export const PropertyAnalyticsDocument = gql`
     query PropertyAnalytics($propertyId: String!) {
   propertyAnalytics(propertyId: $propertyId) {
@@ -3597,6 +3679,102 @@ export function useUnreadNotificationsCountSuspenseQuery(baseOptions?: ApolloRea
 export type UnreadNotificationsCountQueryHookResult = ReturnType<typeof useUnreadNotificationsCountQuery>;
 export type UnreadNotificationsCountLazyQueryHookResult = ReturnType<typeof useUnreadNotificationsCountLazyQuery>;
 export type UnreadNotificationsCountQueryResult = ApolloReactCommon.QueryResult<UnreadNotificationsCountQuery, UnreadNotificationsCountQueryVariables>;
+export const MyPaymentsDocument = gql`
+    query MyPayments {
+  myPayments {
+    id
+    userId
+    amount
+    currency
+    method
+    status
+    plan
+    receiptUrl
+    transactionId
+    approvedAt
+    rejectedReason
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export function useMyPaymentsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MyPaymentsQuery, MyPaymentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<MyPaymentsQuery, MyPaymentsQueryVariables>(MyPaymentsDocument, options);
+      }
+export function useMyPaymentsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MyPaymentsQuery, MyPaymentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<MyPaymentsQuery, MyPaymentsQueryVariables>(MyPaymentsDocument, options);
+        }
+// @ts-ignore
+export function useMyPaymentsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<MyPaymentsQuery, MyPaymentsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MyPaymentsQuery, MyPaymentsQueryVariables>;
+export function useMyPaymentsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MyPaymentsQuery, MyPaymentsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MyPaymentsQuery | undefined, MyPaymentsQueryVariables>;
+export function useMyPaymentsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MyPaymentsQuery, MyPaymentsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<MyPaymentsQuery, MyPaymentsQueryVariables>(MyPaymentsDocument, options);
+        }
+export type MyPaymentsQueryHookResult = ReturnType<typeof useMyPaymentsQuery>;
+export type MyPaymentsLazyQueryHookResult = ReturnType<typeof useMyPaymentsLazyQuery>;
+export type MyPaymentsQueryResult = ApolloReactCommon.QueryResult<MyPaymentsQuery, MyPaymentsQueryVariables>;
+export const AvailablePaymentMethodsDocument = gql`
+    query AvailablePaymentMethods {
+  availablePaymentMethods
+}
+    `;
+export function useAvailablePaymentMethodsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AvailablePaymentMethodsQuery, AvailablePaymentMethodsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<AvailablePaymentMethodsQuery, AvailablePaymentMethodsQueryVariables>(AvailablePaymentMethodsDocument, options);
+      }
+export function useAvailablePaymentMethodsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AvailablePaymentMethodsQuery, AvailablePaymentMethodsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<AvailablePaymentMethodsQuery, AvailablePaymentMethodsQueryVariables>(AvailablePaymentMethodsDocument, options);
+        }
+// @ts-ignore
+export function useAvailablePaymentMethodsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AvailablePaymentMethodsQuery, AvailablePaymentMethodsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AvailablePaymentMethodsQuery, AvailablePaymentMethodsQueryVariables>;
+export function useAvailablePaymentMethodsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AvailablePaymentMethodsQuery, AvailablePaymentMethodsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AvailablePaymentMethodsQuery | undefined, AvailablePaymentMethodsQueryVariables>;
+export function useAvailablePaymentMethodsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AvailablePaymentMethodsQuery, AvailablePaymentMethodsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<AvailablePaymentMethodsQuery, AvailablePaymentMethodsQueryVariables>(AvailablePaymentMethodsDocument, options);
+        }
+export type AvailablePaymentMethodsQueryHookResult = ReturnType<typeof useAvailablePaymentMethodsQuery>;
+export type AvailablePaymentMethodsLazyQueryHookResult = ReturnType<typeof useAvailablePaymentMethodsLazyQuery>;
+export type AvailablePaymentMethodsQueryResult = ApolloReactCommon.QueryResult<AvailablePaymentMethodsQuery, AvailablePaymentMethodsQueryVariables>;
+export const CreatePaymentDocument = gql`
+    mutation CreatePayment($input: CreatePaymentInput!) {
+  createPayment(input: $input) {
+    success
+    paymentId
+    status
+    message
+    instructions
+    redirectUrl
+  }
+}
+    `;
+export type CreatePaymentMutationFn = ApolloReactCommon.MutationFunction<CreatePaymentMutation, CreatePaymentMutationVariables>;
+export function useCreatePaymentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreatePaymentMutation, CreatePaymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<CreatePaymentMutation, CreatePaymentMutationVariables>(CreatePaymentDocument, options);
+      }
+export type CreatePaymentMutationHookResult = ReturnType<typeof useCreatePaymentMutation>;
+export type CreatePaymentMutationResult = ApolloReactCommon.MutationResult<CreatePaymentMutation>;
+export type CreatePaymentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreatePaymentMutation, CreatePaymentMutationVariables>;
+export const CancelPaymentDocument = gql`
+    mutation CancelPayment($paymentId: String!) {
+  cancelPayment(paymentId: $paymentId) {
+    id
+    status
+  }
+}
+    `;
+export type CancelPaymentMutationFn = ApolloReactCommon.MutationFunction<CancelPaymentMutation, CancelPaymentMutationVariables>;
+export function useCancelPaymentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CancelPaymentMutation, CancelPaymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<CancelPaymentMutation, CancelPaymentMutationVariables>(CancelPaymentDocument, options);
+      }
+export type CancelPaymentMutationHookResult = ReturnType<typeof useCancelPaymentMutation>;
+export type CancelPaymentMutationResult = ApolloReactCommon.MutationResult<CancelPaymentMutation>;
+export type CancelPaymentMutationOptions = ApolloReactCommon.BaseMutationOptions<CancelPaymentMutation, CancelPaymentMutationVariables>;
 export const PropertiesDocument = gql`
     query Properties($page: Int, $limit: Int) {
   properties(page: $page, limit: $limit) {

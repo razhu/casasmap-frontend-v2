@@ -2,7 +2,11 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useCurrentSubscriptionQuery } from "@/lib/graphql/generated";
+import { useState } from "react";
+import {
+  useCurrentSubscriptionQuery,
+  useCancelSubscriptionMutation,
+} from "@/lib/graphql/generated";
 import { useAuthStore } from "@/store/auth";
 import {
   Card,
@@ -22,19 +26,70 @@ import {
   Calendar,
   TrendingUp,
   ArrowRight,
+  XCircle,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function SubscriptionPage() {
   const params = useParams();
   const router = useRouter();
+  const [cancelling, setCancelling] = useState(false);
   const locale = (params.locale as string) || "es";
   const { user } = useAuthStore();
   const t = useTranslations("subscription");
+  const { toast } = useToast();
 
-  const { data, loading, error } = useCurrentSubscriptionQuery({
+  const { data, loading, error, refetch } = useCurrentSubscriptionQuery({
     skip: !user,
   });
+
+  const [cancelSubscription] = useCancelSubscriptionMutation();
+
+  const handleCancelSubscription = async () => {
+    if (!subscription?.id) return;
+
+    setCancelling(true);
+    try {
+      await cancelSubscription({
+        variables: { id: subscription.id },
+      });
+
+      toast({
+        title:
+          locale === "es" ? "Suscripción cancelada" : "Subscription cancelled",
+        description:
+          locale === "es"
+            ? "Tu suscripción ha sido cancelada. Tendrás acceso hasta la fecha de vencimiento."
+            : "Your subscription has been cancelled. You'll have access until the expiration date.",
+      });
+
+      refetch();
+    } catch (err: any) {
+      toast({
+        title: locale === "es" ? "Error" : "Error",
+        description:
+          err?.message ||
+          (locale === "es"
+            ? "No se pudo cancelar la suscripción"
+            : "Could not cancel subscription"),
+        variant: "destructive",
+      });
+    } finally {
+      setCancelling(false);
+    }
+  };
 
   const getLocalePath = (path: string) => {
     return locale === "es" ? path : `/${locale}${path}`;
@@ -232,25 +287,82 @@ export default function SubscriptionPage() {
           </div>
 
           {/* Actions */}
-          <div className="flex gap-3 pt-4">
-            {currentPlan !== "PREMIUM_PLUS" && (
-              <Button
-                className="flex-1"
-                onClick={() => router.push(getLocalePath("/pricing"))}
-              >
-                <Crown className="h-4 w-4 mr-2" />
-                {locale === "es" ? "Mejorar Plan" : "Upgrade Plan"}
-              </Button>
-            )}
-            {currentPlan === "FREE" && (
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => router.push(getLocalePath("/pricing"))}
-              >
-                {locale === "es" ? "Ver Planes" : "View Plans"}
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
+          <div className="space-y-3 pt-4">
+            <div className="flex gap-3">
+              {currentPlan !== "PREMIUM_PLUS" && (
+                <Button
+                  className="flex-1"
+                  onClick={() =>
+                    router.push(getLocalePath("/subscription/upgrade"))
+                  }
+                >
+                  <Crown className="h-4 w-4 mr-2" />
+                  {locale === "es" ? "Mejorar Plan" : "Upgrade Plan"}
+                </Button>
+              )}
+              {currentPlan === "FREE" && (
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => router.push(getLocalePath("/pricing"))}
+                >
+                  {locale === "es" ? "Ver Planes" : "View Plans"}
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              )}
+            </div>
+
+            {/* Cancel Subscription */}
+            {subscription && isActive && currentPlan !== "FREE" && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full text-red-600 hover:text-red-700"
+                    disabled={cancelling}
+                  >
+                    <XCircle className="h-4 w-4 mr-2" />
+                    {locale === "es"
+                      ? "Cancelar Suscripción"
+                      : "Cancel Subscription"}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      {locale === "es"
+                        ? "¿Cancelar suscripción?"
+                        : "Cancel subscription?"}
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      {locale === "es"
+                        ? `Tu suscripción ${
+                            plan.name
+                          } será cancelada. Mantendrás acceso hasta ${endDate?.toLocaleDateString(
+                            "es-BO",
+                            { year: "numeric", month: "long", day: "numeric" }
+                          )}. Después volverás al plan Gratis.`
+                        : `Your ${
+                            plan.name
+                          } subscription will be cancelled. You'll keep access until ${endDate?.toLocaleDateString(
+                            "en-US",
+                            { year: "numeric", month: "long", day: "numeric" }
+                          )}. After that, you'll return to the Free plan.`}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>
+                      {locale === "es" ? "No, mantener" : "No, keep it"}
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleCancelSubscription}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      {locale === "es" ? "Sí, cancelar" : "Yes, cancel"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
           </div>
         </CardContent>
@@ -308,6 +420,24 @@ export default function SubscriptionPage() {
                 {locale === "es" ? "Ver Favoritos" : "View Favorites"}
               </Button>
             </div>
+            {currentPlan !== "FREE" && (
+              <div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span>
+                    {locale === "es" ? "Historial de Pagos" : "Payment History"}
+                  </span>
+                </div>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() =>
+                    router.push(getLocalePath("/subscription/payments"))
+                  }
+                >
+                  {locale === "es" ? "Ver Pagos" : "View Payments"}
+                </Button>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

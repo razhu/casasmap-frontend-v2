@@ -1,0 +1,39 @@
+query MyPayments {
+  myPayments {
+    id
+    userId
+    amount
+    currency
+    method
+    status
+    plan
+    receiptUrl
+    transactionId
+    approvedAt
+    rejectedReason
+    createdAt
+    updatedAt
+  }
+}
+
+query AvailablePaymentMethods {
+  availablePaymentMethods
+}
+
+mutation CreatePayment($input: CreatePaymentInput!) {
+  createPayment(input: $input) {
+    success
+    paymentId
+    status
+    message
+    instructions
+    redirectUrl
+  }
+}
+
+mutation CancelPayment($paymentId: String!) {
+  cancelPayment(paymentId: $paymentId) {
+    id
+    status
+  }
+}

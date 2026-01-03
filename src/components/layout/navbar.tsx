@@ -66,12 +66,6 @@ export function Navbar() {
       requiresAuth: false,
     },
     {
-      href: "/pricing",
-      icon: TrendingUp,
-      label: locale === "es" ? "Precios" : "Pricing",
-      requiresAuth: false,
-    },
-    {
       href: "/favorites",
       icon: Heart,
       label: t("favorites"),
@@ -89,12 +83,6 @@ export function Navbar() {
       label: locale === "es" ? "Consultas" : "Inquiries",
       requiresAuth: true,
     },
-    {
-      href: "/dashboard/analytics",
-      icon: BarChart3,
-      label: locale === "es" ? "Estadísticas" : "Analytics",
-      requiresAuth: true,
-    },
   ];
 
   // Premium Plus only links
@@ -103,7 +91,7 @@ export function Navbar() {
       ? [
           {
             href: "/reports",
-            icon: TrendingUp,
+            icon: BarChart3,
             label: locale === "es" ? "Reportes" : "Reports",
             requiresAuth: true,
           },
@@ -221,12 +209,12 @@ export function Navbar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link
-                      href={getLocalePath("/dashboard/analytics")}
+                      href={getLocalePath("/dashboard/properties")}
                       className="cursor-pointer"
                     >
-                      <BarChart3 className="mr-2 h-4 w-4" />
+                      <Search className="mr-2 h-4 w-4" />
                       <span>
-                        {locale === "es" ? "Estadísticas" : "Analytics"}
+                        {locale === "es" ? "Mis Propiedades" : "My Properties"}
                       </span>
                     </Link>
                   </DropdownMenuItem>
@@ -368,12 +356,14 @@ export function Navbar() {
                           </Button>
                         </Link>
                         <Link
-                          href={getLocalePath("/dashboard/analytics")}
+                          href={getLocalePath("/dashboard/properties")}
                           onClick={() => setOpen(false)}
                         >
                           <Button variant="outline" className="w-full mb-2">
-                            <BarChart3 className="mr-2 h-4 w-4" />
-                            {locale === "es" ? "Estadísticas" : "Analytics"}
+                            <Search className="mr-2 h-4 w-4" />
+                            {locale === "es"
+                              ? "Mis Propiedades"
+                              : "My Properties"}
                           </Button>
                         </Link>
                         <Button
