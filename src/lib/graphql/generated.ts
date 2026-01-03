@@ -1855,6 +1855,27 @@ export type RejectPaymentMutationVariables = Exact<{
 
 export type RejectPaymentMutation = { __typename?: 'Mutation', rejectPayment: { __typename?: 'Payment', id: string, status: PaymentStatus, rejectedReason?: string | null } };
 
+export type UpdateSettingMutationVariables = Exact<{
+  updateSettingInput: UpdateSettingInput;
+}>;
+
+
+export type UpdateSettingMutation = { __typename?: 'Mutation', updateSetting: { __typename?: 'SystemConfig', id: string, key: string, value: string, updatedAt: any } };
+
+export type CreateSettingMutationVariables = Exact<{
+  createSettingInput: CreateSettingInput;
+}>;
+
+
+export type CreateSettingMutation = { __typename?: 'Mutation', createSetting: { __typename?: 'SystemConfig', id: string, key: string, value: string, dataType: ConfigType, category: string, description?: string | null, isPublic: boolean, isEditable: boolean, createdAt: any } };
+
+export type DeleteSettingMutationVariables = Exact<{
+  key: Scalars['String']['input'];
+}>;
+
+
+export type DeleteSettingMutation = { __typename?: 'Mutation', deleteSetting: { __typename?: 'SystemConfig', id: string, key: string } };
+
 export type TrackPropertyViewMutationVariables = Exact<{
   propertyId: Scalars['String']['input'];
   sessionId?: InputMaybe<Scalars['String']['input']>;
@@ -2083,6 +2104,11 @@ export type AdminPaymentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type AdminPaymentsQuery = { __typename?: 'Query', allPayments: Array<{ __typename?: 'Payment', id: string, userId: string, amount: number, currency: string, method: PaymentMethod, status: PaymentStatus, plan: string, createdAt: any, approvedAt?: any | null }> };
+
+export type AdminSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AdminSettingsQuery = { __typename?: 'Query', settings: Array<{ __typename?: 'SystemConfig', id: string, key: string, value: string, dataType: ConfigType, category: string, description?: string | null, isPublic: boolean, isEditable: boolean, createdAt: any, updatedAt: any }> };
 
 export type PropertyAnalyticsQueryVariables = Exact<{
   propertyId: Scalars['String']['input'];
@@ -2449,6 +2475,63 @@ export function useRejectPaymentMutation(baseOptions?: ApolloReactHooks.Mutation
 export type RejectPaymentMutationHookResult = ReturnType<typeof useRejectPaymentMutation>;
 export type RejectPaymentMutationResult = ApolloReactCommon.MutationResult<RejectPaymentMutation>;
 export type RejectPaymentMutationOptions = ApolloReactCommon.BaseMutationOptions<RejectPaymentMutation, RejectPaymentMutationVariables>;
+export const UpdateSettingDocument = gql`
+    mutation UpdateSetting($updateSettingInput: UpdateSettingInput!) {
+  updateSetting(updateSettingInput: $updateSettingInput) {
+    id
+    key
+    value
+    updatedAt
+  }
+}
+    `;
+export type UpdateSettingMutationFn = ApolloReactCommon.MutationFunction<UpdateSettingMutation, UpdateSettingMutationVariables>;
+export function useUpdateSettingMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateSettingMutation, UpdateSettingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<UpdateSettingMutation, UpdateSettingMutationVariables>(UpdateSettingDocument, options);
+      }
+export type UpdateSettingMutationHookResult = ReturnType<typeof useUpdateSettingMutation>;
+export type UpdateSettingMutationResult = ApolloReactCommon.MutationResult<UpdateSettingMutation>;
+export type UpdateSettingMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateSettingMutation, UpdateSettingMutationVariables>;
+export const CreateSettingDocument = gql`
+    mutation CreateSetting($createSettingInput: CreateSettingInput!) {
+  createSetting(createSettingInput: $createSettingInput) {
+    id
+    key
+    value
+    dataType
+    category
+    description
+    isPublic
+    isEditable
+    createdAt
+  }
+}
+    `;
+export type CreateSettingMutationFn = ApolloReactCommon.MutationFunction<CreateSettingMutation, CreateSettingMutationVariables>;
+export function useCreateSettingMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateSettingMutation, CreateSettingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<CreateSettingMutation, CreateSettingMutationVariables>(CreateSettingDocument, options);
+      }
+export type CreateSettingMutationHookResult = ReturnType<typeof useCreateSettingMutation>;
+export type CreateSettingMutationResult = ApolloReactCommon.MutationResult<CreateSettingMutation>;
+export type CreateSettingMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateSettingMutation, CreateSettingMutationVariables>;
+export const DeleteSettingDocument = gql`
+    mutation DeleteSetting($key: String!) {
+  deleteSetting(key: $key) {
+    id
+    key
+  }
+}
+    `;
+export type DeleteSettingMutationFn = ApolloReactCommon.MutationFunction<DeleteSettingMutation, DeleteSettingMutationVariables>;
+export function useDeleteSettingMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteSettingMutation, DeleteSettingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<DeleteSettingMutation, DeleteSettingMutationVariables>(DeleteSettingDocument, options);
+      }
+export type DeleteSettingMutationHookResult = ReturnType<typeof useDeleteSettingMutation>;
+export type DeleteSettingMutationResult = ApolloReactCommon.MutationResult<DeleteSettingMutation>;
+export type DeleteSettingMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteSettingMutation, DeleteSettingMutationVariables>;
 export const TrackPropertyViewDocument = gql`
     mutation TrackPropertyView($propertyId: String!, $sessionId: String) {
   trackPropertyView(propertyId: $propertyId, sessionId: $sessionId)
@@ -3072,6 +3155,40 @@ export function useAdminPaymentsSuspenseQuery(baseOptions?: ApolloReactHooks.Ski
 export type AdminPaymentsQueryHookResult = ReturnType<typeof useAdminPaymentsQuery>;
 export type AdminPaymentsLazyQueryHookResult = ReturnType<typeof useAdminPaymentsLazyQuery>;
 export type AdminPaymentsQueryResult = ApolloReactCommon.QueryResult<AdminPaymentsQuery, AdminPaymentsQueryVariables>;
+export const AdminSettingsDocument = gql`
+    query AdminSettings {
+  settings {
+    id
+    key
+    value
+    dataType
+    category
+    description
+    isPublic
+    isEditable
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export function useAdminSettingsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AdminSettingsQuery, AdminSettingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<AdminSettingsQuery, AdminSettingsQueryVariables>(AdminSettingsDocument, options);
+      }
+export function useAdminSettingsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AdminSettingsQuery, AdminSettingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<AdminSettingsQuery, AdminSettingsQueryVariables>(AdminSettingsDocument, options);
+        }
+// @ts-ignore
+export function useAdminSettingsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AdminSettingsQuery, AdminSettingsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AdminSettingsQuery, AdminSettingsQueryVariables>;
+export function useAdminSettingsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminSettingsQuery, AdminSettingsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AdminSettingsQuery | undefined, AdminSettingsQueryVariables>;
+export function useAdminSettingsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminSettingsQuery, AdminSettingsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<AdminSettingsQuery, AdminSettingsQueryVariables>(AdminSettingsDocument, options);
+        }
+export type AdminSettingsQueryHookResult = ReturnType<typeof useAdminSettingsQuery>;
+export type AdminSettingsLazyQueryHookResult = ReturnType<typeof useAdminSettingsLazyQuery>;
+export type AdminSettingsQueryResult = ApolloReactCommon.QueryResult<AdminSettingsQuery, AdminSettingsQueryVariables>;
 export const PropertyAnalyticsDocument = gql`
     query PropertyAnalytics($propertyId: String!) {
   propertyAnalytics(propertyId: $propertyId) {

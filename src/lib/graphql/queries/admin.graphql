@@ -62,3 +62,18 @@ query AdminPayments {
     approvedAt
   }
 }
+
+query AdminSettings {
+  settings {
+    id
+    key
+    value
+    dataType
+    category
+    description
+    isPublic
+    isEditable
+    createdAt
+    updatedAt
+  }
+}

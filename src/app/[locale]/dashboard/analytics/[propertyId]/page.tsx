@@ -57,9 +57,7 @@ export default function PropertyAnalyticsPage() {
             Volver a Estadísticas
           </Button>
           <h1 className="text-3xl font-bold">{property.title}</h1>
-          <p className="text-muted-foreground">
-            {property.city?.name} • {property.propertyType?.name}
-          </p>
+          <p className="text-muted-foreground">{property.address}</p>
         </div>
         <Button
           variant="outline"

@@ -9,6 +9,7 @@ import {
   Clock,
   CheckCircle,
   XCircle,
+  TrendingUp,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -17,6 +18,20 @@ import {
   useAdminPaymentsQuery,
 } from "@/lib/graphql/generated";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 
 export default function AdminDashboardPage() {
   const params = useParams();
@@ -45,6 +60,27 @@ export default function AdminDashboardPage() {
   ).length;
   const completedPayments = payments.filter((p) => p.status === "COMPLETED");
   const totalRevenue = completedPayments.reduce((sum, p) => sum + p.amount, 0);
+
+  // Prepare chart data
+  const userGrowthData = prepareUserGrowthData(users);
+  const revenueData = prepareRevenueData(payments);
+  const propertyStatusData = [
+    {
+      name: locale === "es" ? "Activas" : "Active",
+      value: activeProperties,
+      color: "#10b981",
+    },
+    {
+      name: locale === "es" ? "Pendientes" : "Pending",
+      value: pendingProperties,
+      color: "#f59e0b",
+    },
+    {
+      name: locale === "es" ? "Rechazadas" : "Rejected",
+      value: rejectedProperties,
+      color: "#ef4444",
+    },
+  ];
 
   const stats = [
     {
@@ -124,6 +160,99 @@ export default function AdminDashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
+        {/* Revenue Chart */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              {locale === "es"
+                ? "Ingresos (Últimos 30 días)"
+                : "Revenue (Last 30 days)"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {paymentsLoading ? (
+              <Skeleton className="h-64 w-full" />
+            ) : (
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={revenueData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="amount" fill="#10b981" />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* User Growth Chart */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              {locale === "es" ? "Crecimiento de Usuarios" : "User Growth"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {usersLoading ? (
+              <Skeleton className="h-64 w-full" />
+            ) : (
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={userGrowthData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="users"
+                    stroke="#3b82f6"
+                    strokeWidth={2}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        {/* Property Status Distribution */}
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {locale === "es" ? "Estado de Propiedades" : "Property Status"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {propertiesLoading ? (
+              <Skeleton className="h-64 w-full" />
+            ) : (
+              <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie
+                    data={propertyStatusData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, value }) => `${name}: ${value}`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {propertyStatusData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Recent Properties */}
         <Card>
           <CardHeader>
@@ -220,4 +349,55 @@ export default function AdminDashboardPage() {
       </div>
     </div>
   );
+}
+
+// Helper functions for chart data
+function prepareUserGrowthData(users: any[]) {
+  const last30Days = Array.from({ length: 30 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (29 - i));
+    return date.toISOString().split("T")[0];
+  });
+
+  const usersByDate = users.reduce((acc: any, user) => {
+    const date = new Date(user.createdAt).toISOString().split("T")[0];
+    acc[date] = (acc[date] || 0) + 1;
+    return acc;
+  }, {});
+
+  let cumulative = 0;
+  return last30Days.map((date) => {
+    cumulative += usersByDate[date] || 0;
+    return {
+      date: new Date(date).toLocaleDateString("es-ES", {
+        month: "short",
+        day: "numeric",
+      }),
+      users: cumulative,
+    };
+  });
+}
+
+function prepareRevenueData(payments: any[]) {
+  const last30Days = Array.from({ length: 30 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (29 - i));
+    return date.toISOString().split("T")[0];
+  });
+
+  const revenueByDate = payments
+    .filter((p) => p.status === "COMPLETED")
+    .reduce((acc: any, payment) => {
+      const date = new Date(payment.createdAt).toISOString().split("T")[0];
+      acc[date] = (acc[date] || 0) + payment.amount;
+      return acc;
+    }, {});
+
+  return last30Days.map((date) => ({
+    date: new Date(date).toLocaleDateString("es-ES", {
+      month: "short",
+      day: "numeric",
+    }),
+    amount: revenueByDate[date] || 0,
+  }));
 }

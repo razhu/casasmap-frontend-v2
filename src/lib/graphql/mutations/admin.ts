@@ -37,3 +37,39 @@ export const REJECT_PAYMENT = gql`
     }
   }
 `;
+
+export const UPDATE_SETTING = gql`
+  mutation UpdateSetting($updateSettingInput: UpdateSettingInput!) {
+    updateSetting(updateSettingInput: $updateSettingInput) {
+      id
+      key
+      value
+      updatedAt
+    }
+  }
+`;
+
+export const CREATE_SETTING = gql`
+  mutation CreateSetting($createSettingInput: CreateSettingInput!) {
+    createSetting(createSettingInput: $createSettingInput) {
+      id
+      key
+      value
+      dataType
+      category
+      description
+      isPublic
+      isEditable
+      createdAt
+    }
+  }
+`;
+
+export const DELETE_SETTING = gql`
+  mutation DeleteSetting($key: String!) {
+    deleteSetting(key: $key) {
+      id
+      key
+    }
+  }
+`;

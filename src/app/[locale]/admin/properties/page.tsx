@@ -31,6 +31,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function AdminPropertiesPage() {
   const params = useParams();
@@ -52,6 +53,8 @@ export default function AdminPropertiesPage() {
   });
   const [rejectReason, setRejectReason] = useState("");
   const [processing, setProcessing] = useState<string | null>(null);
+  const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
+  const [bulkProcessing, setBulkProcessing] = useState(false);
 
   const properties = data?.properties?.data || [];
   const pending = properties.filter((p) => p.status === "PENDING");
@@ -124,16 +127,136 @@ export default function AdminPropertiesPage() {
     }
   };
 
+  const handleBulkApprove = async () => {
+    if (selectedProperties.length === 0) return;
+
+    setBulkProcessing(true);
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const id of selectedProperties) {
+      try {
+        await approveProperty({ variables: { id } });
+        successCount++;
+      } catch (err) {
+        errorCount++;
+      }
+    }
+
+    toast({
+      title:
+        locale === "es"
+          ? `${successCount} propiedades aprobadas`
+          : `${successCount} properties approved`,
+      description:
+        errorCount > 0
+          ? locale === "es"
+            ? `${errorCount} fallaron`
+            : `${errorCount} failed`
+          : undefined,
+      variant: errorCount > 0 ? "destructive" : "default",
+    });
+
+    setSelectedProperties([]);
+    setBulkProcessing(false);
+    refetch();
+  };
+
+  const handleBulkReject = () => {
+    if (selectedProperties.length === 0) return;
+    // For bulk reject, we'll use a generic reason
+    setRejectDialog({
+      open: true,
+      propertyId: "bulk",
+      title: `${selectedProperties.length} ${
+        locale === "es" ? "propiedades" : "properties"
+      }`,
+    });
+  };
+
+  const handleBulkRejectConfirm = async () => {
+    if (!rejectReason.trim()) {
+      toast({
+        title: locale === "es" ? "Error" : "Error",
+        description: locale === "es" ? "Ingresa una razón" : "Enter a reason",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setBulkProcessing(true);
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const id of selectedProperties) {
+      try {
+        await rejectProperty({
+          variables: { id, reason: rejectReason },
+        });
+        successCount++;
+      } catch (err) {
+        errorCount++;
+      }
+    }
+
+    toast({
+      title:
+        locale === "es"
+          ? `${successCount} propiedades rechazadas`
+          : `${successCount} properties rejected`,
+      description:
+        errorCount > 0
+          ? locale === "es"
+            ? `${errorCount} fallaron`
+            : `${errorCount} failed`
+          : undefined,
+      variant: errorCount > 0 ? "destructive" : "default",
+    });
+
+    setSelectedProperties([]);
+    setRejectDialog({ open: false, propertyId: "", title: "" });
+    setRejectReason("");
+    setBulkProcessing(false);
+    refetch();
+  };
+
+  const toggleSelectProperty = (id: string) => {
+    setSelectedProperties((prev) =>
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = (properties: typeof pending) => {
+    if (selectedProperties.length === properties.length) {
+      setSelectedProperties([]);
+    } else {
+      setSelectedProperties(properties.map((p) => p.id));
+    }
+  };
+
   const PropertyTable = ({
     properties: props,
     showActions = true,
+    showCheckboxes = false,
   }: {
     properties: typeof properties;
     showActions?: boolean;
+    showCheckboxes?: boolean;
   }) => (
     <Table>
       <TableHeader>
         <TableRow>
+          {showCheckboxes && (
+            <TableHead className="w-12">
+              <Checkbox
+                checked={
+                  props.length > 0 &&
+                  props.every((p) => selectedProperties.includes(p.id))
+                }
+                onCheckedChange={() => toggleSelectAll(props)}
+              />
+            </TableHead>
+          )}
           <TableHead>{locale === "es" ? "Título" : "Title"}</TableHead>
           <TableHead>{locale === "es" ? "Propietario" : "Owner"}</TableHead>
           <TableHead>{locale === "es" ? "Precio" : "Price"}</TableHead>
@@ -149,6 +272,14 @@ export default function AdminPropertiesPage() {
       <TableBody>
         {props.map((property) => (
           <TableRow key={property.id}>
+            {showCheckboxes && (
+              <TableCell>
+                <Checkbox
+                  checked={selectedProperties.includes(property.id)}
+                  onCheckedChange={() => toggleSelectProperty(property.id)}
+                />
+              </TableCell>
+            )}
             <TableCell className="font-medium">{property.title}</TableCell>
             <TableCell>
               {property.user?.profile?.firstName}{" "}
@@ -293,6 +424,41 @@ export default function AdminPropertiesPage() {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="pending">
+          {pending.length > 0 && (
+            <div className="mb-4 flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">
+                {selectedProperties.length > 0 &&
+                  `${selectedProperties.length} ${
+                    locale === "es" ? "seleccionadas" : "selected"
+                  }`}
+              </span>
+              {selectedProperties.length > 0 && (
+                <>
+                  <Button
+                    size="sm"
+                    onClick={handleBulkApprove}
+                    disabled={bulkProcessing}
+                  >
+                    <CheckCircle className="h-4 w-4 mr-1" />
+                    {locale === "es"
+                      ? "Aprobar Seleccionadas"
+                      : "Approve Selected"}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={handleBulkReject}
+                    disabled={bulkProcessing}
+                  >
+                    <XCircle className="h-4 w-4 mr-1" />
+                    {locale === "es"
+                      ? "Rechazar Seleccionadas"
+                      : "Reject Selected"}
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
           <Card>
             <CardContent className="pt-6">
               {pending.length === 0 ? (
@@ -302,7 +468,7 @@ export default function AdminPropertiesPage() {
                     : "No pending properties"}
                 </p>
               ) : (
-                <PropertyTable properties={pending} />
+                <PropertyTable properties={pending} showCheckboxes />
               )}
             </CardContent>
           </Card>
@@ -357,8 +523,12 @@ export default function AdminPropertiesPage() {
             </Button>
             <Button
               variant="destructive"
-              onClick={handleReject}
-              disabled={!rejectReason.trim()}
+              onClick={
+                rejectDialog.propertyId === "bulk"
+                  ? handleBulkRejectConfirm
+                  : handleReject
+              }
+              disabled={!rejectReason.trim() || bulkProcessing}
             >
               {locale === "es" ? "Rechazar" : "Reject"}
             </Button>
