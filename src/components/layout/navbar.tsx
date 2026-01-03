@@ -98,7 +98,20 @@ export function Navbar() {
         ]
       : [];
 
-  const allNavLinks = [...navLinks, ...premiumPlusLinks];
+  // Admin only links
+  const adminLinks =
+    user?.role?.name === "Admin" || user?.role?.name === "Super Admin"
+      ? [
+          {
+            href: "/admin",
+            icon: Settings,
+            label: locale === "es" ? "Admin" : "Admin",
+            requiresAuth: true,
+          },
+        ]
+      : [];
+
+  const allNavLinks = [...navLinks, ...premiumPlusLinks, ...adminLinks];
 
   const handleLogout = () => {
     logout();

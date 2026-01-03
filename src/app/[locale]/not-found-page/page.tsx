@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Home, ArrowLeft, Search } from "lucide-react";
 
-export default function NotFound() {
+export default function NotFoundPage() {
   const params = useParams();
   const router = useRouter();
   const locale = (params.locale as string) || "es";

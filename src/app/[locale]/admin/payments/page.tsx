@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import {
-  useAdminPropertiesQuery,
-  useApprovePropertyMutation,
-  useRejectPropertyMutation,
+  useAdminPaymentsQuery,
+  useApprovePaymentMutation,
+  useRejectPaymentMutation,
 } from "@/lib/graphql/generated";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, XCircle, Clock, Eye } from "lucide-react";
+import { CheckCircle, XCircle, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
@@ -32,42 +32,42 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 
-export default function AdminPropertiesPage() {
+export default function AdminPaymentsPage() {
   const params = useParams();
   const locale = (params.locale as string) || "es";
   const { toast } = useToast();
 
-  const { data, loading, refetch } = useAdminPropertiesQuery();
-  const [approveProperty] = useApprovePropertyMutation();
-  const [rejectProperty] = useRejectPropertyMutation();
+  const { data, loading, refetch } = useAdminPaymentsQuery();
+  const [approvePayment] = useApprovePaymentMutation();
+  const [rejectPayment] = useRejectPaymentMutation();
 
   const [rejectDialog, setRejectDialog] = useState<{
     open: boolean;
-    propertyId: string;
-    title: string;
+    paymentId: string;
+    plan: string;
   }>({
     open: false,
-    propertyId: "",
-    title: "",
+    paymentId: "",
+    plan: "",
   });
   const [rejectReason, setRejectReason] = useState("");
   const [processing, setProcessing] = useState<string | null>(null);
 
-  const properties = data?.properties?.data || [];
-  const pending = properties.filter((p) => p.status === "PENDING");
-  const active = properties.filter((p) => p.status === "ACTIVE");
-  const rejected = properties.filter((p) => p.status === "REJECTED");
+  const payments = data?.allPayments || [];
+  const pending = payments.filter((p) => p.status === "PENDING");
+  const completed = payments.filter((p) => p.status === "COMPLETED");
+  const failed = payments.filter((p) => p.status === "FAILED");
 
-  const handleApprove = async (id: string) => {
-    setProcessing(id);
+  const handleApprove = async (paymentId: string) => {
+    setProcessing(paymentId);
     try {
-      await approveProperty({ variables: { id } });
+      await approvePayment({ variables: { input: { paymentId } } });
       toast({
-        title: locale === "es" ? "Propiedad aprobada" : "Property approved",
+        title: locale === "es" ? "Pago aprobado" : "Payment approved",
         description:
           locale === "es"
-            ? "La propiedad ha sido aprobada"
-            : "Property has been approved",
+            ? "El pago ha sido aprobado y la suscripción activada"
+            : "Payment approved and subscription activated",
       });
       refetch();
     } catch (err: any) {
@@ -93,22 +93,24 @@ export default function AdminPropertiesPage() {
       return;
     }
 
-    setProcessing(rejectDialog.propertyId);
+    setProcessing(rejectDialog.paymentId);
     try {
-      await rejectProperty({
+      await rejectPayment({
         variables: {
-          id: rejectDialog.propertyId,
-          reason: rejectReason,
+          input: {
+            paymentId: rejectDialog.paymentId,
+            reason: rejectReason,
+          },
         },
       });
       toast({
-        title: locale === "es" ? "Propiedad rechazada" : "Property rejected",
+        title: locale === "es" ? "Pago rechazado" : "Payment rejected",
         description:
           locale === "es"
-            ? "La propiedad ha sido rechazada"
-            : "Property has been rejected",
+            ? "El pago ha sido rechazado"
+            : "Payment has been rejected",
       });
-      setRejectDialog({ open: false, propertyId: "", title: "" });
+      setRejectDialog({ open: false, paymentId: "", plan: "" });
       setRejectReason("");
       refetch();
     } catch (err: any) {
@@ -124,19 +126,19 @@ export default function AdminPropertiesPage() {
     }
   };
 
-  const PropertyTable = ({
-    properties: props,
+  const PaymentTable = ({
+    payments: pmts,
     showActions = true,
   }: {
-    properties: typeof properties;
+    payments: typeof payments;
     showActions?: boolean;
   }) => (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>{locale === "es" ? "Título" : "Title"}</TableHead>
-          <TableHead>{locale === "es" ? "Propietario" : "Owner"}</TableHead>
-          <TableHead>{locale === "es" ? "Precio" : "Price"}</TableHead>
+          <TableHead>{locale === "es" ? "Plan" : "Plan"}</TableHead>
+          <TableHead>{locale === "es" ? "Monto" : "Amount"}</TableHead>
+          <TableHead>{locale === "es" ? "Método" : "Method"}</TableHead>
           <TableHead>{locale === "es" ? "Estado" : "Status"}</TableHead>
           <TableHead>{locale === "es" ? "Fecha" : "Date"}</TableHead>
           {showActions && (
@@ -147,55 +149,45 @@ export default function AdminPropertiesPage() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {props.map((property) => (
-          <TableRow key={property.id}>
-            <TableCell className="font-medium">{property.title}</TableCell>
+        {pmts.map((payment) => (
+          <TableRow key={payment.id}>
+            <TableCell className="font-medium">{payment.plan}</TableCell>
             <TableCell>
-              {property.user?.profile?.firstName}{" "}
-              {property.user?.profile?.lastName}
+              ${payment.amount.toLocaleString()} {payment.currency}
             </TableCell>
-            <TableCell>${property.priceUS?.toLocaleString()}</TableCell>
+            <TableCell>{payment.method}</TableCell>
             <TableCell>
-              {property.status === "PENDING" && (
+              {payment.status === "PENDING" && (
                 <Badge variant="secondary">
                   <Clock className="h-3 w-3 mr-1" />
                   {locale === "es" ? "Pendiente" : "Pending"}
                 </Badge>
               )}
-              {property.status === "ACTIVE" && (
+              {payment.status === "COMPLETED" && (
                 <Badge variant="default">
                   <CheckCircle className="h-3 w-3 mr-1" />
-                  {locale === "es" ? "Activo" : "Active"}
+                  {locale === "es" ? "Completado" : "Completed"}
                 </Badge>
               )}
-              {property.status === "REJECTED" && (
+              {payment.status === "FAILED" && (
                 <Badge variant="destructive">
                   <XCircle className="h-3 w-3 mr-1" />
-                  {locale === "es" ? "Rechazado" : "Rejected"}
+                  {locale === "es" ? "Fallido" : "Failed"}
                 </Badge>
               )}
             </TableCell>
             <TableCell>
-              {new Date(property.createdAt).toLocaleDateString()}
+              {new Date(payment.createdAt).toLocaleDateString()}
             </TableCell>
             {showActions && (
               <TableCell className="text-right space-x-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() =>
-                    window.open(`/inmuebles/${property.id}`, "_blank")
-                  }
-                >
-                  <Eye className="h-4 w-4" />
-                </Button>
-                {property.status === "PENDING" && (
+                {payment.status === "PENDING" && (
                   <>
                     <Button
                       variant="default"
                       size="sm"
-                      onClick={() => handleApprove(property.id)}
-                      disabled={processing === property.id}
+                      onClick={() => handleApprove(payment.id)}
+                      disabled={processing === payment.id}
                     >
                       <CheckCircle className="h-4 w-4 mr-1" />
                       {locale === "es" ? "Aprobar" : "Approve"}
@@ -206,11 +198,11 @@ export default function AdminPropertiesPage() {
                       onClick={() =>
                         setRejectDialog({
                           open: true,
-                          propertyId: property.id,
-                          title: property.title,
+                          paymentId: payment.id,
+                          plan: payment.plan,
                         })
                       }
-                      disabled={processing === property.id}
+                      disabled={processing === payment.id}
                     >
                       <XCircle className="h-4 w-4 mr-1" />
                       {locale === "es" ? "Rechazar" : "Reject"}
@@ -238,44 +230,41 @@ export default function AdminPropertiesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">
-          {locale === "es" ? "Gestión de Propiedades" : "Property Management"}
+          {locale === "es" ? "Gestión de Pagos" : "Payment Management"}
         </h1>
         <p className="text-muted-foreground">
           {locale === "es"
-            ? "Aprobar, rechazar y gestionar propiedades"
-            : "Approve, reject and manage properties"}
+            ? "Aprobar y gestionar pagos manuales"
+            : "Approve and manage manual payments"}
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">
+          <CardContent className="pt-6">
+            <div className="text-sm font-medium text-muted-foreground">
               {locale === "es" ? "Pendientes" : "Pending"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </div>
             <div className="text-2xl font-bold">{pending.length}</div>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">
-              {locale === "es" ? "Activas" : "Active"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{active.length}</div>
+          <CardContent className="pt-6">
+            <div className="text-sm font-medium text-muted-foreground">
+              {locale === "es" ? "Completados" : "Completed"}
+            </div>
+            <div className="text-2xl font-bold">{completed.length}</div>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">
-              {locale === "es" ? "Rechazadas" : "Rejected"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{rejected.length}</div>
+          <CardContent className="pt-6">
+            <div className="text-sm font-medium text-muted-foreground">
+              {locale === "es" ? "Total" : "Total"}
+            </div>
+            <div className="text-2xl font-bold">
+              $
+              {completed.reduce((sum, p) => sum + p.amount, 0).toLocaleString()}
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -285,11 +274,11 @@ export default function AdminPropertiesPage() {
           <TabsTrigger value="pending">
             {locale === "es" ? "Pendientes" : "Pending"} ({pending.length})
           </TabsTrigger>
-          <TabsTrigger value="active">
-            {locale === "es" ? "Activas" : "Active"} ({active.length})
+          <TabsTrigger value="completed">
+            {locale === "es" ? "Completados" : "Completed"} ({completed.length})
           </TabsTrigger>
-          <TabsTrigger value="rejected">
-            {locale === "es" ? "Rechazadas" : "Rejected"} ({rejected.length})
+          <TabsTrigger value="failed">
+            {locale === "es" ? "Fallidos" : "Failed"} ({failed.length})
           </TabsTrigger>
         </TabsList>
         <TabsContent value="pending">
@@ -298,26 +287,26 @@ export default function AdminPropertiesPage() {
               {pending.length === 0 ? (
                 <p className="text-center text-muted-foreground py-8">
                   {locale === "es"
-                    ? "No hay propiedades pendientes"
-                    : "No pending properties"}
+                    ? "No hay pagos pendientes"
+                    : "No pending payments"}
                 </p>
               ) : (
-                <PropertyTable properties={pending} />
+                <PaymentTable payments={pending} />
               )}
             </CardContent>
           </Card>
         </TabsContent>
-        <TabsContent value="active">
+        <TabsContent value="completed">
           <Card>
             <CardContent className="pt-6">
-              <PropertyTable properties={active} showActions={false} />
+              <PaymentTable payments={completed} showActions={false} />
             </CardContent>
           </Card>
         </TabsContent>
-        <TabsContent value="rejected">
+        <TabsContent value="failed">
           <Card>
             <CardContent className="pt-6">
-              <PropertyTable properties={rejected} showActions={false} />
+              <PaymentTable payments={failed} showActions={false} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -330,9 +319,9 @@ export default function AdminPropertiesPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {locale === "es" ? "Rechazar Propiedad" : "Reject Property"}
+              {locale === "es" ? "Rechazar Pago" : "Reject Payment"}
             </DialogTitle>
-            <DialogDescription>{rejectDialog.title}</DialogDescription>
+            <DialogDescription>{rejectDialog.plan}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <Textarea
@@ -350,7 +339,7 @@ export default function AdminPropertiesPage() {
             <Button
               variant="outline"
               onClick={() =>
-                setRejectDialog({ open: false, propertyId: "", title: "" })
+                setRejectDialog({ open: false, paymentId: "", plan: "" })
               }
             >
               {locale === "es" ? "Cancelar" : "Cancel"}

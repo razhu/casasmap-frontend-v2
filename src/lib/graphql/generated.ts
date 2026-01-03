@@ -1826,6 +1826,35 @@ export type TestConnectionQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TestConnectionQuery = { __typename: 'Query' };
 
+export type ApprovePropertyMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type ApprovePropertyMutation = { __typename?: 'Mutation', approveProperty: { __typename?: 'Property', id: string, status: string } };
+
+export type RejectPropertyMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+  reason: Scalars['String']['input'];
+}>;
+
+
+export type RejectPropertyMutation = { __typename?: 'Mutation', rejectProperty: { __typename?: 'Property', id: string, status: string } };
+
+export type ApprovePaymentMutationVariables = Exact<{
+  input: ApprovePaymentInput;
+}>;
+
+
+export type ApprovePaymentMutation = { __typename?: 'Mutation', approvePayment: { __typename?: 'Payment', id: string, status: PaymentStatus, approvedAt?: any | null } };
+
+export type RejectPaymentMutationVariables = Exact<{
+  input: RejectPaymentInput;
+}>;
+
+
+export type RejectPaymentMutation = { __typename?: 'Mutation', rejectPayment: { __typename?: 'Payment', id: string, status: PaymentStatus, rejectedReason?: string | null } };
+
 export type TrackPropertyViewMutationVariables = Exact<{
   propertyId: Scalars['String']['input'];
   sessionId?: InputMaybe<Scalars['String']['input']>;
@@ -2354,6 +2383,72 @@ export function useTestConnectionSuspenseQuery(baseOptions?: ApolloReactHooks.Sk
 export type TestConnectionQueryHookResult = ReturnType<typeof useTestConnectionQuery>;
 export type TestConnectionLazyQueryHookResult = ReturnType<typeof useTestConnectionLazyQuery>;
 export type TestConnectionQueryResult = ApolloReactCommon.QueryResult<TestConnectionQuery, TestConnectionQueryVariables>;
+export const ApprovePropertyDocument = gql`
+    mutation ApproveProperty($id: String!) {
+  approveProperty(id: $id) {
+    id
+    status
+  }
+}
+    `;
+export type ApprovePropertyMutationFn = ApolloReactCommon.MutationFunction<ApprovePropertyMutation, ApprovePropertyMutationVariables>;
+export function useApprovePropertyMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ApprovePropertyMutation, ApprovePropertyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<ApprovePropertyMutation, ApprovePropertyMutationVariables>(ApprovePropertyDocument, options);
+      }
+export type ApprovePropertyMutationHookResult = ReturnType<typeof useApprovePropertyMutation>;
+export type ApprovePropertyMutationResult = ApolloReactCommon.MutationResult<ApprovePropertyMutation>;
+export type ApprovePropertyMutationOptions = ApolloReactCommon.BaseMutationOptions<ApprovePropertyMutation, ApprovePropertyMutationVariables>;
+export const RejectPropertyDocument = gql`
+    mutation RejectProperty($id: String!, $reason: String!) {
+  rejectProperty(id: $id, reason: $reason) {
+    id
+    status
+  }
+}
+    `;
+export type RejectPropertyMutationFn = ApolloReactCommon.MutationFunction<RejectPropertyMutation, RejectPropertyMutationVariables>;
+export function useRejectPropertyMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<RejectPropertyMutation, RejectPropertyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<RejectPropertyMutation, RejectPropertyMutationVariables>(RejectPropertyDocument, options);
+      }
+export type RejectPropertyMutationHookResult = ReturnType<typeof useRejectPropertyMutation>;
+export type RejectPropertyMutationResult = ApolloReactCommon.MutationResult<RejectPropertyMutation>;
+export type RejectPropertyMutationOptions = ApolloReactCommon.BaseMutationOptions<RejectPropertyMutation, RejectPropertyMutationVariables>;
+export const ApprovePaymentDocument = gql`
+    mutation ApprovePayment($input: ApprovePaymentInput!) {
+  approvePayment(input: $input) {
+    id
+    status
+    approvedAt
+  }
+}
+    `;
+export type ApprovePaymentMutationFn = ApolloReactCommon.MutationFunction<ApprovePaymentMutation, ApprovePaymentMutationVariables>;
+export function useApprovePaymentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ApprovePaymentMutation, ApprovePaymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<ApprovePaymentMutation, ApprovePaymentMutationVariables>(ApprovePaymentDocument, options);
+      }
+export type ApprovePaymentMutationHookResult = ReturnType<typeof useApprovePaymentMutation>;
+export type ApprovePaymentMutationResult = ApolloReactCommon.MutationResult<ApprovePaymentMutation>;
+export type ApprovePaymentMutationOptions = ApolloReactCommon.BaseMutationOptions<ApprovePaymentMutation, ApprovePaymentMutationVariables>;
+export const RejectPaymentDocument = gql`
+    mutation RejectPayment($input: RejectPaymentInput!) {
+  rejectPayment(input: $input) {
+    id
+    status
+    rejectedReason
+  }
+}
+    `;
+export type RejectPaymentMutationFn = ApolloReactCommon.MutationFunction<RejectPaymentMutation, RejectPaymentMutationVariables>;
+export function useRejectPaymentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<RejectPaymentMutation, RejectPaymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<RejectPaymentMutation, RejectPaymentMutationVariables>(RejectPaymentDocument, options);
+      }
+export type RejectPaymentMutationHookResult = ReturnType<typeof useRejectPaymentMutation>;
+export type RejectPaymentMutationResult = ApolloReactCommon.MutationResult<RejectPaymentMutation>;
+export type RejectPaymentMutationOptions = ApolloReactCommon.BaseMutationOptions<RejectPaymentMutation, RejectPaymentMutationVariables>;
 export const TrackPropertyViewDocument = gql`
     mutation TrackPropertyView($propertyId: String!, $sessionId: String) {
   trackPropertyView(propertyId: $propertyId, sessionId: $sessionId)
