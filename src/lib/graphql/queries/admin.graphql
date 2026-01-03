@@ -1,0 +1,64 @@
+query AdminUsers {
+  users {
+    id
+    email
+    username
+    status
+    createdAt
+    role {
+      id
+      name
+    }
+    profile {
+      firstName
+      lastName
+      phoneNumber
+      pictureUrl
+    }
+    subscriptions {
+      id
+      plan
+      status
+      endDate
+    }
+  }
+}
+
+query AdminProperties {
+  properties(page: 1, limit: 1000) {
+    data {
+      id
+      title
+      status
+      priceUS
+      createdAt
+      user {
+        id
+        email
+        profile {
+          firstName
+          lastName
+        }
+      }
+    }
+    meta {
+      total
+      page
+      limit
+    }
+  }
+}
+
+query AdminPayments {
+  allPayments {
+    id
+    userId
+    amount
+    currency
+    method
+    status
+    plan
+    createdAt
+    approvedAt
+  }
+}

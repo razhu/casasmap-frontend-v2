@@ -3,48 +3,61 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuthStore } from "@/store/auth";
-import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
-interface AdminRouteProps {
-    children: React.ReactNode;
-}
+export function AdminRoute({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const params = useParams();
+  const locale = (params.locale as string) || "es";
+  const { user, isAuthenticated, _hasHydrated } = useAuthStore();
+  const [isChecking, setIsChecking] = useState(true);
 
-export function AdminRoute({ children }: AdminRouteProps) {
-    const router = useRouter();
-    const params = useParams();
-    const locale = params.locale as string;
-    const { user, isAuthenticated, _hasHydrated } = useAuthStore();
-    const [isChecking, setIsChecking] = useState(true);
-
-    useEffect(() => {
-        if (_hasHydrated) {
-            setIsChecking(false);
-            if (!isAuthenticated) {
-                const redirectPath = locale === "es" ? "/login" : `/${locale}/login`;
-                router.push(redirectPath);
-            } else if (user?.role?.name !== "Super Admin" && user?.role?.name !== "Admin") {
-                // Redirect to home if not admin
-                const redirectPath = locale === "es" ? "/" : `/${locale}`;
-                router.push(redirectPath);
-            }
-        }
-    }, [isAuthenticated, user, _hasHydrated, router, locale]);
-
-    if (isChecking || !_hasHydrated) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin" />
-            </div>
-        );
+  useEffect(() => {
+    // Wait for hydration
+    if (!_hasHydrated) {
+      return;
     }
 
-    if (!isAuthenticated || (user?.role?.name !== "Super Admin" && user?.role?.name !== "Admin")) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin" />
-            </div>
-        );
-    }
+    setIsChecking(false);
 
-    return <>{children}</>;
+    if (!isAuthenticated) {
+      router.push(locale === "es" ? "/login" : `/${locale}/login`);
+    }
+  }, [isAuthenticated, _hasHydrated, router, locale]);
+
+  // Show loading while hydrating or checking
+  if (!_hasHydrated || isChecking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Skeleton className="h-96 w-full max-w-4xl" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  // Check if user is admin or super admin
+  const isAdmin =
+    user?.role?.name === "Admin" || user?.role?.name === "Super Admin";
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <Alert variant="destructive" className="max-w-md">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            {locale === "es"
+              ? "No tienes permisos para acceder a esta página"
+              : "You don't have permission to access this page"}
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
 }

@@ -2040,6 +2040,21 @@ export type StartFreeTrialMutationVariables = Exact<{
 
 export type StartFreeTrialMutation = { __typename?: 'Mutation', startFreeTrial: { __typename?: 'Subscription', id: string, userId: string, plan: string, status: string, startDate: any, endDate: any, createdAt: any, updatedAt: any } };
 
+export type AdminUsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AdminUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, email: string, username?: string | null, status: string, createdAt: any, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null, phoneNumber?: string | null, pictureUrl?: string | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, endDate: any }> | null }> };
+
+export type AdminPropertiesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AdminPropertiesQuery = { __typename?: 'Query', properties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, status: string, priceUS?: number | null, createdAt: any, user?: { __typename?: 'User', id: string, email: string, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } | null }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number } } };
+
+export type AdminPaymentsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AdminPaymentsQuery = { __typename?: 'Query', allPayments: Array<{ __typename?: 'Payment', id: string, userId: string, amount: number, currency: string, method: PaymentMethod, status: PaymentStatus, plan: string, createdAt: any, approvedAt?: any | null }> };
+
 export type PropertyAnalyticsQueryVariables = Exact<{
   propertyId: Scalars['String']['input'];
 }>;
@@ -2840,6 +2855,128 @@ export function useStartFreeTrialMutation(baseOptions?: ApolloReactHooks.Mutatio
 export type StartFreeTrialMutationHookResult = ReturnType<typeof useStartFreeTrialMutation>;
 export type StartFreeTrialMutationResult = ApolloReactCommon.MutationResult<StartFreeTrialMutation>;
 export type StartFreeTrialMutationOptions = ApolloReactCommon.BaseMutationOptions<StartFreeTrialMutation, StartFreeTrialMutationVariables>;
+export const AdminUsersDocument = gql`
+    query AdminUsers {
+  users {
+    id
+    email
+    username
+    status
+    createdAt
+    role {
+      id
+      name
+    }
+    profile {
+      firstName
+      lastName
+      phoneNumber
+      pictureUrl
+    }
+    subscriptions {
+      id
+      plan
+      status
+      endDate
+    }
+  }
+}
+    `;
+export function useAdminUsersQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AdminUsersQuery, AdminUsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<AdminUsersQuery, AdminUsersQueryVariables>(AdminUsersDocument, options);
+      }
+export function useAdminUsersLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AdminUsersQuery, AdminUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<AdminUsersQuery, AdminUsersQueryVariables>(AdminUsersDocument, options);
+        }
+// @ts-ignore
+export function useAdminUsersSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AdminUsersQuery, AdminUsersQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AdminUsersQuery, AdminUsersQueryVariables>;
+export function useAdminUsersSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminUsersQuery, AdminUsersQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AdminUsersQuery | undefined, AdminUsersQueryVariables>;
+export function useAdminUsersSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminUsersQuery, AdminUsersQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<AdminUsersQuery, AdminUsersQueryVariables>(AdminUsersDocument, options);
+        }
+export type AdminUsersQueryHookResult = ReturnType<typeof useAdminUsersQuery>;
+export type AdminUsersLazyQueryHookResult = ReturnType<typeof useAdminUsersLazyQuery>;
+export type AdminUsersQueryResult = ApolloReactCommon.QueryResult<AdminUsersQuery, AdminUsersQueryVariables>;
+export const AdminPropertiesDocument = gql`
+    query AdminProperties {
+  properties(page: 1, limit: 1000) {
+    data {
+      id
+      title
+      status
+      priceUS
+      createdAt
+      user {
+        id
+        email
+        profile {
+          firstName
+          lastName
+        }
+      }
+    }
+    meta {
+      total
+      page
+      limit
+    }
+  }
+}
+    `;
+export function useAdminPropertiesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AdminPropertiesQuery, AdminPropertiesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<AdminPropertiesQuery, AdminPropertiesQueryVariables>(AdminPropertiesDocument, options);
+      }
+export function useAdminPropertiesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AdminPropertiesQuery, AdminPropertiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<AdminPropertiesQuery, AdminPropertiesQueryVariables>(AdminPropertiesDocument, options);
+        }
+// @ts-ignore
+export function useAdminPropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AdminPropertiesQuery, AdminPropertiesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AdminPropertiesQuery, AdminPropertiesQueryVariables>;
+export function useAdminPropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminPropertiesQuery, AdminPropertiesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AdminPropertiesQuery | undefined, AdminPropertiesQueryVariables>;
+export function useAdminPropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminPropertiesQuery, AdminPropertiesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<AdminPropertiesQuery, AdminPropertiesQueryVariables>(AdminPropertiesDocument, options);
+        }
+export type AdminPropertiesQueryHookResult = ReturnType<typeof useAdminPropertiesQuery>;
+export type AdminPropertiesLazyQueryHookResult = ReturnType<typeof useAdminPropertiesLazyQuery>;
+export type AdminPropertiesQueryResult = ApolloReactCommon.QueryResult<AdminPropertiesQuery, AdminPropertiesQueryVariables>;
+export const AdminPaymentsDocument = gql`
+    query AdminPayments {
+  allPayments {
+    id
+    userId
+    amount
+    currency
+    method
+    status
+    plan
+    createdAt
+    approvedAt
+  }
+}
+    `;
+export function useAdminPaymentsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AdminPaymentsQuery, AdminPaymentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<AdminPaymentsQuery, AdminPaymentsQueryVariables>(AdminPaymentsDocument, options);
+      }
+export function useAdminPaymentsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AdminPaymentsQuery, AdminPaymentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<AdminPaymentsQuery, AdminPaymentsQueryVariables>(AdminPaymentsDocument, options);
+        }
+// @ts-ignore
+export function useAdminPaymentsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AdminPaymentsQuery, AdminPaymentsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AdminPaymentsQuery, AdminPaymentsQueryVariables>;
+export function useAdminPaymentsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminPaymentsQuery, AdminPaymentsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AdminPaymentsQuery | undefined, AdminPaymentsQueryVariables>;
+export function useAdminPaymentsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminPaymentsQuery, AdminPaymentsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<AdminPaymentsQuery, AdminPaymentsQueryVariables>(AdminPaymentsDocument, options);
+        }
+export type AdminPaymentsQueryHookResult = ReturnType<typeof useAdminPaymentsQuery>;
+export type AdminPaymentsLazyQueryHookResult = ReturnType<typeof useAdminPaymentsLazyQuery>;
+export type AdminPaymentsQueryResult = ApolloReactCommon.QueryResult<AdminPaymentsQuery, AdminPaymentsQueryVariables>;
 export const PropertyAnalyticsDocument = gql`
     query PropertyAnalytics($propertyId: String!) {
   propertyAnalytics(propertyId: $propertyId) {

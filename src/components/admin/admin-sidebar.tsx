@@ -1,91 +1,99 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useParams, usePathname } from "next/navigation";
 import {
-    LayoutDashboard,
-    Building2,
-    Users,
-    Settings,
-    LogOut
+  LayoutDashboard,
+  Building2,
+  Users,
+  Settings,
+  ArrowLeft,
+  FileText,
+  CreditCard,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useAuthStore } from "@/store/auth";
+import { cn } from "@/lib/utils";
 
 export function AdminSidebar() {
-    const pathname = usePathname();
-    const t = useTranslations("admin.nav");
-    const { logout } = useAuthStore();
+  const params = useParams();
+  const pathname = usePathname();
+  const locale = (params.locale as string) || "es";
 
-    // Extract locale from pathname (e.g. /es/admin -> es)
-    const locale = pathname.split("/")[1];
+  const getLocalePath = (path: string) => {
+    return locale === "es" ? path : `/${locale}${path}`;
+  };
 
-    const links = [
-        {
-            href: `/${locale}/admin`,
-            label: t("dashboard"),
-            icon: LayoutDashboard,
-            exact: true,
-        },
-        {
-            href: `/${locale}/admin/properties`,
-            label: t("properties"),
-            icon: Building2,
-        },
-        {
-            href: `/${locale}/admin/users`,
-            label: t("users"),
-            icon: Users,
-        },
-        {
-            href: `/${locale}/admin/settings`,
-            label: t("settings"),
-            icon: Settings,
-        },
-    ];
+  const isActive = (href: string) => {
+    const fullPath = getLocalePath(href);
+    return pathname === fullPath;
+  };
 
-    return (
-        <div className="flex bg-gray-900 text-white min-h-screen w-64 flex-col">
-            <div className="p-6 border-b border-gray-800">
-                <h1 className="text-xl font-bold">Admin Panel</h1>
-            </div>
+  const menuItems = [
+    {
+      href: "/admin",
+      icon: LayoutDashboard,
+      label: locale === "es" ? "Dashboard" : "Dashboard",
+    },
+    {
+      href: "/admin/properties",
+      icon: Building2,
+      label: locale === "es" ? "Propiedades" : "Properties",
+    },
+    {
+      href: "/admin/users",
+      icon: Users,
+      label: locale === "es" ? "Usuarios" : "Users",
+    },
+    {
+      href: "/admin/payments",
+      icon: CreditCard,
+      label: locale === "es" ? "Pagos" : "Payments",
+    },
+    {
+      href: "/admin/settings",
+      icon: Settings,
+      label: locale === "es" ? "Configuración" : "Settings",
+    },
+  ];
 
-            <div className="flex-1 py-6 px-4 space-y-2">
-                {links.map((link) => {
-                    const isActive = link.exact
-                        ? pathname === link.href
-                        : pathname.startsWith(link.href);
+  return (
+    <aside className="w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col">
+      <div className="p-6 border-b border-gray-200 dark:border-gray-800">
+        <h2 className="text-xl font-bold">
+          {locale === "es" ? "Administración" : "Admin Panel"}
+        </h2>
+      </div>
 
-                    return (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            className={cn(
-                                "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
-                                isActive
-                                    ? "bg-primary text-primary-foreground"
-                                    : "hover:bg-gray-800 text-gray-400 hover:text-white"
-                            )}
-                        >
-                            <link.icon className="h-5 w-5" />
-                            <span>{link.label}</span>
-                        </Link>
-                    );
-                })}
-            </div>
+      <nav className="flex-1 p-4 space-y-2">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          const active = isActive(item.href);
 
-            <div className="p-4 border-t border-gray-800">
-                <Button
-                    variant="ghost"
-                    className="w-full justify-start text-gray-400 hover:text-white hover:bg-gray-800 gap-3"
-                    onClick={() => logout()}
-                >
-                    <LogOut className="h-5 w-5" />
-                    <span>{t("logout")}</span>
-                </Button>
-            </div>
-        </div>
-    );
+          return (
+            <Link key={item.href} href={getLocalePath(item.href)}>
+              <Button
+                variant={active ? "default" : "ghost"}
+                className={cn(
+                  "w-full justify-start",
+                  active && "bg-primary text-primary-foreground"
+                )}
+              >
+                <Icon className="h-4 w-4 mr-3" />
+                {item.label}
+              </Button>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+        <Link href={getLocalePath("/")}>
+          <Button variant="outline" className="w-full justify-start">
+            <ArrowLeft className="h-4 w-4 mr-3" />
+            {locale === "es" ? "Volver al Sitio" : "Back to Site"}
+          </Button>
+        </Link>
+      </div>
+    </aside>
+  );
 }
