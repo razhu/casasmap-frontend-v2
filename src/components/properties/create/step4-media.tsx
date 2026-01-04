@@ -5,21 +5,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  FormDescription,
-} from "@/components/ui/form";
+import { Form, FormLabel, FormDescription } from "@/components/ui/form";
 import { PropertyFormData } from "@/app/[locale]/properties/new/page";
-import { Upload, X, Image as ImageIcon } from "lucide-react";
+import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CldUploadWidget } from "next-cloudinary";
 
 const step4Schema = z.object({
-  images: z.array(z.any()).optional(),
+  images: z.array(z.string()).optional(),
 });
 
 type Step4FormData = z.infer<typeof step4Schema>;
@@ -32,128 +25,111 @@ interface Props {
 }
 
 export function PropertyFormStep4({ data, onNext, onBack, locale }: Props) {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>(data.images || []);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
+  const [uploadedUrls, setUploadedUrls] = useState<string[]>(
+    (data.images as string[]) || []
+  );
+  const [isUploading, setIsUploading] = useState(false);
 
   const form = useForm<Step4FormData>({
     resolver: zodResolver(step4Schema),
     defaultValues: {
-      images: data.images || [],
+      images: (data.images as string[]) || [],
     },
   });
 
-  const handleFileSelect = (files: FileList | null) => {
-    if (!files) return;
-
-    const newFiles = Array.from(files).filter((file) =>
-      file.type.startsWith("image/")
-    );
-
-    setSelectedFiles((prev) => [...prev, ...newFiles]);
-
-    // Create preview URLs
-    newFiles.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrls((prev) => [...prev, reader.result as string]);
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    handleFileSelect(e.dataTransfer.files);
-  };
-
   const removeImage = (index: number) => {
-    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
-    setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+    setUploadedUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
   const onSubmit = () => {
-    onNext({ images: selectedFiles });
+    onNext({ images: uploadedUrls as any });
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         {/* Upload Area */}
-        <div
-          className={cn(
-            "border-2 border-dashed rounded-lg p-8 text-center transition-colors",
-            isDragging
-              ? "border-primary bg-primary/5"
-              : "border-gray-300 hover:border-gray-400"
-          )}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
+        <CldUploadWidget
+          uploadPreset="casasmap_uploads"
+          options={{
+            multiple: true,
+            maxFiles: 20,
+            folder: "casasmap/properties",
+            resourceType: "image",
+            clientAllowedFormats: ["jpg", "jpeg", "png", "webp"],
+            maxFileSize: 10000000, // 10MB
+          }}
+          onSuccess={(result: any) => {
+            if (result.event === "success") {
+              setUploadedUrls((prev) => [...prev, result.info.secure_url]);
+              setIsUploading(false);
+            }
+          }}
+          onQueuesEnd={() => {
+            setIsUploading(false);
+          }}
         >
-          <div className="flex flex-col items-center gap-4">
-            <div className="p-4 bg-gray-100 rounded-full">
-              <Upload className="w-8 h-8 text-gray-600" />
+          {({ open }) => (
+            <div
+              className={cn(
+                "border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer",
+                isUploading
+                  ? "border-primary bg-primary/5"
+                  : "border-gray-300 hover:border-gray-400"
+              )}
+              onClick={() => {
+                setIsUploading(true);
+                open();
+              }}
+            >
+              <div className="flex flex-col items-center gap-4">
+                <div className="p-4 bg-gray-100 rounded-full">
+                  {isUploading ? (
+                    <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                  ) : (
+                    <Upload className="w-8 h-8 text-gray-600" />
+                  )}
+                </div>
+                <div>
+                  <p className="text-lg font-medium mb-1">
+                    {isUploading
+                      ? locale === "es"
+                        ? "Subiendo..."
+                        : "Uploading..."
+                      : locale === "es"
+                      ? "Haz clic para subir fotos"
+                      : "Click to upload photos"}
+                  </p>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {locale === "es"
+                      ? "Sube hasta 20 fotos de tu propiedad"
+                      : "Upload up to 20 photos of your property"}
+                  </p>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {locale === "es"
+                    ? "Formatos: JPG, PNG, WEBP (máx. 10MB cada una)"
+                    : "Formats: JPG, PNG, WEBP (max 10MB each)"}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-lg font-medium mb-1">
-                {locale === "es"
-                  ? "Arrastra tus fotos aquí"
-                  : "Drag your photos here"}
-              </p>
-              <p className="text-sm text-muted-foreground mb-4">
-                {locale === "es"
-                  ? "o haz clic para seleccionar"
-                  : "or click to select"}
-              </p>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={(e) => handleFileSelect(e.target.files)}
-                className="hidden"
-                id="file-upload"
-              />
-              <label htmlFor="file-upload">
-                <Button type="button" variant="outline" asChild>
-                  <span>
-                    {locale === "es" ? "Seleccionar fotos" : "Select photos"}
-                  </span>
-                </Button>
-              </label>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {locale === "es"
-                ? "Formatos: JPG, PNG, WEBP (máx. 10MB cada una)"
-                : "Formats: JPG, PNG, WEBP (max 10MB each)"}
-            </p>
-          </div>
-        </div>
+          )}
+        </CldUploadWidget>
 
         {/* Preview Grid */}
-        {previewUrls.length > 0 && (
+        {uploadedUrls.length > 0 && (
           <div>
             <FormLabel>
-              {locale === "es" ? "Fotos seleccionadas" : "Selected photos"} (
-              {previewUrls.length})
+              {locale === "es" ? "Fotos subidas" : "Uploaded photos"} (
+              {uploadedUrls.length})
             </FormLabel>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-              {previewUrls.map((url, index) => (
+              {uploadedUrls.map((url, index) => (
                 <div key={index} className="relative group">
                   <div className="aspect-square rounded-lg overflow-hidden border-2 border-gray-200">
                     <img
                       src={url}
-                      alt={`Preview ${index + 1}`}
+                      alt={`Property ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -181,7 +157,7 @@ export function PropertyFormStep4({ data, onNext, onBack, locale }: Props) {
         )}
 
         {/* Info Message */}
-        {previewUrls.length === 0 && (
+        {uploadedUrls.length === 0 && (
           <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <ImageIcon className="w-5 h-5 text-blue-600 mt-0.5" />
             <div className="text-sm">
@@ -204,7 +180,7 @@ export function PropertyFormStep4({ data, onNext, onBack, locale }: Props) {
           <Button type="button" variant="outline" onClick={onBack}>
             {locale === "es" ? "Atrás" : "Back"}
           </Button>
-          <Button type="submit" size="lg">
+          <Button type="submit" size="lg" disabled={isUploading}>
             {locale === "es" ? "Siguiente" : "Next"}
           </Button>
         </div>
