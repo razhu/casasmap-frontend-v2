@@ -9,7 +9,6 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  TrendingUp,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -28,9 +27,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
 
 export default function AdminDashboardPage() {
@@ -64,23 +60,7 @@ export default function AdminDashboardPage() {
   // Prepare chart data
   const userGrowthData = prepareUserGrowthData(users);
   const revenueData = prepareRevenueData(payments);
-  const propertyStatusData = [
-    {
-      name: locale === "es" ? "Activas" : "Active",
-      value: activeProperties,
-      color: "#10b981",
-    },
-    {
-      name: locale === "es" ? "Pendientes" : "Pending",
-      value: pendingProperties,
-      color: "#f59e0b",
-    },
-    {
-      name: locale === "es" ? "Rechazadas" : "Rejected",
-      value: rejectedProperties,
-      color: "#ef4444",
-    },
-  ];
+  const propertyGrowthData = preparePropertyGrowthData(properties);
 
   const stats = [
     {
@@ -159,40 +139,13 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {/* Revenue Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
-              {locale === "es"
-                ? "Ingresos (Últimos 30 días)"
-                : "Revenue (Last 30 days)"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {paymentsLoading ? (
-              <Skeleton className="h-64 w-full" />
-            ) : (
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={revenueData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="amount" fill="#10b981" />
-                </BarChart>
-              </ResponsiveContainer>
-            )}
-          </CardContent>
-        </Card>
-
+      <div className="grid gap-4 md:grid-cols-3">
         {/* User Growth Chart */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5" />
-              {locale === "es" ? "Crecimiento de Usuarios" : "User Growth"}
+              {locale === "es" ? "Usuarios" : "Users"}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -216,14 +169,13 @@ export default function AdminDashboardPage() {
             )}
           </CardContent>
         </Card>
-      </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {/* Property Status Distribution */}
+        {/* Property Growth Chart */}
         <Card>
           <CardHeader>
-            <CardTitle>
-              {locale === "es" ? "Estado de Propiedades" : "Property Status"}
+            <CardTitle className="flex items-center gap-2">
+              <Building2 className="h-5 w-5" />
+              {locale === "es" ? "Propiedades" : "Properties"}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -231,28 +183,50 @@ export default function AdminDashboardPage() {
               <Skeleton className="h-64 w-full" />
             ) : (
               <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie
-                    data={propertyStatusData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ name, value }) => `${name}: ${value}`}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {propertyStatusData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
+                <LineChart data={propertyGrowthData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
                   <Tooltip />
-                </PieChart>
+                  <Line
+                    type="monotone"
+                    dataKey="properties"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                  />
+                </LineChart>
               </ResponsiveContainer>
             )}
           </CardContent>
         </Card>
 
+        {/* Revenue Chart */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <DollarSign className="h-5 w-5" />
+              {locale === "es" ? "Ingresos" : "Revenue"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {paymentsLoading ? (
+              <Skeleton className="h-64 w-full" />
+            ) : (
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={revenueData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="amount" fill="#f59e0b" />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
         {/* Recent Properties */}
         <Card>
           <CardHeader>
@@ -400,4 +374,30 @@ function prepareRevenueData(payments: any[]) {
     }),
     amount: revenueByDate[date] || 0,
   }));
+}
+
+function preparePropertyGrowthData(properties: any[]) {
+  const last30Days = Array.from({ length: 30 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (29 - i));
+    return date.toISOString().split("T")[0];
+  });
+
+  const propertiesByDate = properties.reduce((acc: any, property) => {
+    const date = new Date(property.createdAt).toISOString().split("T")[0];
+    acc[date] = (acc[date] || 0) + 1;
+    return acc;
+  }, {});
+
+  let cumulative = 0;
+  return last30Days.map((date) => {
+    cumulative += propertiesByDate[date] || 0;
+    return {
+      date: new Date(date).toLocaleDateString("es-ES", {
+        month: "short",
+        day: "numeric",
+      }),
+      properties: cumulative,
+    };
+  });
 }
