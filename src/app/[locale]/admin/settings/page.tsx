@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Edit, Trash2, Plus, Save, X } from "lucide-react";
+import { ActionButtonWithTooltip } from "@/components/ui/action-button-with-tooltip";
 
 export default function AdminSettingsPage() {
   const params = useParams();
@@ -211,22 +212,26 @@ export default function AdminSettingsPage() {
             <TableCell className="text-right space-x-2">
               {setting.isEditable && (
                 <>
-                  <Button
-                    variant="ghost"
-                    size="sm"
+                  <ActionButtonWithTooltip
+                    tooltip={
+                      locale === "es" ? "Editar configuración" : "Edit setting"
+                    }
                     onClick={() => setEditDialog({ open: true, setting })}
                     disabled={processing}
                   >
                     <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
+                  </ActionButtonWithTooltip>
+                  <ActionButtonWithTooltip
+                    tooltip={
+                      locale === "es"
+                        ? "Eliminar configuración"
+                        : "Delete setting"
+                    }
                     onClick={() => handleDelete(setting.key)}
                     disabled={processing}
                   >
                     <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
+                  </ActionButtonWithTooltip>
                 </>
               )}
             </TableCell>

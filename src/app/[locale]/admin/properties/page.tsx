@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, XCircle, Clock, Eye } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Eye, Edit, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
@@ -32,6 +32,12 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function AdminPropertiesPage() {
   const params = useParams();
@@ -315,8 +321,14 @@ export default function AdminPropertiesPage() {
                   variant="ghost"
                   size="sm"
                   onClick={() =>
-                    window.open(`/inmuebles/${property.id}`, "_blank")
+                    window.open(
+                      `/${locale === "es" ? "" : locale + "/"}inmuebles/${
+                        property.id
+                      }`,
+                      "_blank"
+                    )
                   }
+                  title={locale === "es" ? "Ver propiedad" : "View property"}
                 >
                   <Eye className="h-4 w-4" />
                 </Button>
@@ -327,6 +339,11 @@ export default function AdminPropertiesPage() {
                       size="sm"
                       onClick={() => handleApprove(property.id)}
                       disabled={processing === property.id}
+                      title={
+                        locale === "es"
+                          ? "Aprobar propiedad"
+                          : "Approve property"
+                      }
                     >
                       <CheckCircle className="h-4 w-4 mr-1" />
                       {locale === "es" ? "Aprobar" : "Approve"}
@@ -342,9 +359,53 @@ export default function AdminPropertiesPage() {
                         })
                       }
                       disabled={processing === property.id}
+                      title={
+                        locale === "es"
+                          ? "Rechazar propiedad"
+                          : "Reject property"
+                      }
                     >
                       <XCircle className="h-4 w-4 mr-1" />
                       {locale === "es" ? "Rechazar" : "Reject"}
+                    </Button>
+                  </>
+                )}
+                {property.status === "ACTIVE" && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        window.open(
+                          `/${locale === "es" ? "" : locale + "/"}properties/${
+                            property.id
+                          }/edit`,
+                          "_blank"
+                        )
+                      }
+                      title={
+                        locale === "es" ? "Editar propiedad" : "Edit property"
+                      }
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        setRejectDialog({
+                          open: true,
+                          propertyId: property.id,
+                          title: property.title,
+                        })
+                      }
+                      title={
+                        locale === "es"
+                          ? "Eliminar propiedad"
+                          : "Delete property"
+                      }
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
                   </>
                 )}

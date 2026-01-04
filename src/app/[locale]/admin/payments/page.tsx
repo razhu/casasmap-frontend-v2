@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, XCircle, Clock } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Eye, DollarSign } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
@@ -31,6 +31,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { ActionButtonWithTooltip } from "@/components/ui/action-button-with-tooltip";
 
 export default function AdminPaymentsPage() {
   const params = useParams();
@@ -52,6 +53,13 @@ export default function AdminPaymentsPage() {
   });
   const [rejectReason, setRejectReason] = useState("");
   const [processing, setProcessing] = useState<string | null>(null);
+  const [viewDialog, setViewDialog] = useState<{
+    open: boolean;
+    payment: any;
+  }>({
+    open: false,
+    payment: null,
+  });
 
   const payments = data?.allPayments || [];
   const pending = payments.filter((p) => p.status === "PENDING");
@@ -181,34 +189,54 @@ export default function AdminPaymentsPage() {
             </TableCell>
             {showActions && (
               <TableCell className="text-right space-x-2">
-                {payment.status === "PENDING" && (
-                  <>
-                    <Button
-                      variant="default"
-                      size="sm"
-                      onClick={() => handleApprove(payment.id)}
-                      disabled={processing === payment.id}
-                    >
-                      <CheckCircle className="h-4 w-4 mr-1" />
-                      {locale === "es" ? "Aprobar" : "Approve"}
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() =>
-                        setRejectDialog({
-                          open: true,
-                          paymentId: payment.id,
-                          plan: payment.plan,
-                        })
-                      }
-                      disabled={processing === payment.id}
-                    >
-                      <XCircle className="h-4 w-4 mr-1" />
-                      {locale === "es" ? "Rechazar" : "Reject"}
-                    </Button>
-                  </>
-                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setViewDialog({ open: true, payment })}
+                  title={
+                    locale === "es"
+                      ? "Ver detalles del pago"
+                      : "View payment details"
+                  }
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+                {/* Only show approve/reject for manual payment methods (Bank Transfer) */}
+                {payment.status === "PENDING" &&
+                  payment.method === "MANUAL_TRANSFER" && (
+                    <>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => handleApprove(payment.id)}
+                        disabled={processing === payment.id}
+                        title={
+                          locale === "es" ? "Aprobar pago" : "Approve payment"
+                        }
+                      >
+                        <CheckCircle className="h-4 w-4 mr-1" />
+                        {locale === "es" ? "Aprobar" : "Approve"}
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() =>
+                          setRejectDialog({
+                            open: true,
+                            paymentId: payment.id,
+                            plan: payment.plan,
+                          })
+                        }
+                        disabled={processing === payment.id}
+                        title={
+                          locale === "es" ? "Rechazar pago" : "Reject payment"
+                        }
+                      >
+                        <XCircle className="h-4 w-4 mr-1" />
+                        {locale === "es" ? "Rechazar" : "Reject"}
+                      </Button>
+                    </>
+                  )}
               </TableCell>
             )}
           </TableRow>
@@ -350,6 +378,97 @@ export default function AdminPaymentsPage() {
               disabled={!rejectReason.trim()}
             >
               {locale === "es" ? "Rechazar" : "Reject"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Payment Dialog */}
+      <Dialog
+        open={viewDialog.open}
+        onOpenChange={(open) => setViewDialog({ ...viewDialog, open })}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {locale === "es" ? "Detalles del Pago" : "Payment Details"}
+            </DialogTitle>
+          </DialogHeader>
+          {viewDialog.payment && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    {locale === "es" ? "Plan" : "Plan"}
+                  </p>
+                  <p className="text-lg font-bold">{viewDialog.payment.plan}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-muted-foreground">
+                    {locale === "es" ? "Monto" : "Amount"}
+                  </p>
+                  <p className="text-lg font-bold flex items-center gap-1">
+                    <DollarSign className="h-4 w-4" />
+                    {viewDialog.payment.amount.toLocaleString()}{" "}
+                    {viewDialog.payment.currency}
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-t pt-4 space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">
+                    {locale === "es" ? "Método" : "Method"}
+                  </span>
+                  <span className="font-medium">
+                    {viewDialog.payment.method}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">
+                    {locale === "es" ? "Estado" : "Status"}
+                  </span>
+                  <Badge
+                    variant={
+                      viewDialog.payment.status === "COMPLETED"
+                        ? "default"
+                        : viewDialog.payment.status === "PENDING"
+                        ? "secondary"
+                        : "destructive"
+                    }
+                  >
+                    {viewDialog.payment.status}
+                  </Badge>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">
+                    {locale === "es" ? "Fecha de Creación" : "Created Date"}
+                  </span>
+                  <span className="font-medium">
+                    {new Date(viewDialog.payment.createdAt).toLocaleString()}
+                  </span>
+                </div>
+                {viewDialog.payment.approvedAt && (
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">
+                      {locale === "es"
+                        ? "Fecha de Aprobación"
+                        : "Approved Date"}
+                    </span>
+                    <span className="font-medium">
+                      {new Date(viewDialog.payment.approvedAt).toLocaleString()}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setViewDialog({ open: false, payment: null })}
+            >
+              {locale === "es" ? "Cerrar" : "Close"}
             </Button>
           </DialogFooter>
         </DialogContent>

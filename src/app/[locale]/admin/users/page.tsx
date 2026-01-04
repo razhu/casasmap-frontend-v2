@@ -16,7 +16,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Crown, User as UserIcon, Eye, Mail, Phone } from "lucide-react";
+import {
+  Crown,
+  User as UserIcon,
+  Eye,
+  Mail,
+  Phone,
+  Shield,
+  Briefcase,
+  UserCog,
+  Ban,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +35,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function AdminUsersPage() {
   const params = useParams();
@@ -40,6 +56,42 @@ export default function AdminUsersPage() {
     open: false,
     user: null,
   });
+
+  const [deactivateDialog, setDeactivateDialog] = useState<{
+    open: boolean;
+    user: any;
+  }>({
+    open: false,
+    user: null,
+  });
+
+  const getRoleIcon = (roleName: string) => {
+    switch (roleName) {
+      case "Super Admin":
+        return <Crown className="h-3 w-3 mr-1" />;
+      case "Admin":
+        return <Shield className="h-3 w-3 mr-1" />;
+      case "Agency Manager":
+        return <Briefcase className="h-3 w-3 mr-1" />;
+      case "Property Owner":
+        return <UserCog className="h-3 w-3 mr-1" />;
+      default:
+        return <UserIcon className="h-3 w-3 mr-1" />;
+    }
+  };
+
+  const getRoleVariant = (
+    roleName: string
+  ): "default" | "secondary" | "outline" => {
+    switch (roleName) {
+      case "Super Admin":
+        return "default";
+      case "Admin":
+        return "secondary";
+      default:
+        return "outline";
+    }
+  };
 
   if (loading) {
     return (
@@ -105,19 +157,8 @@ export default function AdminUsersPage() {
                   </TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
-                    <Badge
-                      variant={
-                        user.role.name === "Super Admin"
-                          ? "default"
-                          : "secondary"
-                      }
-                    >
-                      {user.role.name === "Super Admin" && (
-                        <Crown className="h-3 w-3 mr-1" />
-                      )}
-                      {user.role.name === "Admin" && (
-                        <UserIcon className="h-3 w-3 mr-1" />
-                      )}
+                    <Badge variant={getRoleVariant(user.role.name)}>
+                      {getRoleIcon(user.role.name)}
                       {user.role.name}
                     </Badge>
                   </TableCell>
@@ -137,13 +178,66 @@ export default function AdminUsersPage() {
                     {new Date(user.createdAt).toLocaleDateString()}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setViewDialog({ open: true, user })}
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setViewDialog({ open: true, user })}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>
+                            {locale === "es"
+                              ? "Ver detalles del usuario"
+                              : "View user details"}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setViewDialog({ open: true, user })}
+                          >
+                            <UserCog className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>
+                            {locale === "es" ? "Editar usuario" : "Edit user"}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+
+                      {user.status === "ACTIVE" && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                setDeactivateDialog({ open: true, user })
+                              }
+                            >
+                              <Ban className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>
+                              {locale === "es"
+                                ? "Desactivar usuario"
+                                : "Deactivate user"}
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
+                    </TooltipProvider>
                   </TableCell>
                 </TableRow>
               ))}
@@ -187,16 +281,10 @@ export default function AdminUsersPage() {
                       viewDialog.user.email.split("@")[0]}
                   </p>
                   <Badge
-                    variant={
-                      viewDialog.user.role.name === "Super Admin"
-                        ? "default"
-                        : "secondary"
-                    }
+                    variant={getRoleVariant(viewDialog.user.role.name)}
                     className="mt-2"
                   >
-                    {viewDialog.user.role.name === "Super Admin" && (
-                      <Crown className="h-3 w-3 mr-1" />
-                    )}
+                    {getRoleIcon(viewDialog.user.role.name)}
                     {viewDialog.user.role.name}
                   </Badge>
                 </div>
@@ -297,6 +385,79 @@ export default function AdminUsersPage() {
               onClick={() => setViewDialog({ open: false, user: null })}
             >
               {locale === "es" ? "Cerrar" : "Close"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Deactivate User Dialog */}
+      <Dialog
+        open={deactivateDialog.open}
+        onOpenChange={(open) =>
+          setDeactivateDialog({ ...deactivateDialog, open })
+        }
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {locale === "es" ? "Desactivar Usuario" : "Deactivate User"}
+            </DialogTitle>
+            <DialogDescription>
+              {deactivateDialog.user && (
+                <>
+                  {deactivateDialog.user.profile?.firstName}{" "}
+                  {deactivateDialog.user.profile?.lastName} (
+                  {deactivateDialog.user.email})
+                </>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              {locale === "es"
+                ? "¿Estás seguro de que deseas desactivar este usuario? El usuario no podrá iniciar sesión hasta que sea reactivado."
+                : "Are you sure you want to deactivate this user? The user will not be able to log in until reactivated."}
+            </p>
+            <div className="bg-muted p-4 rounded-lg">
+              <p className="text-sm font-medium mb-2">
+                {locale === "es" ? "Esto hará que:" : "This will:"}
+              </p>
+              <ul className="text-sm space-y-1 list-disc list-inside text-muted-foreground">
+                <li>
+                  {locale === "es"
+                    ? "El usuario no pueda iniciar sesión"
+                    : "User cannot log in"}
+                </li>
+                <li>
+                  {locale === "es"
+                    ? "Sus propiedades se oculten"
+                    : "Their properties will be hidden"}
+                </li>
+                <li>
+                  {locale === "es"
+                    ? "Se pueda reactivar más tarde"
+                    : "Can be reactivated later"}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDeactivateDialog({ open: false, user: null })}
+            >
+              {locale === "es" ? "Cancelar" : "Cancel"}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                // TODO: Implement deactivate user mutation
+                console.log("Deactivate user:", deactivateDialog.user?.id);
+                setDeactivateDialog({ open: false, user: null });
+              }}
+            >
+              <Ban className="h-4 w-4 mr-2" />
+              {locale === "es" ? "Desactivar" : "Deactivate"}
             </Button>
           </DialogFooter>
         </DialogContent>
