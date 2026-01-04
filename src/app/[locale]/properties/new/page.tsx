@@ -152,6 +152,7 @@ export default function CreatePropertyPage() {
         security: completeData.security || false,
         storage: completeData.storage || false,
         petsAllowed: completeData.petsAllowed || false,
+        images: completeData.images || [], // Include uploaded images
       };
 
       const { data } = await createProperty({

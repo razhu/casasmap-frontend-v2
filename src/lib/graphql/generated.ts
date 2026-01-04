@@ -192,6 +192,7 @@ export type CreatePropertyInput = {
   description: Scalars['String']['input'];
   descriptionEn?: InputMaybe<Scalars['String']['input']>;
   furnished?: InputMaybe<Scalars['Boolean']['input']>;
+  images?: InputMaybe<Array<Scalars['String']['input']>>;
   latitude?: InputMaybe<Scalars['Float']['input']>;
   longitude?: InputMaybe<Scalars['Float']['input']>;
   parkingSpaces?: InputMaybe<Scalars['Int']['input']>;
@@ -520,6 +521,8 @@ export type Mutation = {
   deleteForumCategory: ForumCategory;
   deleteForumReply: ForumReply;
   deleteForumTopic: ForumTopic;
+  /** Delete image - uses configured storage provider */
+  deleteImage: Scalars['Boolean']['output'];
   deleteMedia: Media;
   deleteMessage: Scalars['Boolean']['output'];
   deleteNotification: Notification;
@@ -573,6 +576,8 @@ export type Mutation = {
   updateSetting: SystemConfig;
   updateTag: Tag;
   updateUsername: User;
+  /** Upload image (base64 string) - uses configured storage provider */
+  uploadImage: Scalars['String']['output'];
   uploadMedia: UploadResponse;
   /** Upload payment receipt (for manual payments) */
   uploadReceipt: Payment;
@@ -708,6 +713,11 @@ export type MutationDeleteForumReplyArgs = {
 
 export type MutationDeleteForumTopicArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteImageArgs = {
+  publicId: Scalars['String']['input'];
 };
 
 
@@ -960,6 +970,12 @@ export type MutationUpdateTagArgs = {
 
 export type MutationUpdateUsernameArgs = {
   username: Scalars['String']['input'];
+};
+
+
+export type MutationUploadImageArgs = {
+  folder?: InputMaybe<Scalars['String']['input']>;
+  image: Scalars['String']['input'];
 };
 
 
@@ -1714,6 +1730,7 @@ export type UpdatePropertyInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   descriptionEn?: InputMaybe<Scalars['String']['input']>;
   furnished?: InputMaybe<Scalars['Boolean']['input']>;
+  images?: InputMaybe<Array<Scalars['String']['input']>>;
   latitude?: InputMaybe<Scalars['Float']['input']>;
   longitude?: InputMaybe<Scalars['Float']['input']>;
   parkingSpaces?: InputMaybe<Scalars['Int']['input']>;
