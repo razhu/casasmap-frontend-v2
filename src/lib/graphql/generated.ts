@@ -1151,6 +1151,7 @@ export type Property = {
   latitude?: Maybe<Scalars['Float']['output']>;
   longitude?: Maybe<Scalars['Float']['output']>;
   maintenanceFee?: Maybe<Scalars['Float']['output']>;
+  media?: Maybe<Array<Media>>;
   modifiedBy?: Maybe<Scalars['String']['output']>;
   parkingSpaces?: Maybe<Scalars['Int']['output']>;
   petsAllowed?: Maybe<Scalars['Boolean']['output']>;
@@ -2324,14 +2325,14 @@ export type PropertiesQueryVariables = Exact<{
 }>;
 
 
-export type PropertiesQuery = { __typename?: 'Query', properties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, slug: string, slugEn: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, userId: string }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
+export type PropertiesQuery = { __typename?: 'Query', properties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, slug: string, slugEn: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, userId: string, media?: Array<{ __typename?: 'Media', id: string, url: string, type: MediaType, order: number }> | null }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
 
 export type PropertyQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
 
-export type PropertyQuery = { __typename?: 'Query', property: { __typename?: 'Property', id: string, title: string, titleEn: string, slug: string, slugEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, phoneNumber?: string | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, yearBuilt?: number | null, furnished?: boolean | null, petsAllowed?: boolean | null, maintenanceFee?: number | null, propertyTax?: number | null, availableFrom?: any | null, virtualTourUrl?: string | null, floorPlanUrl?: string | null, condition?: string | null, stories?: number | null, elevators?: number | null, heating?: string | null, cooling?: string | null, security?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, storage?: boolean | null, createdAt: any, updatedAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, userId: string, agencyId?: string | null, user?: { __typename?: 'User', id: string, email: string, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } | null } };
+export type PropertyQuery = { __typename?: 'Query', property: { __typename?: 'Property', id: string, title: string, titleEn: string, slug: string, slugEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, phoneNumber?: string | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, yearBuilt?: number | null, furnished?: boolean | null, petsAllowed?: boolean | null, maintenanceFee?: number | null, propertyTax?: number | null, availableFrom?: any | null, virtualTourUrl?: string | null, floorPlanUrl?: string | null, condition?: string | null, stories?: number | null, elevators?: number | null, heating?: string | null, cooling?: string | null, security?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, storage?: boolean | null, createdAt: any, updatedAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, userId: string, agencyId?: string | null, media?: Array<{ __typename?: 'Media', id: string, url: string, type: MediaType, order: number }> | null, user?: { __typename?: 'User', id: string, email: string, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } | null } };
 
 export type SearchPropertiesQueryVariables = Exact<{
   query?: InputMaybe<Scalars['String']['input']>;
@@ -2341,7 +2342,7 @@ export type SearchPropertiesQueryVariables = Exact<{
 }>;
 
 
-export type SearchPropertiesQuery = { __typename?: 'Query', searchProperties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, slug: string, slugEn: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, userId: string }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
+export type SearchPropertiesQuery = { __typename?: 'Query', searchProperties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, slug: string, slugEn: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, userId: string, media?: Array<{ __typename?: 'Media', id: string, url: string, type: MediaType, order: number }> | null }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
 
 export type CreatePropertyMutationVariables = Exact<{
   input: CreatePropertyInput;
@@ -2356,7 +2357,7 @@ export type MyPropertiesQueryVariables = Exact<{
 }>;
 
 
-export type MyPropertiesQuery = { __typename?: 'Query', myProperties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, titleEn: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, city?: { __typename?: 'City', id: number, name: string } | null, propertyType?: { __typename?: 'PropertyType', id: number, name: string } | null, analytics?: { __typename?: 'PropertyAnalytics', id: string, views: number, clicks: number, favorites: number, inquiries: number, phoneClicks: number, emailClicks: number, whatsappClicks: number, shares: number, conversionRate: number } | null }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
+export type MyPropertiesQuery = { __typename?: 'Query', myProperties: { __typename?: 'PropertyResult', data: Array<{ __typename?: 'Property', id: string, title: string, titleEn: string, description: string, priceUS?: number | null, priceBS?: number | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, createdAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, media?: Array<{ __typename?: 'Media', id: string, url: string, type: MediaType, order: number }> | null, city?: { __typename?: 'City', id: number, name: string } | null, propertyType?: { __typename?: 'PropertyType', id: number, name: string } | null, analytics?: { __typename?: 'PropertyAnalytics', id: string, views: number, clicks: number, favorites: number, inquiries: number, phoneClicks: number, emailClicks: number, whatsappClicks: number, shares: number, conversionRate: number } | null }>, meta: { __typename?: 'PropertyMeta', total: number, page: number, limit: number, totalPages: number } } };
 
 export type PropertyBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -2364,7 +2365,7 @@ export type PropertyBySlugQueryVariables = Exact<{
 }>;
 
 
-export type PropertyBySlugQuery = { __typename?: 'Query', propertyBySlug: { __typename?: 'Property', id: string, title: string, titleEn: string, slug: string, slugEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, phoneNumber?: string | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, yearBuilt?: number | null, furnished?: boolean | null, petsAllowed?: boolean | null, maintenanceFee?: number | null, propertyTax?: number | null, availableFrom?: any | null, virtualTourUrl?: string | null, floorPlanUrl?: string | null, condition?: string | null, stories?: number | null, elevators?: number | null, heating?: string | null, cooling?: string | null, security?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, storage?: boolean | null, createdAt: any, updatedAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, userId: string, agencyId?: string | null, user?: { __typename?: 'User', id: string, email: string, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } | null } };
+export type PropertyBySlugQuery = { __typename?: 'Query', propertyBySlug: { __typename?: 'Property', id: string, title: string, titleEn: string, slug: string, slugEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, phoneNumber?: string | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, yearBuilt?: number | null, furnished?: boolean | null, petsAllowed?: boolean | null, maintenanceFee?: number | null, propertyTax?: number | null, availableFrom?: any | null, virtualTourUrl?: string | null, floorPlanUrl?: string | null, condition?: string | null, stories?: number | null, elevators?: number | null, heating?: string | null, cooling?: string | null, security?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, storage?: boolean | null, createdAt: any, updatedAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, userId: string, agencyId?: string | null, media?: Array<{ __typename?: 'Media', id: string, url: string, type: MediaType, order: number }> | null, user?: { __typename?: 'User', id: string, email: string, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } | null } };
 
 export type MarketAnalysisQueryVariables = Exact<{
   input: MarketAnalysisInput;
@@ -4167,6 +4168,12 @@ export const PropertiesDocument = gql`
       cityId
       zoneId
       userId
+      media {
+        id
+        url
+        type
+        order
+      }
     }
     meta {
       total
@@ -4246,6 +4253,12 @@ export const PropertyDocument = gql`
     countryId
     userId
     agencyId
+    media {
+      id
+      url
+      type
+      order
+    }
     user {
       id
       email
@@ -4303,6 +4316,12 @@ export const SearchPropertiesDocument = gql`
       cityId
       zoneId
       userId
+      media {
+        id
+        url
+        type
+        order
+      }
     }
     meta {
       total
@@ -4400,6 +4419,12 @@ export const MyPropertiesDocument = gql`
       dealTypeId
       cityId
       zoneId
+      media {
+        id
+        url
+        type
+        order
+      }
       city {
         id
         name
@@ -4499,6 +4524,12 @@ export const PropertyBySlugDocument = gql`
     countryId
     userId
     agencyId
+    media {
+      id
+      url
+      type
+      order
+    }
     user {
       id
       email

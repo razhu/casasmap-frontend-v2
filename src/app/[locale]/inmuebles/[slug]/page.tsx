@@ -39,6 +39,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PropertyCard } from "@/components/properties/property-card";
 import { FavoriteButton } from "@/components/properties/favorite-button";
 import { MessageButton } from "@/components/messaging/message-button";
+import { PropertyImageGallery } from "@/components/properties/property-image-gallery";
 import { useAuthStore } from "@/store/auth";
 import { DeletePropertyDialog } from "@/components/properties/delete-property-dialog";
 import { useToast } from "@/hooks/use-toast";
@@ -202,14 +203,12 @@ export default function PropertySlugPage() {
           {locale === "es" ? "Volver" : "Back"}
         </Button>
 
-        {/* Image Gallery Placeholder */}
-        <div className="relative h-96 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-gray-700 dark:to-gray-800 rounded-lg mb-6">
-          <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-            <Home className="h-24 w-24" />
-          </div>
+        {/* Image Gallery */}
+        <div className="relative">
+          <PropertyImageGallery images={property.media || []} title={title} />
           {(property.priority === "HIGHEST" ||
             property.priority === "HIGH") && (
-            <Badge className="absolute top-4 right-4 bg-yellow-500">
+            <Badge className="absolute top-4 right-4 bg-yellow-500 z-10">
               {locale === "es" ? "Destacado" : "Featured"}
             </Badge>
           )}

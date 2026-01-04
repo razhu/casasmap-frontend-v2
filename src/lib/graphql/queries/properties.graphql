@@ -23,6 +23,12 @@ query Properties($page: Int, $limit: Int) {
       cityId
       zoneId
       userId
+      media {
+        id
+        url
+        type
+        order
+      }
     }
     meta {
       total
@@ -83,6 +89,12 @@ query Property($id: String!) {
     countryId
     userId
     agencyId
+    media {
+      id
+      url
+      type
+      order
+    }
     user {
       id
       email
@@ -126,6 +138,12 @@ query SearchProperties(
       cityId
       zoneId
       userId
+      media {
+        id
+        url
+        type
+        order
+      }
     }
     meta {
       total
@@ -195,6 +213,12 @@ query MyProperties($page: Int, $limit: Int) {
       dealTypeId
       cityId
       zoneId
+      media {
+        id
+        url
+        type
+        order
+      }
       city {
         id
         name
@@ -275,6 +299,12 @@ query PropertyBySlug($slug: String!, $locale: String!) {
     countryId
     userId
     agencyId
+    media {
+      id
+      url
+      type
+      order
+    }
     user {
       id
       email

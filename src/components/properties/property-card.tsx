@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Bed, Bath, Maximize, MapPin } from "lucide-react";
+import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -26,6 +27,12 @@ interface PropertyCardProps {
     priority: string;
     propertyTypeId: number;
     dealTypeId: number;
+    media?: Array<{
+      id: string;
+      url: string;
+      type: string;
+      order: number;
+    }> | null;
   };
   compact?: boolean;
   onFavoriteChange?: () => void;
@@ -60,13 +67,17 @@ export function PropertyCard({
 
   const formatPrice = (priceUS?: number | null, priceBS?: number | null) => {
     if (priceUS) {
-      return `$${priceUS.toLocaleString()}`;
+      return `${priceUS.toLocaleString()}`;
     }
     if (priceBS) {
       return `Bs ${priceBS.toLocaleString()}`;
     }
     return locale === "es" ? "Precio a consultar" : "Price on request";
   };
+
+  // Get the first image (cover image)
+  const coverImage =
+    property.media?.find((m) => m.order === 0) || property.media?.[0];
 
   return (
     <Link href={getPropertyUrl()}>
@@ -77,10 +88,19 @@ export function PropertyCard({
               compact ? "h-32" : "h-48"
             }`}
           >
-            {/* Placeholder for image - will add later */}
-            <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-              <Maximize className={compact ? "h-8 w-8" : "h-12 w-12"} />
-            </div>
+            {coverImage ? (
+              <Image
+                src={coverImage.url}
+                alt={property.title}
+                fill
+                className="object-cover"
+                sizes={compact ? "200px" : "400px"}
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                <Maximize className={compact ? "h-8 w-8" : "h-12 w-12"} />
+              </div>
+            )}
             {!compact && (
               <div className="absolute top-2 right-2 z-10 flex gap-2">
                 <AddToCompareButton
