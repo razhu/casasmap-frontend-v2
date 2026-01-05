@@ -97,9 +97,12 @@ export function PropertyCard({
                 sizes={compact ? "200px" : "400px"}
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                <Maximize className={compact ? "h-8 w-8" : "h-12 w-12"} />
-              </div>
+              <Image
+                src="/images/property-no-photo.svg"
+                alt="No photos available"
+                fill
+                className="object-contain p-2"
+              />
             )}
             {!compact && (
               <div className="absolute top-2 right-2 z-10 flex gap-2">

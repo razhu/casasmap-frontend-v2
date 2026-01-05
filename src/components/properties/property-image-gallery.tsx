@@ -30,10 +30,14 @@ export function PropertyImageGallery({
 
   if (!images || images.length === 0) {
     return (
-      <div className="relative h-96 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-gray-700 dark:to-gray-800 rounded-lg overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-          <Home className="h-24 w-24" />
-        </div>
+      <div className="relative h-96 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-800 dark:to-gray-900 rounded-lg overflow-hidden">
+        <Image
+          src="/images/property-no-photo.svg"
+          alt="No photos available"
+          fill
+          className="object-contain"
+          priority
+        />
       </div>
     );
   }

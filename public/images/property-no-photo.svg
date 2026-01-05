@@ -1,0 +1,89 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Soft gradient background -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Drop shadow -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="12"/>
+      <feOffset dx="0" dy="8" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.25"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Text shadow -->
+    <filter id="textShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.2"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#bg)"/>
+  
+  <!-- House with shadow -->
+  <g filter="url(#shadow)">
+    <!-- Roof -->
+    <path d="M 400 140 L 280 240 L 520 240 Z" 
+          fill="#94a3b8" 
+          opacity="0.9"/>
+    
+    <!-- House body -->
+    <rect x="300" y="240" width="200" height="160" 
+          fill="#cbd5e1" 
+          opacity="0.9"
+          rx="4"/>
+    
+    <!-- Door -->
+    <rect x="360" y="320" width="80" height="80" 
+          fill="#94a3b8" 
+          opacity="0.9"
+          rx="4"/>
+    
+    <!-- Windows -->
+    <rect x="320" y="270" width="50" height="50" 
+          fill="white" 
+          opacity="0.7"
+          rx="4"/>
+    <rect x="430" y="270" width="50" height="50" 
+          fill="white" 
+          opacity="0.7"
+          rx="4"/>
+  </g>
+  
+  <!-- Text with shadow -->
+  <g filter="url(#textShadow)">
+    <text x="400" y="470" 
+          font-family="system-ui, -apple-system, sans-serif" 
+          font-size="36" 
+          fill="#475569" 
+          text-anchor="middle" 
+          font-weight="400">
+      Sin Fotos
+    </text>
+    
+    <text x="400" y="510" 
+          font-family="system-ui, -apple-system, sans-serif" 
+          font-size="24" 
+          fill="#64748b" 
+          text-anchor="middle" 
+          font-weight="300">
+      No Photos
+    </text>
+  </g>
+</svg>
