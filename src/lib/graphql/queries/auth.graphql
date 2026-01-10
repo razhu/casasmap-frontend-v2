@@ -151,6 +151,60 @@ mutation RefreshToken {
   }
 }
 
+mutation GoogleLogin($googleLoginInput: GoogleLoginInput!) {
+  googleLogin(googleLoginInput: $googleLoginInput) {
+    access_token
+    user {
+      id
+      email
+      username
+      role {
+        id
+        name
+      }
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+      subscriptions {
+        id
+        plan
+        status
+        startDate
+        endDate
+      }
+    }
+  }
+}
+
+mutation FacebookLogin($facebookLoginInput: FacebookLoginInput!) {
+  facebookLogin(facebookLoginInput: $facebookLoginInput) {
+    access_token
+    user {
+      id
+      email
+      username
+      role {
+        id
+        name
+      }
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+      subscriptions {
+        id
+        plan
+        status
+        startDate
+        endDate
+      }
+    }
+  }
+}
+
 mutation ForgotPassword($email: String!) {
   forgotPassword(input: { email: $email })
 }

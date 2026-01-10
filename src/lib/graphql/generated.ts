@@ -2213,6 +2213,20 @@ export type RefreshTokenMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, startDate: any, endDate: any }> | null } } };
 
+export type GoogleLoginMutationVariables = Exact<{
+  googleLoginInput: GoogleLoginInput;
+}>;
+
+
+export type GoogleLoginMutation = { __typename?: 'Mutation', googleLogin: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null, pictureUrl?: string | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, startDate: any, endDate: any }> | null } } };
+
+export type FacebookLoginMutationVariables = Exact<{
+  facebookLoginInput: FacebookLoginInput;
+}>;
+
+
+export type FacebookLoginMutation = { __typename?: 'Mutation', facebookLogin: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null, pictureUrl?: string | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, startDate: any, endDate: any }> | null } } };
+
 export type ComparePropertiesQueryVariables = Exact<{
   input: ComparePropertiesInput;
 }>;
@@ -3554,6 +3568,78 @@ export function useRefreshTokenMutation(baseOptions?: ApolloReactHooks.MutationH
 export type RefreshTokenMutationHookResult = ReturnType<typeof useRefreshTokenMutation>;
 export type RefreshTokenMutationResult = ApolloReactCommon.MutationResult<RefreshTokenMutation>;
 export type RefreshTokenMutationOptions = ApolloReactCommon.BaseMutationOptions<RefreshTokenMutation, RefreshTokenMutationVariables>;
+export const GoogleLoginDocument = gql`
+    mutation GoogleLogin($googleLoginInput: GoogleLoginInput!) {
+  googleLogin(googleLoginInput: $googleLoginInput) {
+    access_token
+    user {
+      id
+      email
+      username
+      role {
+        id
+        name
+      }
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+      subscriptions {
+        id
+        plan
+        status
+        startDate
+        endDate
+      }
+    }
+  }
+}
+    `;
+export type GoogleLoginMutationFn = ApolloReactCommon.MutationFunction<GoogleLoginMutation, GoogleLoginMutationVariables>;
+export function useGoogleLoginMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<GoogleLoginMutation, GoogleLoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<GoogleLoginMutation, GoogleLoginMutationVariables>(GoogleLoginDocument, options);
+      }
+export type GoogleLoginMutationHookResult = ReturnType<typeof useGoogleLoginMutation>;
+export type GoogleLoginMutationResult = ApolloReactCommon.MutationResult<GoogleLoginMutation>;
+export type GoogleLoginMutationOptions = ApolloReactCommon.BaseMutationOptions<GoogleLoginMutation, GoogleLoginMutationVariables>;
+export const FacebookLoginDocument = gql`
+    mutation FacebookLogin($facebookLoginInput: FacebookLoginInput!) {
+  facebookLogin(facebookLoginInput: $facebookLoginInput) {
+    access_token
+    user {
+      id
+      email
+      username
+      role {
+        id
+        name
+      }
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+      subscriptions {
+        id
+        plan
+        status
+        startDate
+        endDate
+      }
+    }
+  }
+}
+    `;
+export type FacebookLoginMutationFn = ApolloReactCommon.MutationFunction<FacebookLoginMutation, FacebookLoginMutationVariables>;
+export function useFacebookLoginMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<FacebookLoginMutation, FacebookLoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<FacebookLoginMutation, FacebookLoginMutationVariables>(FacebookLoginDocument, options);
+      }
+export type FacebookLoginMutationHookResult = ReturnType<typeof useFacebookLoginMutation>;
+export type FacebookLoginMutationResult = ApolloReactCommon.MutationResult<FacebookLoginMutation>;
+export type FacebookLoginMutationOptions = ApolloReactCommon.BaseMutationOptions<FacebookLoginMutation, FacebookLoginMutationVariables>;
 export const ComparePropertiesDocument = gql`
     query CompareProperties($input: ComparePropertiesInput!) {
   compareProperties(input: $input) {
