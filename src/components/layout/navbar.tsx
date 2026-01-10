@@ -233,6 +233,19 @@ export function Navbar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link
+                      href={getLocalePath("/dashboard/inquiries")}
+                      className="cursor-pointer"
+                    >
+                      <MessageSquare className="mr-2 h-4 w-4" />
+                      <span>
+                        {locale === "es"
+                          ? "Consultas Recibidas"
+                          : "Received Inquiries"}
+                      </span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
                       href={getLocalePath("/profile/edit")}
                       className="cursor-pointer"
                     >
@@ -377,6 +390,17 @@ export function Navbar() {
                             {locale === "es"
                               ? "Mis Propiedades"
                               : "My Properties"}
+                          </Button>
+                        </Link>
+                        <Link
+                          href={getLocalePath("/dashboard/inquiries")}
+                          onClick={() => setOpen(false)}
+                        >
+                          <Button variant="outline" className="w-full mb-2">
+                            <MessageSquare className="mr-2 h-4 w-4" />
+                            {locale === "es"
+                              ? "Consultas Recibidas"
+                              : "Received Inquiries"}
                           </Button>
                         </Link>
                         <Button

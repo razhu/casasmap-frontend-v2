@@ -315,5 +315,8 @@
       "settings": "Settings",
       "logout": "Logout"
     }
+  },
+  "inquiries": {
+    "received": "Received Inquiries"
   }
 }

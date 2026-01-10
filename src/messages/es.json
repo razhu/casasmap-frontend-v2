@@ -315,5 +315,8 @@
       "settings": "Configuración",
       "logout": "Cerrar Sesión"
     }
+  },
+  "inquiries": {
+    "received": "Consultas Recibidas"
   }
 }
