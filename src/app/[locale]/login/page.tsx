@@ -28,6 +28,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/auth";
@@ -70,7 +71,15 @@ export default function LoginPage() {
       password: "",
       rememberMe: false,
     },
+    mode: "onChange", // Enable real-time validation
   });
+
+  // Check if form is valid for submit button
+  const isFormValid =
+    form.formState.isValid &&
+    !isLoading &&
+    !isGoogleLoading &&
+    !isFacebookLoading;
 
   const getLocalePath = (path: string) => {
     return locale === "es" ? path : `/${locale}${path}`;
@@ -98,9 +107,17 @@ export default function LoginPage() {
         router.push(getLocalePath("/"));
       }
     } catch (error: any) {
+      console.error("Login error:", error);
+
+      // Extract error message from GraphQL error
+      const errorMessage =
+        error?.graphQLErrors?.[0]?.message ||
+        error?.message ||
+        "Something went wrong";
+
       toast({
         title: t("error"),
-        description: error.message || "Something went wrong",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -274,8 +291,7 @@ export default function LoginPage() {
                     <FormItem>
                       <FormLabel>{t("password")}</FormLabel>
                       <FormControl>
-                        <Input
-                          type="password"
+                        <PasswordInput
                           placeholder="••••••••"
                           {...field}
                           disabled={
@@ -318,7 +334,7 @@ export default function LoginPage() {
                 <Button
                   type="submit"
                   className="w-full"
-                  disabled={isLoading || isGoogleLoading || isFacebookLoading}
+                  disabled={!isFormValid}
                 >
                   {isLoading && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

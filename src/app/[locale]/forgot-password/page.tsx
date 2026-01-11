@@ -53,7 +53,11 @@ export default function ForgotPasswordPage() {
     defaultValues: {
       email: "",
     },
+    mode: "onChange", // Enable real-time validation
   });
+
+  // Check if form is valid for submit button
+  const isFormValid = form.formState.isValid && !isLoading;
 
   const getLocalePath = (path: string) => {
     return locale === "es" ? path : `/${locale}${path}`;
@@ -131,7 +135,11 @@ export default function ForgotPasswordPage() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={!isFormValid}
+                >
                   {isLoading && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}

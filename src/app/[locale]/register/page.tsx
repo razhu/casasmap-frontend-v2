@@ -27,15 +27,22 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/auth";
 import { useRegisterMutation } from "@/lib/graphql/generated";
+import { PasswordStrengthIndicator } from "@/components/auth/password-strength-indicator";
 
 const registerSchema = z
   .object({
     email: z.string().email("Invalid email address"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+      .regex(/[0-9]/, "Password must contain at least one number"),
     confirmPassword: z.string(),
     agreeToTerms: z.boolean().refine((val) => val === true, {
       message: "You must agree to the terms and conditions",
@@ -67,7 +74,21 @@ export default function RegisterPage() {
       confirmPassword: "",
       agreeToTerms: false,
     },
+    mode: "onChange", // Enable real-time validation
   });
+
+  // Watch form values for real-time feedback
+  const password = form.watch("password");
+  const confirmPassword = form.watch("confirmPassword");
+  const agreeToTerms = form.watch("agreeToTerms");
+
+  // Check if passwords match (for real-time feedback)
+  const passwordsMatch =
+    password && confirmPassword && password === confirmPassword;
+  const passwordsDontMatch = confirmPassword && password !== confirmPassword;
+
+  // Check if form is valid for submit button
+  const isFormValid = form.formState.isValid && !isLoading;
 
   const getLocalePath = (path: string) => {
     return locale === "es" ? path : `/${locale}${path}`;
@@ -97,9 +118,17 @@ export default function RegisterPage() {
         router.push(getLocalePath("/"));
       }
     } catch (error: any) {
+      console.error("Registration error:", error);
+
+      // Extract error message from GraphQL error
+      const errorMessage =
+        error?.graphQLErrors?.[0]?.message ||
+        error?.message ||
+        "Something went wrong";
+
       toast({
         title: t("error"),
-        description: error.message || "Something went wrong",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -146,13 +175,16 @@ export default function RegisterPage() {
                   <FormItem>
                     <FormLabel>{t("password")}</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
+                      <PasswordInput
                         placeholder="••••••••"
                         {...field}
                         disabled={isLoading}
                       />
                     </FormControl>
+                    <PasswordStrengthIndicator
+                      password={field.value}
+                      locale={locale}
+                    />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -164,13 +196,29 @@ export default function RegisterPage() {
                   <FormItem>
                     <FormLabel>{t("confirmPassword")}</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
+                      <PasswordInput
                         placeholder="••••••••"
                         {...field}
                         disabled={isLoading}
                       />
                     </FormControl>
+                    {/* Real-time password match feedback */}
+                    {passwordsMatch && (
+                      <p className="text-sm text-green-600 flex items-center gap-1">
+                        <span>✓</span>
+                        {locale === "es"
+                          ? "Las contraseñas coinciden"
+                          : "Passwords match"}
+                      </p>
+                    )}
+                    {passwordsDontMatch && (
+                      <p className="text-sm text-red-600 flex items-center gap-1">
+                        <span>✗</span>
+                        {locale === "es"
+                          ? "Las contraseñas no coinciden"
+                          : "Passwords don't match"}
+                      </p>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -194,7 +242,7 @@ export default function RegisterPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full" disabled={!isFormValid}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {t("submit")}
               </Button>
