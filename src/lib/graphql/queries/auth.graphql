@@ -59,27 +59,8 @@ mutation Login($email: String!, $password: String!) {
 
 mutation Register($registerInput: RegisterInput!) {
   register(registerInput: $registerInput) {
-    access_token
-    user {
-      id
-      email
-      username
-      role {
-        id
-        name
-      }
-      profile {
-        firstName
-        lastName
-      }
-      subscriptions {
-        id
-        plan
-        status
-        startDate
-        endDate
-      }
-    }
+    success
+    message
   }
 }
 
@@ -205,14 +186,42 @@ mutation FacebookLogin($facebookLoginInput: FacebookLoginInput!) {
   }
 }
 
-mutation ForgotPassword($email: String!) {
-  forgotPassword(input: { email: $email })
-}
-
-mutation ResetPassword($token: String!, $newPassword: String!) {
-  resetPassword(input: { token: $token, newPassword: $newPassword })
-}
-
 query ValidateResetToken($token: String!) {
   validateResetToken(token: $token)
+}
+
+query ValidateVerificationToken($token: String!) {
+  validateVerificationToken(token: $token)
+}
+
+mutation VerifyEmail($token: String!) {
+  verifyEmail(token: $token) {
+    access_token
+    user {
+      id
+      email
+      username
+      isVerified
+      role {
+        id
+        name
+      }
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+      subscriptions {
+        id
+        plan
+        status
+        startDate
+        endDate
+      }
+    }
+  }
+}
+
+mutation ResendVerificationEmail($email: String!) {
+  resendVerificationEmail(email: $email)
 }

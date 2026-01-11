@@ -100,12 +100,38 @@ export default function LoginPage() {
         const errorMessage = result.error.message;
 
         // User-friendly error messages
-        const friendlyMessage =
-          errorMessage === "Invalid credentials"
-            ? locale === "es"
+        let friendlyMessage = errorMessage;
+
+        if (errorMessage === "Invalid credentials") {
+          friendlyMessage =
+            locale === "es"
               ? "Correo o contraseña incorrectos"
-              : "Invalid email or password"
-            : errorMessage;
+              : "Invalid email or password";
+        } else if (errorMessage === "Email not verified") {
+          friendlyMessage =
+            locale === "es"
+              ? "Tu cuenta no está verificada. Revisa tu correo."
+              : "Your account is not verified. Check your email.";
+
+          // Save email for resend functionality
+          localStorage.setItem("pending-verification-email", data.email);
+
+          // Show toast with action to resend
+          toast({
+            title:
+              locale === "es" ? "Cuenta no verificada" : "Account not verified",
+            description: friendlyMessage,
+            variant: "destructive",
+          });
+
+          // Redirect to verify-email-sent page after a moment
+          setTimeout(() => {
+            router.push(getLocalePath("/verify-email-sent"));
+          }, 2000);
+
+          setIsLoading(false);
+          return;
+        }
 
         toast({
           title: t("error"),
@@ -118,7 +144,7 @@ export default function LoginPage() {
 
       if (result.data?.login) {
         const { access_token, user } = result.data.login;
-        setAuth(user, access_token);
+        setAuth(user, access_token, data.rememberMe);
 
         toast({
           title: t("success"),

@@ -542,13 +542,15 @@ export type Mutation = {
   markConversationAsRead: Scalars['Boolean']['output'];
   markNotificationAsRead: Notification;
   refreshToken: AuthResponse;
-  register: AuthResponse;
+  register: RegisterResponse;
   /** Reject payment (admin only) */
   rejectPayment: Payment;
   rejectProperty: Property;
   removeFavorite: Scalars['Boolean']['output'];
   removeUserFromAgency: User;
   reportMessage: MessageReport;
+  /** Resend verification email */
+  resendVerificationEmail: Scalars['Boolean']['output'];
   /** Reset password with token from email */
   resetPassword: Scalars['Boolean']['output'];
   saveComparison: PropertyComparison;
@@ -581,6 +583,8 @@ export type Mutation = {
   uploadMedia: UploadResponse;
   /** Upload payment receipt (for manual payments) */
   uploadReceipt: Payment;
+  /** Verify email with token from email */
+  verifyEmail: AuthResponse;
 };
 
 
@@ -829,6 +833,11 @@ export type MutationReportMessageArgs = {
 };
 
 
+export type MutationResendVerificationEmailArgs = {
+  email: Scalars['String']['input'];
+};
+
+
 export type MutationResetPasswordArgs = {
   input: ResetPasswordInput;
 };
@@ -986,6 +995,11 @@ export type MutationUploadMediaArgs = {
 
 export type MutationUploadReceiptArgs = {
   input: UploadReceiptInput;
+};
+
+
+export type MutationVerifyEmailArgs = {
+  token: Scalars['String']['input'];
 };
 
 export type Notification = {
@@ -1359,6 +1373,8 @@ export type Query = {
   validateBoliviaCoordinates: Scalars['Boolean']['output'];
   /** Validate reset password token */
   validateResetToken: Scalars['Boolean']['output'];
+  /** Validate email verification token */
+  validateVerificationToken: Scalars['Boolean']['output'];
   zones: Array<Zone>;
 };
 
@@ -1563,6 +1579,11 @@ export type QueryValidateResetTokenArgs = {
 };
 
 
+export type QueryValidateVerificationTokenArgs = {
+  token: Scalars['String']['input'];
+};
+
+
 export type QueryZonesArgs = {
   cityId: Scalars['Int']['input'];
 };
@@ -1574,6 +1595,12 @@ export type RegisterInput = {
   password: Scalars['String']['input'];
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type RegisterResponse = {
+  __typename?: 'RegisterResponse';
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
 };
 
 export type RejectPaymentInput = {
@@ -2176,7 +2203,7 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, startDate: any, endDate: any }> | null } } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'RegisterResponse', success: boolean, message: string } };
 
 export type ForgotPasswordMutationVariables = Exact<{
   email: Scalars['String']['input'];
@@ -2240,6 +2267,27 @@ export type ValidateResetTokenQueryVariables = Exact<{
 
 
 export type ValidateResetTokenQuery = { __typename?: 'Query', validateResetToken: boolean };
+
+export type ValidateVerificationTokenQueryVariables = Exact<{
+  token: Scalars['String']['input'];
+}>;
+
+
+export type ValidateVerificationTokenQuery = { __typename?: 'Query', validateVerificationToken: boolean };
+
+export type VerifyEmailMutationVariables = Exact<{
+  token: Scalars['String']['input'];
+}>;
+
+
+export type VerifyEmailMutation = { __typename?: 'Mutation', verifyEmail: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, isVerified: boolean, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null, pictureUrl?: string | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, startDate: any, endDate: any }> | null } } };
+
+export type ResendVerificationEmailMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type ResendVerificationEmailMutation = { __typename?: 'Mutation', resendVerificationEmail: boolean };
 
 export type ComparePropertiesQueryVariables = Exact<{
   input: ComparePropertiesInput;
@@ -3428,27 +3476,8 @@ export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<LoginMu
 export const RegisterDocument = gql`
     mutation Register($registerInput: RegisterInput!) {
   register(registerInput: $registerInput) {
-    access_token
-    user {
-      id
-      email
-      username
-      role {
-        id
-        name
-      }
-      profile {
-        firstName
-        lastName
-      }
-      subscriptions {
-        id
-        plan
-        status
-        startDate
-        endDate
-      }
-    }
+    success
+    message
   }
 }
     `;
@@ -3677,6 +3706,79 @@ export function useValidateResetTokenSuspenseQuery(baseOptions?: ApolloReactHook
 export type ValidateResetTokenQueryHookResult = ReturnType<typeof useValidateResetTokenQuery>;
 export type ValidateResetTokenLazyQueryHookResult = ReturnType<typeof useValidateResetTokenLazyQuery>;
 export type ValidateResetTokenQueryResult = ApolloReactCommon.QueryResult<ValidateResetTokenQuery, ValidateResetTokenQueryVariables>;
+export const ValidateVerificationTokenDocument = gql`
+    query ValidateVerificationToken($token: String!) {
+  validateVerificationToken(token: $token)
+}
+    `;
+export function useValidateVerificationTokenQuery(baseOptions: ApolloReactHooks.QueryHookOptions<ValidateVerificationTokenQuery, ValidateVerificationTokenQueryVariables> & ({ variables: ValidateVerificationTokenQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<ValidateVerificationTokenQuery, ValidateVerificationTokenQueryVariables>(ValidateVerificationTokenDocument, options);
+      }
+export function useValidateVerificationTokenLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ValidateVerificationTokenQuery, ValidateVerificationTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<ValidateVerificationTokenQuery, ValidateVerificationTokenQueryVariables>(ValidateVerificationTokenDocument, options);
+        }
+// @ts-ignore
+export function useValidateVerificationTokenSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<ValidateVerificationTokenQuery, ValidateVerificationTokenQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ValidateVerificationTokenQuery, ValidateVerificationTokenQueryVariables>;
+export function useValidateVerificationTokenSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ValidateVerificationTokenQuery, ValidateVerificationTokenQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ValidateVerificationTokenQuery | undefined, ValidateVerificationTokenQueryVariables>;
+export function useValidateVerificationTokenSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ValidateVerificationTokenQuery, ValidateVerificationTokenQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<ValidateVerificationTokenQuery, ValidateVerificationTokenQueryVariables>(ValidateVerificationTokenDocument, options);
+        }
+export type ValidateVerificationTokenQueryHookResult = ReturnType<typeof useValidateVerificationTokenQuery>;
+export type ValidateVerificationTokenLazyQueryHookResult = ReturnType<typeof useValidateVerificationTokenLazyQuery>;
+export type ValidateVerificationTokenQueryResult = ApolloReactCommon.QueryResult<ValidateVerificationTokenQuery, ValidateVerificationTokenQueryVariables>;
+export const VerifyEmailDocument = gql`
+    mutation VerifyEmail($token: String!) {
+  verifyEmail(token: $token) {
+    access_token
+    user {
+      id
+      email
+      username
+      isVerified
+      role {
+        id
+        name
+      }
+      profile {
+        firstName
+        lastName
+        pictureUrl
+      }
+      subscriptions {
+        id
+        plan
+        status
+        startDate
+        endDate
+      }
+    }
+  }
+}
+    `;
+export type VerifyEmailMutationFn = ApolloReactCommon.MutationFunction<VerifyEmailMutation, VerifyEmailMutationVariables>;
+export function useVerifyEmailMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<VerifyEmailMutation, VerifyEmailMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<VerifyEmailMutation, VerifyEmailMutationVariables>(VerifyEmailDocument, options);
+      }
+export type VerifyEmailMutationHookResult = ReturnType<typeof useVerifyEmailMutation>;
+export type VerifyEmailMutationResult = ApolloReactCommon.MutationResult<VerifyEmailMutation>;
+export type VerifyEmailMutationOptions = ApolloReactCommon.BaseMutationOptions<VerifyEmailMutation, VerifyEmailMutationVariables>;
+export const ResendVerificationEmailDocument = gql`
+    mutation ResendVerificationEmail($email: String!) {
+  resendVerificationEmail(email: $email)
+}
+    `;
+export type ResendVerificationEmailMutationFn = ApolloReactCommon.MutationFunction<ResendVerificationEmailMutation, ResendVerificationEmailMutationVariables>;
+export function useResendVerificationEmailMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ResendVerificationEmailMutation, ResendVerificationEmailMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<ResendVerificationEmailMutation, ResendVerificationEmailMutationVariables>(ResendVerificationEmailDocument, options);
+      }
+export type ResendVerificationEmailMutationHookResult = ReturnType<typeof useResendVerificationEmailMutation>;
+export type ResendVerificationEmailMutationResult = ApolloReactCommon.MutationResult<ResendVerificationEmailMutation>;
+export type ResendVerificationEmailMutationOptions = ApolloReactCommon.BaseMutationOptions<ResendVerificationEmailMutation, ResendVerificationEmailMutationVariables>;
 export const ComparePropertiesDocument = gql`
     query CompareProperties($input: ComparePropertiesInput!) {
   compareProperties(input: $input) {

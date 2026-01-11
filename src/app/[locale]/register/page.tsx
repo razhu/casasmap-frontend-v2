@@ -128,17 +128,18 @@ export default function RegisterPage() {
       }
 
       if (result.data?.register) {
-        const { access_token, user } = result.data.register;
-        setAuth(user, access_token);
-
+        // Registration successful - redirect to verify email page
         toast({
-          title: t("success"),
-          description: `${locale === "es" ? "Bienvenido" : "Welcome"} ${
-            user.email
-          }!`,
+          title:
+            locale === "es" ? "¡Registro exitoso!" : "Registration successful!",
+          description: result.data.register.message,
         });
 
-        router.push(getLocalePath("/"));
+        // Save email to localStorage for resend functionality
+        localStorage.setItem("pending-verification-email", data.email);
+
+        // Redirect to verify-email-sent page
+        router.push(getLocalePath("/verify-email-sent"));
       }
     } catch (error: any) {
       // Network errors or other unexpected errors
