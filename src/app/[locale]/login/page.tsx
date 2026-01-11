@@ -34,9 +34,11 @@ import { useAuthStore } from "@/store/auth";
 import {
   useLoginMutation,
   useGoogleLoginMutation,
+  useFacebookLoginMutation,
 } from "@/lib/graphql/generated";
 import { GoogleAuthProvider } from "@/components/auth/google-oauth-provider";
 import { GoogleLoginButton } from "@/components/auth/google-login-button";
+import { FacebookLoginButton } from "@/components/auth/facebook-login-button";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -55,9 +57,11 @@ export default function LoginPage() {
   const setAuth = useAuthStore((state) => state.setAuth);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isFacebookLoading, setIsFacebookLoading] = useState(false);
 
   const [loginMutation] = useLoginMutation();
   const [googleLoginMutation] = useGoogleLoginMutation();
+  const [facebookLoginMutation] = useFacebookLoginMutation();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -149,6 +153,51 @@ export default function LoginPage() {
     setIsGoogleLoading(false);
   };
 
+  const handleFacebookLogin = async (accessToken: string) => {
+    setIsFacebookLoading(true);
+    try {
+      const result = await facebookLoginMutation({
+        variables: {
+          facebookLoginInput: {
+            accessToken,
+          },
+        },
+      });
+
+      if (result.data?.facebookLogin) {
+        const { access_token, user } = result.data.facebookLogin;
+        setAuth(user, access_token);
+
+        toast({
+          title: t("success"),
+          description: `${locale === "es" ? "Bienvenido" : "Welcome"} ${
+            user.email
+          }`,
+        });
+
+        router.push(getLocalePath("/"));
+      }
+    } catch (error: any) {
+      toast({
+        title: t("error"),
+        description: error.message || "Facebook login failed",
+        variant: "destructive",
+      });
+    } finally {
+      setIsFacebookLoading(false);
+    }
+  };
+
+  const handleFacebookError = (error: any) => {
+    console.error("Facebook login error:", error);
+    toast({
+      title: t("error"),
+      description: "Facebook login failed",
+      variant: "destructive",
+    });
+    setIsFacebookLoading(false);
+  };
+
   return (
     <GoogleAuthProvider>
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 p-4">
@@ -162,13 +211,21 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Google Login Button */}
-            <GoogleLoginButton
-              onSuccess={handleGoogleLogin}
-              onError={handleGoogleError}
-              disabled={isLoading || isGoogleLoading}
-              locale={locale}
-            />
+            {/* Social Login Buttons */}
+            <div className="space-y-2">
+              <GoogleLoginButton
+                onSuccess={handleGoogleLogin}
+                onError={handleGoogleError}
+                disabled={isLoading || isGoogleLoading || isFacebookLoading}
+                locale={locale}
+              />
+              <FacebookLoginButton
+                onSuccess={handleFacebookLogin}
+                onError={handleFacebookError}
+                disabled={isLoading || isGoogleLoading || isFacebookLoading}
+                locale={locale}
+              />
+            </div>
 
             {/* Divider */}
             <div className="relative">
@@ -201,7 +258,9 @@ export default function LoginPage() {
                           type="email"
                           placeholder="tu@email.com"
                           {...field}
-                          disabled={isLoading || isGoogleLoading}
+                          disabled={
+                            isLoading || isGoogleLoading || isFacebookLoading
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -219,7 +278,9 @@ export default function LoginPage() {
                           type="password"
                           placeholder="••••••••"
                           {...field}
-                          disabled={isLoading || isGoogleLoading}
+                          disabled={
+                            isLoading || isGoogleLoading || isFacebookLoading
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -236,7 +297,9 @@ export default function LoginPage() {
                           <Checkbox
                             checked={field.value}
                             onCheckedChange={field.onChange}
-                            disabled={isLoading || isGoogleLoading}
+                            disabled={
+                              isLoading || isGoogleLoading || isFacebookLoading
+                            }
                           />
                         </FormControl>
                         <FormLabel className="text-sm font-normal cursor-pointer">
@@ -255,7 +318,7 @@ export default function LoginPage() {
                 <Button
                   type="submit"
                   className="w-full"
-                  disabled={isLoading || isGoogleLoading}
+                  disabled={isLoading || isGoogleLoading || isFacebookLoading}
                 >
                   {isLoading && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
