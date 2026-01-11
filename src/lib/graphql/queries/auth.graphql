@@ -212,3 +212,7 @@ mutation ForgotPassword($email: String!) {
 mutation ResetPassword($token: String!, $newPassword: String!) {
   resetPassword(input: { token: $token, newPassword: $newPassword })
 }
+
+query ValidateResetToken($token: String!) {
+  validateResetToken(token: $token)
+}

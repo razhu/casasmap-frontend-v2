@@ -106,29 +106,50 @@ export default function RegisterPage() {
         },
       });
 
+      // Check for GraphQL errors (Apollo errorPolicy: "all" puts error in result.error)
+      if (result.error) {
+        const errorMessage = result.error.message;
+
+        // User-friendly error messages
+        const friendlyMessage =
+          errorMessage === "User already exists"
+            ? locale === "es"
+              ? "Este correo ya está registrado"
+              : "This email is already registered"
+            : errorMessage;
+
+        toast({
+          title: t("error"),
+          description: friendlyMessage,
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       if (result.data?.register) {
         const { access_token, user } = result.data.register;
         setAuth(user, access_token);
 
         toast({
           title: t("success"),
-          description: `Welcome ${user.email}!`,
+          description: `${locale === "es" ? "Bienvenido" : "Welcome"} ${
+            user.email
+          }!`,
         });
 
         router.push(getLocalePath("/"));
       }
     } catch (error: any) {
+      // Network errors or other unexpected errors
       console.error("Registration error:", error);
-
-      // Extract error message from GraphQL error
-      const errorMessage =
-        error?.graphQLErrors?.[0]?.message ||
-        error?.message ||
-        "Something went wrong";
 
       toast({
         title: t("error"),
-        description: errorMessage,
+        description:
+          locale === "es"
+            ? "Error de conexión. Por favor intenta de nuevo."
+            : "Connection error. Please try again.",
         variant: "destructive",
       });
     } finally {

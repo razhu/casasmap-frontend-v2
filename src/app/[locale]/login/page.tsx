@@ -86,8 +86,10 @@ export default function LoginPage() {
   };
 
   const onSubmit = async (data: LoginFormValues) => {
+    console.log("=== LOGIN SUBMIT START ===");
     setIsLoading(true);
     try {
+      console.log("Calling loginMutation with:", { email: data.email });
       const result = await loginMutation({
         variables: {
           email: data.email,
@@ -95,7 +97,46 @@ export default function LoginPage() {
         },
       });
 
+      console.log("Result received:", result);
+      console.log("Result.error:", result.error);
+      console.log("Result.errors:", result.errors);
+      console.log("Result.data:", result.data);
+
+      // Check for GraphQL errors (Apollo errorPolicy: "all" puts error in result.error)
+      if (result.error) {
+        console.log("FOUND ERROR IN RESULT!");
+        const errorMessage = result.error.message;
+        console.log("Error message:", errorMessage);
+
+        // User-friendly error messages
+        const friendlyMessage =
+          errorMessage === "Invalid credentials"
+            ? locale === "es"
+              ? "Correo o contraseña incorrectos"
+              : "Invalid email or password"
+            : errorMessage;
+
+        console.log("Friendly message:", friendlyMessage);
+        console.log("About to call toast with:", {
+          title: t("error"),
+          description: friendlyMessage,
+          variant: "destructive",
+        });
+
+        toast({
+          title: t("error"),
+          description: friendlyMessage,
+          variant: "destructive",
+        });
+
+        console.log("Toast called!");
+        setIsLoading(false);
+        return;
+      }
+
+      console.log("No errors, checking data...");
       if (result.data?.login) {
+        console.log("Login successful!");
         const { access_token, user } = result.data.login;
         setAuth(user, access_token);
 
@@ -105,22 +146,23 @@ export default function LoginPage() {
         });
 
         router.push(getLocalePath("/"));
+      } else {
+        console.log("No data in result!");
       }
     } catch (error: any) {
-      console.error("Login error:", error);
-
-      // Extract error message from GraphQL error
-      const errorMessage =
-        error?.graphQLErrors?.[0]?.message ||
-        error?.message ||
-        "Something went wrong";
+      // Network errors or other unexpected errors
+      console.error("CAUGHT ERROR:", error);
 
       toast({
         title: t("error"),
-        description: errorMessage,
+        description:
+          locale === "es"
+            ? "Error de conexión. Por favor intenta de nuevo."
+            : "Connection error. Please try again.",
         variant: "destructive",
       });
     } finally {
+      console.log("=== LOGIN SUBMIT END ===");
       setIsLoading(false);
     }
   };
@@ -135,6 +177,21 @@ export default function LoginPage() {
           },
         },
       });
+
+      // Check for GraphQL errors
+      if (result.error) {
+        toast({
+          title: t("error"),
+          description:
+            result.error.message ||
+            (locale === "es"
+              ? "Error al iniciar sesión con Google"
+              : "Google login failed"),
+          variant: "destructive",
+        });
+        setIsGoogleLoading(false);
+        return;
+      }
 
       if (result.data?.googleLogin) {
         const { access_token, user } = result.data.googleLogin;
@@ -152,7 +209,10 @@ export default function LoginPage() {
     } catch (error: any) {
       toast({
         title: t("error"),
-        description: error.message || "Google login failed",
+        description:
+          locale === "es"
+            ? "Error de conexión con Google"
+            : "Google connection error",
         variant: "destructive",
       });
     } finally {
@@ -181,6 +241,21 @@ export default function LoginPage() {
         },
       });
 
+      // Check for GraphQL errors
+      if (result.error) {
+        toast({
+          title: t("error"),
+          description:
+            result.error.message ||
+            (locale === "es"
+              ? "Error al iniciar sesión con Facebook"
+              : "Facebook login failed"),
+          variant: "destructive",
+        });
+        setIsFacebookLoading(false);
+        return;
+      }
+
       if (result.data?.facebookLogin) {
         const { access_token, user } = result.data.facebookLogin;
         setAuth(user, access_token);
@@ -197,7 +272,10 @@ export default function LoginPage() {
     } catch (error: any) {
       toast({
         title: t("error"),
-        description: error.message || "Facebook login failed",
+        description:
+          locale === "es"
+            ? "Error de conexión con Facebook"
+            : "Facebook connection error",
         variant: "destructive",
       });
     } finally {

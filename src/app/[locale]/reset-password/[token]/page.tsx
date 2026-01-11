@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMutation } from "@apollo/client/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,10 +26,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useToast } from "@/hooks/use-toast";
-import { useResetPasswordMutation } from "@/lib/graphql/generated";
+import {
+  useResetPasswordMutation,
+  useValidateResetTokenQuery,
+} from "@/lib/graphql/generated";
 import { PasswordStrengthIndicator } from "@/components/auth/password-strength-indicator";
 
 const resetPasswordSchema = z
@@ -59,6 +64,14 @@ export default function ResetPasswordPage() {
 
   const [resetPasswordMutation] = useResetPasswordMutation();
 
+  // Validate token on page load
+  const { data: tokenValidation, loading: isValidating } =
+    useValidateResetTokenQuery({
+      variables: { token },
+    });
+
+  const tokenValid = tokenValidation?.validateResetToken ?? false;
+
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -84,6 +97,28 @@ export default function ResetPasswordPage() {
     return locale === "es" ? path : `/${locale}${path}`;
   };
 
+  // Validate token on page load
+  useEffect(() => {
+    const validateToken = async () => {
+      try {
+        // Try to reset with a dummy password to check if token is valid
+        // We'll catch the error if token is invalid
+        // This is a workaround since we don't have a separate validate endpoint
+        setIsValidating(true);
+
+        // For now, we'll assume token is valid and let the form submission handle validation
+        // A better approach would be to add a validateResetToken query to the backend
+        setTokenValid(true);
+        setIsValidating(false);
+      } catch (error) {
+        setTokenValid(false);
+        setIsValidating(false);
+      }
+    };
+
+    validateToken();
+  }, [token]);
+
   const onSubmit = async (data: ResetPasswordFormValues) => {
     setIsLoading(true);
     try {
@@ -93,6 +128,35 @@ export default function ResetPasswordPage() {
           newPassword: data.password,
         },
       });
+
+      // Check for GraphQL errors (Apollo errorPolicy: "all" puts error in result.error)
+      if (result.error) {
+        const errorMessage = result.error.message;
+
+        // User-friendly error messages
+        const friendlyMessage =
+          errorMessage === "Invalid or expired reset token"
+            ? locale === "es"
+              ? "Este enlace ya fue usado o expiró. Solicita uno nuevo."
+              : "This link has been used or expired. Request a new one."
+            : errorMessage;
+
+        toast({
+          title: t("error"),
+          description: friendlyMessage,
+          variant: "destructive",
+        });
+
+        // If token is invalid, redirect to forgot password after showing error
+        if (errorMessage === "Invalid or expired reset token") {
+          setTimeout(() => {
+            router.push(getLocalePath("/forgot-password"));
+          }, 3000);
+        }
+
+        setIsLoading(false);
+        return;
+      }
 
       if (result.data?.resetPassword) {
         toast({
@@ -108,9 +172,15 @@ export default function ResetPasswordPage() {
         }, 2000);
       }
     } catch (error: any) {
+      // Network errors
+      console.error("Reset password error:", error);
+
       toast({
         title: t("error"),
-        description: error.message || "Something went wrong",
+        description:
+          locale === "es"
+            ? "Error de conexión. Por favor intenta de nuevo."
+            : "Connection error. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -130,69 +200,110 @@ export default function ResetPasswordPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("password")}</FormLabel>
-                    <FormControl>
-                      <PasswordInput
-                        placeholder="••••••••"
-                        {...field}
-                        disabled={isLoading}
+          {isValidating ? (
+            <div className="flex flex-col items-center justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+              <p className="text-sm text-gray-600">
+                {locale === "es" ? "Validando enlace..." : "Validating link..."}
+              </p>
+            </div>
+          ) : !tokenValid ? (
+            <div className="space-y-4">
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  {locale === "es"
+                    ? "Este enlace ya fue usado o expiró."
+                    : "This link has been used or expired."}
+                </AlertDescription>
+              </Alert>
+              <p className="text-sm text-gray-600 text-center">
+                {locale === "es"
+                  ? "Por favor solicita un nuevo enlace de recuperación."
+                  : "Please request a new recovery link."}
+              </p>
+              <Link href={getLocalePath("/forgot-password")}>
+                <Button className="w-full">
+                  {locale === "es"
+                    ? "Solicitar nuevo enlace"
+                    : "Request new link"}
+                </Button>
+              </Link>
+            </div>
+          ) : (
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("password")}</FormLabel>
+                      <FormControl>
+                        <PasswordInput
+                          placeholder="••••••••"
+                          {...field}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <PasswordStrengthIndicator
+                        password={field.value}
+                        locale={locale}
                       />
-                    </FormControl>
-                    <PasswordStrengthIndicator
-                      password={field.value}
-                      locale={locale}
-                    />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("confirmPassword")}</FormLabel>
-                    <FormControl>
-                      <PasswordInput
-                        placeholder="••••••••"
-                        {...field}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    {/* Real-time password match feedback */}
-                    {passwordsMatch && (
-                      <p className="text-sm text-green-600 flex items-center gap-1">
-                        <span>✓</span>
-                        {locale === "es"
-                          ? "Las contraseñas coinciden"
-                          : "Passwords match"}
-                      </p>
-                    )}
-                    {passwordsDontMatch && (
-                      <p className="text-sm text-red-600 flex items-center gap-1">
-                        <span>✗</span>
-                        {locale === "es"
-                          ? "Las contraseñas no coinciden"
-                          : "Passwords don't match"}
-                      </p>
-                    )}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full" disabled={!isFormValid}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {t("submit")}
-              </Button>
-            </form>
-          </Form>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("confirmPassword")}</FormLabel>
+                      <FormControl>
+                        <PasswordInput
+                          placeholder="••••••••"
+                          {...field}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      {/* Real-time password match feedback */}
+                      {passwordsMatch && (
+                        <p className="text-sm text-green-600 flex items-center gap-1">
+                          <span>✓</span>
+                          {locale === "es"
+                            ? "Las contraseñas coinciden"
+                            : "Passwords match"}
+                        </p>
+                      )}
+                      {passwordsDontMatch && (
+                        <p className="text-sm text-red-600 flex items-center gap-1">
+                          <span>✗</span>
+                          {locale === "es"
+                            ? "Las contraseñas no coinciden"
+                            : "Passwords don't match"}
+                        </p>
+                      )}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={!isFormValid}
+                >
+                  {isLoading && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  {t("submit")}
+                </Button>
+              </form>
+            </Form>
+          )}
         </CardContent>
       </Card>
     </div>

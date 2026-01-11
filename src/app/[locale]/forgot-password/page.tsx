@@ -72,6 +72,21 @@ export default function ForgotPasswordPage() {
         },
       });
 
+      // Check for GraphQL errors (Apollo errorPolicy: "all" puts error in result.error)
+      if (result.error) {
+        toast({
+          title: t("error"),
+          description:
+            result.error.message ||
+            (locale === "es"
+              ? "Algo salió mal. Por favor intenta de nuevo."
+              : "Something went wrong. Please try again."),
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       if (result.data?.forgotPassword) {
         setEmailSent(true);
         toast({
@@ -80,9 +95,13 @@ export default function ForgotPasswordPage() {
         });
       }
     } catch (error: any) {
+      // Network errors
       toast({
         title: t("error"),
-        description: error.message || "Something went wrong",
+        description:
+          locale === "es"
+            ? "Error de conexión. Por favor intenta de nuevo."
+            : "Connection error. Please try again.",
         variant: "destructive",
       });
     } finally {

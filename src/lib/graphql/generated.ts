@@ -1357,6 +1357,8 @@ export type Query = {
   users: Array<User>;
   /** Validate if coordinates are within Bolivia */
   validateBoliviaCoordinates: Scalars['Boolean']['output'];
+  /** Validate reset password token */
+  validateResetToken: Scalars['Boolean']['output'];
   zones: Array<Zone>;
 };
 
@@ -1553,6 +1555,11 @@ export type QueryUserArgs = {
 export type QueryValidateBoliviaCoordinatesArgs = {
   latitude: Scalars['Float']['input'];
   longitude: Scalars['Float']['input'];
+};
+
+
+export type QueryValidateResetTokenArgs = {
+  token: Scalars['String']['input'];
 };
 
 
@@ -2226,6 +2233,13 @@ export type FacebookLoginMutationVariables = Exact<{
 
 
 export type FacebookLoginMutation = { __typename?: 'Mutation', facebookLogin: { __typename?: 'AuthResponse', access_token: string, user: { __typename?: 'User', id: string, email: string, username?: string | null, role: { __typename?: 'Role', id: number, name: string }, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null, pictureUrl?: string | null } | null, subscriptions?: Array<{ __typename?: 'Subscription', id: string, plan: string, status: string, startDate: any, endDate: any }> | null } } };
+
+export type ValidateResetTokenQueryVariables = Exact<{
+  token: Scalars['String']['input'];
+}>;
+
+
+export type ValidateResetTokenQuery = { __typename?: 'Query', validateResetToken: boolean };
 
 export type ComparePropertiesQueryVariables = Exact<{
   input: ComparePropertiesInput;
@@ -3640,6 +3654,29 @@ export function useFacebookLoginMutation(baseOptions?: ApolloReactHooks.Mutation
 export type FacebookLoginMutationHookResult = ReturnType<typeof useFacebookLoginMutation>;
 export type FacebookLoginMutationResult = ApolloReactCommon.MutationResult<FacebookLoginMutation>;
 export type FacebookLoginMutationOptions = ApolloReactCommon.BaseMutationOptions<FacebookLoginMutation, FacebookLoginMutationVariables>;
+export const ValidateResetTokenDocument = gql`
+    query ValidateResetToken($token: String!) {
+  validateResetToken(token: $token)
+}
+    `;
+export function useValidateResetTokenQuery(baseOptions: ApolloReactHooks.QueryHookOptions<ValidateResetTokenQuery, ValidateResetTokenQueryVariables> & ({ variables: ValidateResetTokenQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<ValidateResetTokenQuery, ValidateResetTokenQueryVariables>(ValidateResetTokenDocument, options);
+      }
+export function useValidateResetTokenLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ValidateResetTokenQuery, ValidateResetTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<ValidateResetTokenQuery, ValidateResetTokenQueryVariables>(ValidateResetTokenDocument, options);
+        }
+// @ts-ignore
+export function useValidateResetTokenSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<ValidateResetTokenQuery, ValidateResetTokenQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ValidateResetTokenQuery, ValidateResetTokenQueryVariables>;
+export function useValidateResetTokenSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ValidateResetTokenQuery, ValidateResetTokenQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ValidateResetTokenQuery | undefined, ValidateResetTokenQueryVariables>;
+export function useValidateResetTokenSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ValidateResetTokenQuery, ValidateResetTokenQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<ValidateResetTokenQuery, ValidateResetTokenQueryVariables>(ValidateResetTokenDocument, options);
+        }
+export type ValidateResetTokenQueryHookResult = ReturnType<typeof useValidateResetTokenQuery>;
+export type ValidateResetTokenLazyQueryHookResult = ReturnType<typeof useValidateResetTokenLazyQuery>;
+export type ValidateResetTokenQueryResult = ApolloReactCommon.QueryResult<ValidateResetTokenQuery, ValidateResetTokenQueryVariables>;
 export const ComparePropertiesDocument = gql`
     query CompareProperties($input: ComparePropertiesInput!) {
   compareProperties(input: $input) {

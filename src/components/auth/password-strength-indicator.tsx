@@ -29,12 +29,14 @@ export function PasswordStrengthIndicator({
       uppercase: "Al menos 1 mayúscula",
       lowercase: "Al menos 1 minúscula",
       number: "Al menos 1 número",
+      allGood: "✓ Contraseña segura",
     },
     en: {
       length: "At least 8 characters",
       uppercase: "At least 1 uppercase letter",
       lowercase: "At least 1 lowercase letter",
       number: "At least 1 number",
+      allGood: "✓ Strong password",
     },
   };
 
@@ -42,6 +44,17 @@ export function PasswordStrengthIndicator({
 
   if (!password) return null;
 
+  // If all requirements met, show simple success message
+  if (allValid) {
+    return (
+      <div className="text-sm text-green-600 font-medium flex items-center gap-2">
+        <Check className="h-4 w-4" />
+        {t.allGood}
+      </div>
+    );
+  }
+
+  // Otherwise show requirements
   return (
     <div className="space-y-2 text-sm">
       <div className="flex items-center gap-2">
