@@ -86,10 +86,8 @@ export default function LoginPage() {
   };
 
   const onSubmit = async (data: LoginFormValues) => {
-    console.log("=== LOGIN SUBMIT START ===");
     setIsLoading(true);
     try {
-      console.log("Calling loginMutation with:", { email: data.email });
       const result = await loginMutation({
         variables: {
           email: data.email,
@@ -97,16 +95,9 @@ export default function LoginPage() {
         },
       });
 
-      console.log("Result received:", result);
-      console.log("Result.error:", result.error);
-      console.log("Result.errors:", result.errors);
-      console.log("Result.data:", result.data);
-
       // Check for GraphQL errors (Apollo errorPolicy: "all" puts error in result.error)
       if (result.error) {
-        console.log("FOUND ERROR IN RESULT!");
         const errorMessage = result.error.message;
-        console.log("Error message:", errorMessage);
 
         // User-friendly error messages
         const friendlyMessage =
@@ -116,27 +107,16 @@ export default function LoginPage() {
               : "Invalid email or password"
             : errorMessage;
 
-        console.log("Friendly message:", friendlyMessage);
-        console.log("About to call toast with:", {
-          title: t("error"),
-          description: friendlyMessage,
-          variant: "destructive",
-        });
-
         toast({
           title: t("error"),
           description: friendlyMessage,
           variant: "destructive",
         });
-
-        console.log("Toast called!");
         setIsLoading(false);
         return;
       }
 
-      console.log("No errors, checking data...");
       if (result.data?.login) {
-        console.log("Login successful!");
         const { access_token, user } = result.data.login;
         setAuth(user, access_token);
 
@@ -146,13 +126,9 @@ export default function LoginPage() {
         });
 
         router.push(getLocalePath("/"));
-      } else {
-        console.log("No data in result!");
       }
     } catch (error: any) {
       // Network errors or other unexpected errors
-      console.error("CAUGHT ERROR:", error);
-
       toast({
         title: t("error"),
         description:
@@ -162,7 +138,6 @@ export default function LoginPage() {
         variant: "destructive",
       });
     } finally {
-      console.log("=== LOGIN SUBMIT END ===");
       setIsLoading(false);
     }
   };
