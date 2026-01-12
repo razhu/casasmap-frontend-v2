@@ -14,7 +14,6 @@ import {
   Plus,
   Bookmark,
   BarChart3,
-  TrendingUp,
   Crown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,6 +29,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LanguageSwitcher } from "./language-switcher";
 import { ThemeToggle } from "./theme-toggle";
 import { NotificationBell } from "./notification-bell";
+import { SearchAutocomplete } from "@/components/search/search-autocomplete";
 import { useState } from "react";
 import {
   Sheet,
@@ -128,13 +128,21 @@ export function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b dark:border-gray-800">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo */}
-          <Link href={getLocalePath("/")} className="flex items-center gap-2">
+          <Link
+            href={getLocalePath("/")}
+            className="flex items-center gap-2 flex-shrink-0"
+          >
             <div className="text-xl sm:text-2xl font-bold text-primary">
               🏠 CasasMap
             </div>
           </Link>
+
+          {/* Search Autocomplete - Desktop */}
+          <div className="flex-1 max-w-md mx-4">
+            <SearchAutocomplete locale={locale} />
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-4">

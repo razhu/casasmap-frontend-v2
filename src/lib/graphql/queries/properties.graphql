@@ -315,3 +315,28 @@ query PropertyBySlug($slug: String!, $locale: String!) {
     }
   }
 }
+
+query AutocompleteProperties($query: String!, $limit: Int) {
+  autocompleteProperties(query: $query, limit: $limit) {
+    id
+    slug
+    slugEn
+    title
+    titleEn
+    priceUS
+    priceBS
+    bedrooms
+    bathrooms
+    totalArea
+    cityId
+    zoneId
+    propertyTypeId
+    dealTypeId
+    media {
+      id
+      url
+      type
+      order
+    }
+  }
+}

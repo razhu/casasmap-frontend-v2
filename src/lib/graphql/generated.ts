@@ -1309,6 +1309,8 @@ export type Query = {
   agency: Agency;
   /** Get all payments (admin only) */
   allPayments: Array<Payment>;
+  /** Autocomplete search for properties (min 2 chars) */
+  autocompleteProperties: Array<Property>;
   /** Get available payment methods */
   availablePaymentMethods: Array<Scalars['String']['output']>;
   cities: Array<City>;
@@ -1386,6 +1388,12 @@ export type QueryAgencyArgs = {
 
 export type QueryAllPaymentsArgs = {
   status?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryAutocompletePropertiesArgs = {
+  limit?: Scalars['Int']['input'];
+  query: Scalars['String']['input'];
 };
 
 
@@ -2442,6 +2450,14 @@ export type PropertyBySlugQueryVariables = Exact<{
 
 
 export type PropertyBySlugQuery = { __typename?: 'Query', propertyBySlug: { __typename?: 'Property', id: string, title: string, titleEn: string, slug: string, slugEn: string, description: string, descriptionEn: string, priceUS?: number | null, priceBS?: number | null, phoneNumber?: string | null, address: string, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, coveredArea?: number | null, parkingSpaces?: number | null, latitude?: number | null, longitude?: number | null, status: string, priority: string, yearBuilt?: number | null, furnished?: boolean | null, petsAllowed?: boolean | null, maintenanceFee?: number | null, propertyTax?: number | null, availableFrom?: any | null, virtualTourUrl?: string | null, floorPlanUrl?: string | null, condition?: string | null, stories?: number | null, elevators?: number | null, heating?: string | null, cooling?: string | null, security?: boolean | null, pool?: boolean | null, balcony?: boolean | null, terrace?: boolean | null, storage?: boolean | null, createdAt: any, updatedAt: any, propertyTypeId: number, dealTypeId: number, cityId: number, zoneId: number, stateId: number, countryId: number, userId: string, agencyId?: string | null, media?: Array<{ __typename?: 'Media', id: string, url: string, type: MediaType, order: number }> | null, user?: { __typename?: 'User', id: string, email: string, profile?: { __typename?: 'Profile', firstName?: string | null, lastName?: string | null } | null } | null } };
+
+export type AutocompletePropertiesQueryVariables = Exact<{
+  query: Scalars['String']['input'];
+  limit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type AutocompletePropertiesQuery = { __typename?: 'Query', autocompleteProperties: Array<{ __typename?: 'Property', id: string, slug: string, slugEn: string, title: string, titleEn: string, priceUS?: number | null, priceBS?: number | null, bedrooms?: number | null, bathrooms?: number | null, totalArea?: number | null, cityId: number, zoneId: number, propertyTypeId: number, dealTypeId: number, media?: Array<{ __typename?: 'Media', id: string, url: string, type: MediaType, order: number }> | null }> };
 
 export type MarketAnalysisQueryVariables = Exact<{
   input: MarketAnalysisInput;
@@ -4784,6 +4800,50 @@ export function usePropertyBySlugSuspenseQuery(baseOptions?: ApolloReactHooks.Sk
 export type PropertyBySlugQueryHookResult = ReturnType<typeof usePropertyBySlugQuery>;
 export type PropertyBySlugLazyQueryHookResult = ReturnType<typeof usePropertyBySlugLazyQuery>;
 export type PropertyBySlugQueryResult = ApolloReactCommon.QueryResult<PropertyBySlugQuery, PropertyBySlugQueryVariables>;
+export const AutocompletePropertiesDocument = gql`
+    query AutocompleteProperties($query: String!, $limit: Int) {
+  autocompleteProperties(query: $query, limit: $limit) {
+    id
+    slug
+    slugEn
+    title
+    titleEn
+    priceUS
+    priceBS
+    bedrooms
+    bathrooms
+    totalArea
+    cityId
+    zoneId
+    propertyTypeId
+    dealTypeId
+    media {
+      id
+      url
+      type
+      order
+    }
+  }
+}
+    `;
+export function useAutocompletePropertiesQuery(baseOptions: ApolloReactHooks.QueryHookOptions<AutocompletePropertiesQuery, AutocompletePropertiesQueryVariables> & ({ variables: AutocompletePropertiesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<AutocompletePropertiesQuery, AutocompletePropertiesQueryVariables>(AutocompletePropertiesDocument, options);
+      }
+export function useAutocompletePropertiesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AutocompletePropertiesQuery, AutocompletePropertiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<AutocompletePropertiesQuery, AutocompletePropertiesQueryVariables>(AutocompletePropertiesDocument, options);
+        }
+// @ts-ignore
+export function useAutocompletePropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AutocompletePropertiesQuery, AutocompletePropertiesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AutocompletePropertiesQuery, AutocompletePropertiesQueryVariables>;
+export function useAutocompletePropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AutocompletePropertiesQuery, AutocompletePropertiesQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AutocompletePropertiesQuery | undefined, AutocompletePropertiesQueryVariables>;
+export function useAutocompletePropertiesSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AutocompletePropertiesQuery, AutocompletePropertiesQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<AutocompletePropertiesQuery, AutocompletePropertiesQueryVariables>(AutocompletePropertiesDocument, options);
+        }
+export type AutocompletePropertiesQueryHookResult = ReturnType<typeof useAutocompletePropertiesQuery>;
+export type AutocompletePropertiesLazyQueryHookResult = ReturnType<typeof useAutocompletePropertiesLazyQuery>;
+export type AutocompletePropertiesQueryResult = ApolloReactCommon.QueryResult<AutocompletePropertiesQuery, AutocompletePropertiesQueryVariables>;
 export const MarketAnalysisDocument = gql`
     query MarketAnalysis($input: MarketAnalysisInput!) {
   marketAnalysis(input: $input) {
