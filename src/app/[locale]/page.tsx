@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -16,12 +18,28 @@ import { PropertyCard } from "@/components/properties/property-card";
 import { PropertyCardSkeleton } from "@/components/ui/property-card-skeleton";
 import { HomepageSearch } from "@/components/properties/homepage-search";
 import { PopularCities } from "@/components/properties/popular-cities";
+import { AuthModal } from "@/components/auth/auth-modal";
 
 export default function HomePage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const locale = params.locale as string;
   const t = useTranslations("home");
   const tProps = useTranslations("properties");
+
+  // Handle auth modal from URL params
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<"login" | "register">(
+    "login"
+  );
+
+  useEffect(() => {
+    const authParam = searchParams.get("auth");
+    if (authParam === "login" || authParam === "register") {
+      setAuthModalMode(authParam);
+      setAuthModalOpen(true);
+    }
+  }, [searchParams]);
 
   // Fetch featured properties (first 8)
   const { data, loading } = usePropertiesQuery({
@@ -128,14 +146,26 @@ export default function HomePage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Link href={getLocalePath("/register")}>
-              <Button size="lg" className="w-full sm:w-auto">
-                {t("cta.button")}
-              </Button>
-            </Link>
+            <Button
+              size="lg"
+              className="w-full sm:w-auto"
+              onClick={() => {
+                setAuthModalMode("register");
+                setAuthModalOpen(true);
+              }}
+            >
+              {t("cta.button")}
+            </Button>
           </CardContent>
         </Card>
       </section>
+
+      {/* Auth Modal */}
+      <AuthModal
+        open={authModalOpen}
+        onOpenChange={setAuthModalOpen}
+        defaultMode={authModalMode}
+      />
     </div>
   );
 }

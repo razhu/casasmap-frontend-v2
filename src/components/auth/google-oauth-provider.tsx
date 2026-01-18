@@ -2,7 +2,7 @@
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
-export function GoogleAuthProvider({
+export function CasasMapAuthProvider({
   children,
 }: {
   children: React.ReactNode;

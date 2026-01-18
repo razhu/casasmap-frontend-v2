@@ -33,7 +33,7 @@ export function SuccessAnimation({
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white dark:bg-gray-900 rounded-lg p-8 shadow-2xl animate-in zoom-in-95 duration-300">
         <div className="flex flex-col items-center gap-4">
           <div className="relative">

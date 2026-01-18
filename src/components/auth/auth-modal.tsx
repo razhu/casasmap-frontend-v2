@@ -35,7 +35,7 @@ import {
   useGoogleLoginMutation,
   useFacebookLoginMutation,
 } from "@/lib/graphql/generated";
-import { GoogleAuthProvider } from "@/components/auth/google-oauth-provider";
+import { CasasMapAuthProvider } from "@/components/auth/google-oauth-provider";
 import { GoogleLoginButton } from "@/components/auth/google-login-button";
 import { FacebookLoginButton } from "@/components/auth/facebook-login-button";
 import { PasswordStrengthIndicator } from "@/components/auth/password-strength-indicator";
@@ -173,7 +173,7 @@ export function AuthModal({
 
       if (result.data?.login) {
         const { access_token, user } = result.data.login;
-        setAuth(user, access_token, data.rememberMe);
+        setAuth(user as any, access_token, data.rememberMe);
 
         toast({
           title: t("login.success"),
@@ -281,7 +281,7 @@ export function AuthModal({
 
       if (result.data?.googleLogin) {
         const { access_token, user } = result.data.googleLogin;
-        setAuth(user, access_token);
+        setAuth(user as any, access_token);
 
         toast({
           title: t("login.success"),
@@ -334,7 +334,7 @@ export function AuthModal({
 
       if (result.data?.facebookLogin) {
         const { access_token, user } = result.data.facebookLogin;
-        setAuth(user, access_token);
+        setAuth(user as any, access_token);
 
         toast({
           title: t("login.success"),
@@ -387,7 +387,7 @@ export function AuthModal({
   const passwordsDontMatch = confirmPassword && password !== confirmPassword;
 
   return (
-    <GoogleAuthProvider>
+    <CasasMapAuthProvider>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -400,36 +400,6 @@ export function AuthModal({
           </DialogHeader>
 
           <div className="space-y-4">
-            {/* Social Login Buttons */}
-            <div className="space-y-2">
-              <GoogleLoginButton
-                onSuccess={handleGoogleLogin}
-                onError={handleGoogleError}
-                disabled={isLoading || isGoogleLoading || isFacebookLoading}
-                locale={locale}
-              />
-              <FacebookLoginButton
-                onSuccess={handleFacebookLogin}
-                onError={handleFacebookError}
-                disabled={isLoading || isGoogleLoading || isFacebookLoading}
-                locale={locale}
-              />
-            </div>
-
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white dark:bg-gray-950 px-2 text-muted-foreground">
-                  {locale === "es"
-                    ? "O continúa con emailx"
-                    : "Or continue with email"}
-                </span>
-              </div>
-            </div>
-
             {/* Login Form */}
             {mode === "login" && (
               <Form {...loginForm}>
@@ -523,6 +493,33 @@ export function AuthModal({
                 </form>
               </Form>
             )}
+
+            {/* Divider */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white dark:bg-gray-950 px-2 text-muted-foreground">
+                  {locale === "es" ? "O" : "Or"}
+                </span>
+              </div>
+            </div>
+            {/* Social Login Buttons */}
+            <div className="space-y-2">
+              <GoogleLoginButton
+                onSuccess={handleGoogleLogin}
+                onError={handleGoogleError}
+                disabled={isLoading || isGoogleLoading || isFacebookLoading}
+                locale={locale}
+              />
+              <FacebookLoginButton
+                onSuccess={handleFacebookLogin}
+                onError={handleFacebookError}
+                disabled={isLoading || isGoogleLoading || isFacebookLoading}
+                locale={locale}
+              />
+            </div>
 
             {/* Register Form */}
             {mode === "register" && (
@@ -663,6 +660,6 @@ export function AuthModal({
           </div>
         </DialogContent>
       </Dialog>
-    </GoogleAuthProvider>
+    </CasasMapAuthProvider>
   );
 }
