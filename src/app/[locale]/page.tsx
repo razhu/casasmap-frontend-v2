@@ -15,6 +15,7 @@ import { usePropertiesQuery } from "@/lib/graphql/generated";
 import { PropertyCard } from "@/components/properties/property-card";
 import { PropertyCardSkeleton } from "@/components/ui/property-card-skeleton";
 import { HomepageSearch } from "@/components/properties/homepage-search";
+import { PopularCities } from "@/components/properties/popular-cities";
 
 export default function HomePage() {
   const params = useParams();
@@ -81,6 +82,9 @@ export default function HomePage() {
           </div>
         )}
       </section>
+
+      {/* Popular Cities Section */}
+      <PopularCities />
 
       {/* Features Section */}
       <section className="container mx-auto px-4 py-12 sm:py-16">

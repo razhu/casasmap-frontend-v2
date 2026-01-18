@@ -15,9 +15,68 @@ import "../globals.css";
 const locales = ["es", "en"];
 
 export const metadata: Metadata = {
-  title: "CasasMap - Encuentra tu hogar ideal en Bolivia",
+  metadataBase: new URL("https://casasmap.com"),
+  title: {
+    default: "CasasMap - Encuentra tu hogar ideal en Bolivia",
+    template: "%s | CasasMap",
+  },
   description:
-    "Plataforma de bienes raíces en Bolivia. Miles de propiedades en venta y alquiler.",
+    "Plataforma de bienes raíces en Bolivia. Miles de propiedades en venta y alquiler en La Paz, Santa Cruz, Cochabamba y más.",
+  keywords: [
+    "bienes raíces",
+    "propiedades",
+    "casas",
+    "departamentos",
+    "Bolivia",
+    "La Paz",
+    "Santa Cruz",
+    "Cochabamba",
+    "venta",
+    "alquiler",
+  ],
+  authors: [{ name: "CasasMap" }],
+  creator: "CasasMap",
+  publisher: "CasasMap",
+  openGraph: {
+    type: "website",
+    locale: "es_BO",
+    url: "https://casasmap.com",
+    siteName: "CasasMap",
+    title: "CasasMap - Encuentra tu hogar ideal en Bolivia",
+    description:
+      "Plataforma de bienes raíces en Bolivia. Miles de propiedades en venta y alquiler.",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "CasasMap",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CasasMap - Encuentra tu hogar ideal en Bolivia",
+    description:
+      "Plataforma de bienes raíces en Bolivia. Miles de propiedades en venta y alquiler.",
+    images: ["/og-image.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    // Add your verification codes here when available
+    // google: "your-google-verification-code",
+    // yandex: "your-yandex-verification-code",
+  },
 };
 
 export function generateStaticParams() {

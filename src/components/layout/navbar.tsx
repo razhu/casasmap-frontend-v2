@@ -29,7 +29,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LanguageSwitcher } from "./language-switcher";
 import { ThemeToggle } from "./theme-toggle";
 import { NotificationBell } from "./notification-bell";
-import { SearchAutocomplete } from "@/components/search/search-autocomplete";
 import { useState } from "react";
 import {
   Sheet,
@@ -39,6 +38,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useAuthStore } from "@/store/auth";
+import { AuthModal } from "@/components/auth/auth-modal";
 
 export function Navbar() {
   const params = useParams();
@@ -46,6 +46,7 @@ export function Navbar() {
   const locale = params.locale as string;
   const t = useTranslations("nav");
   const [open, setOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const { user, isAuthenticated, logout } = useAuthStore();
 
@@ -128,7 +129,7 @@ export function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b dark:border-gray-800">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 gap-4">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link
             href={getLocalePath("/")}
@@ -138,11 +139,6 @@ export function Navbar() {
               🏠 CasasMap
             </div>
           </Link>
-
-          {/* Search Autocomplete - Desktop */}
-          <div className="flex-1 max-w-md mx-4">
-            <SearchAutocomplete locale={locale} />
-          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-4">
@@ -274,16 +270,13 @@ export function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <>
-                <Link href={getLocalePath("/login")}>
-                  <Button variant="outline" size="sm">
-                    {t("login")}
-                  </Button>
-                </Link>
-                <Link href={getLocalePath("/register")}>
-                  <Button size="sm">{t("register")}</Button>
-                </Link>
-              </>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => setAuthModalOpen(true)}
+              >
+                {t("login")}
+              </Button>
             )}
           </div>
 
@@ -421,22 +414,15 @@ export function Navbar() {
                         </Button>
                       </>
                     ) : (
-                      <>
-                        <Link
-                          href={getLocalePath("/login")}
-                          onClick={() => setOpen(false)}
-                        >
-                          <Button variant="outline" className="w-full mb-2">
-                            {t("login")}
-                          </Button>
-                        </Link>
-                        <Link
-                          href={getLocalePath("/register")}
-                          onClick={() => setOpen(false)}
-                        >
-                          <Button className="w-full">{t("register")}</Button>
-                        </Link>
-                      </>
+                      <Button
+                        className="w-full"
+                        onClick={() => {
+                          setOpen(false);
+                          setAuthModalOpen(true);
+                        }}
+                      >
+                        {t("login")}
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -445,6 +431,9 @@ export function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* Auth Modal */}
+      <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
     </nav>
   );
 }

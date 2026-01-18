@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Search } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -12,78 +11,165 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SearchAutocomplete } from "@/components/search/search-autocomplete";
 
 export function HomepageSearch() {
   const router = useRouter();
   const params = useParams();
   const locale = params.locale as string;
   const [query, setQuery] = useState("");
-  const [dealTypeId, setDealTypeId] = useState("");
+  const [dealTypeId, setDealTypeId] = useState("1"); // Default to Sale
+  const [priceRange, setPriceRange] = useState("");
+  const [bedrooms, setBedrooms] = useState("");
+  const [propertyType, setPropertyType] = useState("");
 
   const getLocalePath = (path: string) => {
     return locale === "es" ? path : `/${locale}${path}`;
   };
 
-  const handleSearch = () => {
+  const handleSearch = (searchQuery?: string) => {
     const searchParams = new URLSearchParams();
-    if (query) searchParams.set("q", query);
+    const finalQuery = searchQuery || query;
+
+    if (finalQuery) searchParams.set("q", finalQuery);
     if (dealTypeId) searchParams.set("dealType", dealTypeId);
+    if (priceRange) searchParams.set("priceRange", priceRange);
+    if (bedrooms) searchParams.set("bedrooms", bedrooms);
+    if (propertyType) searchParams.set("propertyType", propertyType);
 
     const path = getLocalePath("/properties");
     router.push(`${path}?${searchParams.toString()}`);
   };
 
+  const handlePropertySelect = (property: any) => {
+    router.push(getLocalePath(`/inmuebles/${property.slug}`));
+  };
+
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
-      <div className="flex flex-col sm:flex-row gap-3">
-        {/* Search Input */}
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input
-            placeholder={
-              locale === "es"
-                ? "Buscar por ubicación, título..."
-                : "Search by location, title..."
-            }
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            className="pl-10 h-12 text-base"
-          />
-        </div>
-
-        {/* Deal Type Select */}
-        <Select value={dealTypeId} onValueChange={setDealTypeId}>
-          <SelectTrigger className="w-full sm:w-40 h-12">
-            <SelectValue placeholder={locale === "es" ? "Tipo" : "Type"} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="1">
-              {locale === "es" ? "Venta" : "Sale"}
-            </SelectItem>
-            <SelectItem value="2">
-              {locale === "es" ? "Alquiler" : "Rent"}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-
-        {/* Search Button */}
-        <Button onClick={handleSearch} size="lg" className="h-12 px-8">
-          <Search className="h-5 w-5 sm:mr-2" />
-          <span className="hidden sm:inline">
-            {locale === "es" ? "Buscar" : "Search"}
-          </span>
-        </Button>
+    <div className="w-full max-w-5xl mx-auto">
+      {/* Tabs for Buy/Rent */}
+      <div className="mb-4">
+        <Tabs
+          value={dealTypeId}
+          onValueChange={setDealTypeId}
+          className="w-full"
+        >
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 h-12">
+            <TabsTrigger value="1" className="text-base font-semibold">
+              {locale === "es" ? "Comprar" : "Buy"}
+            </TabsTrigger>
+            <TabsTrigger value="2" className="text-base font-semibold">
+              {locale === "es" ? "Alquilar" : "Rent"}
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
-      {/* Advanced Filters Link */}
-      <div className="mt-3 text-center">
-        <button
-          onClick={() => router.push(getLocalePath("/properties"))}
-          className="text-sm text-primary hover:underline"
-        >
-          {locale === "es" ? "Filtros avanzados" : "Advanced filters"}
-        </button>
+      {/* Main Search Box */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6">
+        <div className="flex flex-col gap-4">
+          {/* Search Input with Autocomplete */}
+          <div className="relative">
+            <SearchAutocomplete
+              onSelect={handlePropertySelect}
+              onSearch={handleSearch}
+              placeholder={
+                locale === "es"
+                  ? "Buscar por ubicación, título..."
+                  : "Search by location, title..."
+              }
+              locale={locale}
+              className="h-14 text-lg pl-12"
+              onQueryChange={setQuery}
+            />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-muted-foreground pointer-events-none" />
+          </div>
+
+          {/* Quick Filters */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {/* Price Range */}
+            <Select value={priceRange} onValueChange={setPriceRange}>
+              <SelectTrigger className="h-12">
+                <SelectValue
+                  placeholder={locale === "es" ? "Precio" : "Price"}
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0-50000">
+                  {locale === "es" ? "Hasta $50k" : "Up to $50k"}
+                </SelectItem>
+                <SelectItem value="50000-100000">$50k - $100k</SelectItem>
+                <SelectItem value="100000-200000">$100k - $200k</SelectItem>
+                <SelectItem value="200000-500000">$200k - $500k</SelectItem>
+                <SelectItem value="500000-999999999">
+                  {locale === "es" ? "Más de $500k" : "$500k+"}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Bedrooms */}
+            <Select value={bedrooms} onValueChange={setBedrooms}>
+              <SelectTrigger className="h-12">
+                <SelectValue
+                  placeholder={locale === "es" ? "Dormitorios" : "Bedrooms"}
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1+</SelectItem>
+                <SelectItem value="2">2+</SelectItem>
+                <SelectItem value="3">3+</SelectItem>
+                <SelectItem value="4">4+</SelectItem>
+                <SelectItem value="5">5+</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Property Type */}
+            <Select value={propertyType} onValueChange={setPropertyType}>
+              <SelectTrigger className="h-12">
+                <SelectValue placeholder={locale === "es" ? "Tipo" : "Type"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">
+                  {locale === "es" ? "Casa" : "House"}
+                </SelectItem>
+                <SelectItem value="2">
+                  {locale === "es" ? "Departamento" : "Apartment"}
+                </SelectItem>
+                <SelectItem value="3">
+                  {locale === "es" ? "Terreno" : "Land"}
+                </SelectItem>
+                <SelectItem value="4">
+                  {locale === "es" ? "Oficina" : "Office"}
+                </SelectItem>
+                <SelectItem value="5">
+                  {locale === "es" ? "Local Comercial" : "Commercial"}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Search Button */}
+          <Button
+            onClick={handleSearch}
+            size="lg"
+            className="h-14 text-lg font-semibold"
+          >
+            <Search className="h-5 w-5 mr-2" />
+            {locale === "es" ? "Buscar Propiedades" : "Search Properties"}
+          </Button>
+
+          {/* Advanced Filters Link */}
+          <div className="text-center">
+            <button
+              onClick={() => router.push(getLocalePath("/properties"))}
+              className="text-sm text-primary hover:underline inline-flex items-center gap-1"
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+              {locale === "es" ? "Filtros avanzados" : "Advanced filters"}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
