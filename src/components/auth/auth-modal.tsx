@@ -494,33 +494,6 @@ export function AuthModal({
               </Form>
             )}
 
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white dark:bg-gray-950 px-2 text-muted-foreground">
-                  {locale === "es" ? "O" : "Or"}
-                </span>
-              </div>
-            </div>
-            {/* Social Login Buttons */}
-            <div className="space-y-2">
-              <GoogleLoginButton
-                onSuccess={handleGoogleLogin}
-                onError={handleGoogleError}
-                disabled={isLoading || isGoogleLoading || isFacebookLoading}
-                locale={locale}
-              />
-              <FacebookLoginButton
-                onSuccess={handleFacebookLogin}
-                onError={handleFacebookError}
-                disabled={isLoading || isGoogleLoading || isFacebookLoading}
-                locale={locale}
-              />
-            </div>
-
             {/* Register Form */}
             {mode === "register" && (
               <Form {...registerForm}>
@@ -632,7 +605,6 @@ export function AuthModal({
                 </form>
               </Form>
             )}
-
             {/* Toggle Mode */}
             <div className="text-center text-sm">
               {mode === "login" ? (
@@ -656,6 +628,33 @@ export function AuthModal({
                   </button>
                 </p>
               )}
+            </div>
+            {/* Divider */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="bg-white dark:bg-gray-950 px-2 text-muted-foreground">
+                  {locale === "es" ? "O continuar con" : "Or continue with"}
+                </span>
+              </div>
+            </div>
+
+            {/* Social Login Buttons */}
+            <div className="space-y-2">
+              <GoogleLoginButton
+                onSuccess={handleGoogleLogin}
+                onError={handleGoogleError}
+                disabled={isLoading || isGoogleLoading || isFacebookLoading}
+                locale={locale}
+              />
+              <FacebookLoginButton
+                onSuccess={handleFacebookLogin}
+                onError={handleFacebookError}
+                disabled={isLoading || isGoogleLoading || isFacebookLoading}
+                locale={locale}
+              />
             </div>
           </div>
         </DialogContent>
