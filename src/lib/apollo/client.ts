@@ -1,5 +1,6 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { getCorrelationId } from "../correlation-id";
 
 const httpLink = createHttpLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://localhost:3001/graphql",
@@ -20,10 +21,14 @@ const authLink = setContext((_, { headers }) => {
     }
   }
 
+  // Get or generate correlation ID
+  const correlationId = getCorrelationId();
+
   return {
     headers: {
       ...headers,
       authorization: token ? `Bearer ${token}` : "",
+      "x-correlation-id": correlationId,
     },
   };
 });
