@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -11,8 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SearchAutocomplete } from "@/components/search/search-autocomplete";
+import { cn } from "@/lib/utils";
 
 export function HomepageSearch() {
   const router = useRouter();
@@ -47,50 +47,59 @@ export function HomepageSearch() {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
-      {/* Tabs for Buy/Rent */}
-      <div className="mb-4">
-        <Tabs
-          value={dealTypeId}
-          onValueChange={setDealTypeId}
-          className="w-full"
-        >
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 h-12">
-            <TabsTrigger value="1" className="text-base font-semibold">
-              {locale === "es" ? "Comprar" : "Buy"}
-            </TabsTrigger>
-            <TabsTrigger value="2" className="text-base font-semibold">
-              {locale === "es" ? "Alquilar" : "Rent"}
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
+    <div className="w-full max-w-4xl mx-auto">
+      {/* Main Search Container */}
+      <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+        {/* Buy/Rent Tabs - Integrated into search box */}
+        <div className="flex border-b border-gray-200 dark:border-gray-700">
+          <button
+            onClick={() => setDealTypeId("1")}
+            className={cn(
+              "flex-1 px-6 py-4 text-base font-semibold transition-all",
+              dealTypeId === "1"
+                ? "bg-primary text-primary-foreground"
+                : "bg-transparent text-muted-foreground hover:bg-gray-50 dark:hover:bg-gray-800",
+            )}
+          >
+            {locale === "es" ? "Comprar" : "Buy"}
+          </button>
+          <button
+            onClick={() => setDealTypeId("2")}
+            className={cn(
+              "flex-1 px-6 py-4 text-base font-semibold transition-all",
+              dealTypeId === "2"
+                ? "bg-primary text-primary-foreground"
+                : "bg-transparent text-muted-foreground hover:bg-gray-50 dark:hover:bg-gray-800",
+            )}
+          >
+            {locale === "es" ? "Alquilar" : "Rent"}
+          </button>
+        </div>
 
-      {/* Main Search Box */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6">
-        <div className="flex flex-col gap-4">
-          {/* Search Input with Autocomplete */}
+        {/* Search Content */}
+        <div className="p-6 space-y-4">
+          {/* Main Search Input - Full Width, Prominent */}
           <div className="relative">
+            <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none z-10" />
             <SearchAutocomplete
               onSelect={handlePropertySelect}
               onSearch={handleSearch}
               placeholder={
                 locale === "es"
-                  ? "Buscar por ubicación, título..."
-                  : "Search by location, title..."
+                  ? "Dirección, ciudad, barrio..."
+                  : "Address, city, neighborhood..."
               }
               locale={locale}
-              className="h-14 text-lg pl-12"
+              className="h-16 text-base pl-14 pr-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 focus:border-primary"
               onQueryChange={setQuery}
             />
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-muted-foreground pointer-events-none" />
           </div>
 
-          {/* Quick Filters */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {/* Price Range */}
+          {/* Filters Row - Compact, Inline */}
+          <div className="flex flex-wrap gap-3">
+            {/* Price */}
             <Select value={priceRange} onValueChange={setPriceRange}>
-              <SelectTrigger className="h-12">
+              <SelectTrigger className="h-11 min-w-[140px] rounded-lg border-gray-300 dark:border-gray-600">
                 <SelectValue
                   placeholder={locale === "es" ? "Precio" : "Price"}
                 />
@@ -110,9 +119,9 @@ export function HomepageSearch() {
 
             {/* Bedrooms */}
             <Select value={bedrooms} onValueChange={setBedrooms}>
-              <SelectTrigger className="h-12">
+              <SelectTrigger className="h-11 min-w-[140px] rounded-lg border-gray-300 dark:border-gray-600">
                 <SelectValue
-                  placeholder={locale === "es" ? "Dormitorios" : "Bedrooms"}
+                  placeholder={locale === "es" ? "Dormitorios" : "Beds"}
                 />
               </SelectTrigger>
               <SelectContent>
@@ -126,7 +135,7 @@ export function HomepageSearch() {
 
             {/* Property Type */}
             <Select value={propertyType} onValueChange={setPropertyType}>
-              <SelectTrigger className="h-12">
+              <SelectTrigger className="h-11 min-w-[140px] rounded-lg border-gray-300 dark:border-gray-600">
                 <SelectValue placeholder={locale === "es" ? "Tipo" : "Type"} />
               </SelectTrigger>
               <SelectContent>
@@ -147,27 +156,16 @@ export function HomepageSearch() {
                 </SelectItem>
               </SelectContent>
             </Select>
-          </div>
 
-          {/* Search Button */}
-          <Button
-            onClick={handleSearch}
-            size="lg"
-            className="h-14 text-lg font-semibold"
-          >
-            <Search className="h-5 w-5 mr-2" />
-            {locale === "es" ? "Buscar Propiedades" : "Search Properties"}
-          </Button>
-
-          {/* Advanced Filters Link */}
-          <div className="text-center">
-            <button
-              onClick={() => router.push(getLocalePath("/properties"))}
-              className="text-sm text-primary hover:underline inline-flex items-center gap-1"
+            {/* Search Button - Inline with filters */}
+            <Button
+              onClick={() => handleSearch()}
+              size="lg"
+              className="h-11 px-8 rounded-lg font-semibold ml-auto"
             >
-              <SlidersHorizontal className="h-4 w-4" />
-              {locale === "es" ? "Filtros avanzados" : "Advanced filters"}
-            </button>
+              <Search className="h-4 w-4 mr-2" />
+              {locale === "es" ? "Buscar" : "Search"}
+            </Button>
           </div>
         </div>
       </div>

@@ -101,7 +101,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className={fontSans.className}>
+      <body className={fontSans.className} suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
